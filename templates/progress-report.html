@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="{{url_for('static', filename='/style.css')}}"> 
+  <title>YSAB Progress Report</title>   
+  <link rel="icon" href="{{url_for('static', filename='images/fav-icon-red.svg')}}">
+</head>
+
+<form action="/submit_progress_report" method="POST">
+<div class="container">
+  <div class="center">
+    <a href="{{ url_for('index') }}"><img src="{{url_for('static', filename='images/juvenile-logo.svg')}}" alt="Dallas Juvenile Logo" width="100" height="100" title="Home page"></a>
+  </div>
+</div>
+    <header>
+      <h2>Dallas County Juror Fund Allocation Progress Report</h2>
+    </header>
+
+    <h3>Submission Instructions:</h2>
+        <ol>
+            <li>Informants must answer all questions that are applicable</li>
+            <li>Length of responses must adhere to the specified word limit indicated in the question</li>
+            <li>Informants must click the submit button to complete the report</li>
+          </ol>
+
+    <p><b>Disclaimer:</b> For privacy and security reasons, please be advised not to include any confidential or sensitive information in your submission.</p>
+    
+    <div>
+      <label for="reporting_period"><span style="color:red"><b>Reporting Period</b></span></label>
+      <div>
+        <select id="reporting_period" name="reporting_period" class="field select medium" tabindex="11"> 
+          <option disabled selected>Choose an item</option>
+          <option value="M">Mid-term</option>
+          <option value="F">Final</option>
+        </select>
+      </div>
+    </div>
+
+    <div>
+      <label for="app_record" style="color: #001aff">
+        <b>Select Application Record</b>
+      </label>
+      <div>
+        <select id="app_record" name="app_record">
+          <option disabled selected>Choose an item</option>
+          {% for item in app_list %}
+            {% set split_item = item.split(' : ') %}
+            {% set display_item = split_item[0] ~ ' : ' ~ split_item[1] %}
+          <option value="{{ item }}">{{ display_item }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    <script>
+      document.getElementById("app_record").addEventListener("change", function() {
+        // Get the selected option
+        var selectedOption = this.options[this.selectedIndex];
+        // Split the value of selected option to get name, email, and project title
+        var values = selectedOption.value.split(' : ');
+        // Populate the fields
+        document.getElementById("name").value = values[1];
+        document.getElementById("app_title").value = values[2];
+        document.getElementById("email").value = values[3];
+        document.getElementById("phone").value = values[4];
+        document.getElementById("title").value = values[5];
+        document.getElementById("amount_awarded").value = parseInt(values[6]);
+        document.getElementById("output1").value = values[7];
+        document.getElementById("output2").value = values[8];
+        document.getElementById("output3").value = values[9];
+        document.getElementById("output4").value = values[10];
+        document.getElementById("output5").value = values[11];
+        document.getElementById("target1").value = values[12];
+        document.getElementById("target2").value = values[13];
+        document.getElementById("target3").value = values[14];
+        document.getElementById("target4").value = values[15];
+        document.getElementById("target5").value = values[16];
+        document.getElementById("outcome1").value = values[17];
+        document.getElementById("outcome2").value = values[18];
+        document.getElementById("outcome3").value = values[19];
+        document.getElementById("outcome4").value = values[20];
+        document.getElementById("outcome5").value = values[21];
+        document.getElementById("target1.1").value = values[22];
+        document.getElementById("target2.1").value = values[23];
+        document.getElementById("target3.1").value = values[24];
+        document.getElementById("target4.1").value = values[25];
+        document.getElementById("target5.1").value = values[26];
+        });
+    </script>
+
+    <div>
+    <br>
+      <label for="name">Name</label>
+      <div>
+        <input id="name" name="name" type="text" class="field text fn" value="" size="8" tabindex="1" required>
+      </div>
+    </div>
+
+    <div>
+        <label for="app_title">
+          Applicant Title
+        </label>
+        <div>
+          <input id="app_title" name="app_title" type="text" class="field text fn" value="" size="8" tabindex="1">
+       </div>
+    </div>
+
+    <div>
+        <label for="email">
+          Contact Email
+        </label>
+        <div>
+          <input id="email" name="email" type="email" spellcheck="false" value="" maxlength="255" tabindex="3" required> 
+       </div>
+    </div>
+
+    <div>
+      <label for="phone">
+        Contact Phone Number
+      </label>
+      <div>
+        <input id="phone" name="phone" type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="123-456-7890" oninput="formatPhoneNumber(this)" maxlength="12" required>
+      </div>
+    </div>
+  <script>
+    function formatPhoneNumber(input) {
+      // Remove any non-numeric characters
+      var phoneNumber = input.value.replace(/\D/g, '');
+
+      // Check if the length is greater than 10, trim it
+      if (phoneNumber.length > 10) {
+        phoneNumber = phoneNumber.substr(0, 10);
+      }
+
+      // Add dashes in the required format
+      var formattedPhoneNumber =
+        phoneNumber.slice(0, 3) + '-' + phoneNumber.slice(3, 6) + '-' + phoneNumber.slice(6, 10);
+
+      // Update the input field value
+      input.value = formattedPhoneNumber;
+    }
+  </script>
+
+  <h3>Profile</h3>
+
+    <div>
+      <br>
+        <label for="title">Project Title</label>
+        <div>
+          <input id="title" name="title" type="text" class="field text fn" value="" size="8" tabindex="1" required>
+        </div>
+      </div>
+
+    <div>
+      <label for="how_funds_advanced_goals_of_program">
+        Describe specifically how the use of your YSAB award advanced the goals and objectives of your program. Link the use of your YSAB award with the impact it has made on your outcomes.
+      </label>
+      <div>
+        <textarea id="how_funds_advanced_goals_of_program" name="how_funds_advanced_goals_of_program" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder=""></textarea>
+      </div>
+    </div>
+
+    <div>
+        <label for="project_contact">
+        Project Contact (Name)
+        </label>
+        <div>
+          <input id="project_contact" name="project_contact" type="text" class="field text fn" value="" size="8" tabindex="1">
+       </div>
+    </div>
+
+    <div>
+      <label for="fiscal_year">Fiscal Year</label>
+      <div>
+        <input id="fiscal_year" name="fiscal_year" type="number" class="field text fn" value="" size="8" tabindex="1" min="1" max="99999">
+     </div>
+    </div>
+      
+    <div>
+      <label for="start_date">Start Date:</label>
+      <div>
+        <input type="date" id="start_date" name="start_date" value="2024-01-01" min="2018-01-01" max="2099-12-31" />
+      </div>
+    </div>
+
+    <div>
+      <label for="end_date">End Date:</label>
+      <div>
+        <input type="date" id="end_date" name="end_date" value="2024-01-01" min="2018-01-01" max="2099-12-31" />
+      </div>
+    </div>
+
+    <div>
+        <label for="amount_awarded">
+        Amount Awarded
+        </label>
+        <div>
+          <input id="amount_awarded" name="amount_awarded" type="number" class="field text fn" value="" size="8" tabindex="1" min="1" max="99999">
+       </div>
+    </div>
+
+    <div>
+      <label for="amount_expended_mid">
+      Amount Expended - Mid-term
+      </label>
+      <div>
+        <input id="amount_expended_mid" name="amount_expended_mid" type="number" class="field text fn" value="" size="8" tabindex="1" min="1" max="99999">
+     </div>
+   </div>
+
+  <div>
+    <label for="amount_expended_final">
+    Amount Expended - Final
+    </label>
+    <div>
+      <input id="amount_expended_final" name="amount_expended_final" type="number" class="field text fn" value="" size="8" tabindex="1" min="1" max="99999">
+   </div>
+  </div>
+
+  <br>
+  <br>
+  <h3>Performance Measures</h3>
+  <h4>Output Measures</h4>
+    
+    <div>
+        <table align="center" border=1 cellspacing="1" cellpadding="5">
+          <thead>
+              <tr>
+                  <th rowspan=2>Output Measures</th>
+                  <th rowspan=2>Target</th>
+                  <th colspan=2>Actual Achieved</th>
+                  <th rowspan=2>On Track To Meet Mid-term Target</th>
+                  <th rowspan=2>Final Target Achieved</th>
+              </tr>
+              <tr>
+                  <th>Mid-term</th>
+                  <th>Final</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr>
+                  <td>Number of youth directly benefited</td>
+                  <td>
+                    <input id="target_a" name="target_a" type="text" class="field text fn" value="" size="8" tabindex="1">
+                  </td>
+                  <td>
+                    <input id="midterm_a" name="midterm_a" type="text" class="field text fn" value="" size="8" tabindex="1">
+                  </td>
+                  <td>
+                    <input id="final_a" name="final_a" type="text" class="field text fn" value="" size="8" tabindex="1">
+                  </td>
+                  <td>
+                    <select id="midterm_target_a" name="midterm_target_a" class="field select medium" tabindex="11"> 
+                        <option value="Choose an item">Choose an item</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                     </select>                
+                  </td>
+                  <td>
+                    <select id="final_target_a" name="final_target_a" class="field select medium" tabindex="11"> 
+                        <option value="Choose an item">Choose an item</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                     </select>
+                  </td>
+              </tr>
+              <tr>
+                  <td>Number of individuals not under the authority of DCJD benefited</td>
+                  <td>
+                    <input id="target_b" name="target_b" type="text" class="field text fn" value="" size="8" tabindex="1">
+                  </td>
+                  <td>
+                    <input id="midterm_b" name="midterm_b" type="text" class="field text fn" value="" size="8" tabindex="1">
+                  </td>
+                  <td>
+                    <input id="final_b" name="final_b" type="text" class="field text fn" value="" size="8" tabindex="1">
+                  </td>
+                  <td>
+                    <select id="midterm_target_b" name="midterm_target_b" class="field select medium" tabindex="11"> 
+                        <option value="Choose an item">Choose an item</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                     </select>                
+                  </td>
+                  <td>
+                    <select id="final_target_b" name="final_target_b" class="field select medium" tabindex="11"> 
+                        <option value="Choose an item">Choose an item</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                     </select>
+                  </td>
+              </tr>
+              <tr>
+                  <td>
+                    <input id="output1" name="output1" type="text">
+                  </td>
+                  <td>
+                    <input id="target1" name="target1" type="text" class="field text fn" value="" size="8" tabindex="1">
+                  </td>
+                  <td>
+                    <input id="midterm1" name="midterm1" type="text" class="field text fn" value="" size="8" tabindex="1">
+                  </td>
+                  <td>
+                    <input id="final1" name="final1" type="text" class="field text fn" value="" size="8" tabindex="1">
+                  </td>
+                  <td>
+                    <select id="midterm_target1" name="midterm_target1" class="field select medium" tabindex="11"> 
+                        <option value="Choose an item">Choose an item</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                     </select>                
+                  </td>
+                  <td>
+                    <select id="final_target1" name="final_target1" class="field select medium" tabindex="11"> 
+                        <option value="Choose an item">Choose an item</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                     </select>
+                  </td>
+              </tr>
+              <tr>
+                <td>
+                  <input id="output2" name="output2" type="text">
+                </td>
+                <td>
+                  <input id="target2" name="target2" type="text" class="field text fn" value="" size="8" tabindex="1">
+                </td>
+                <td>
+                  <input id="midterm2" name="midterm2" type="text" class="field text fn" value="" size="8" tabindex="1">
+                </td>
+                <td>
+                  <input id="final2" name="final2" type="text" class="field text fn" value="" size="8" tabindex="1">
+                </td>
+                <td>
+                  <select id="midterm_target2" name="midterm_target2" class="field select medium" tabindex="11"> 
+                      <option value="Choose an item">Choose an item</option>
+                      <option value="Yes">Yes</option>
+                      <option value="No">No</option>
+                   </select>                
+                </td>
+                <td>
+                  <select id="final_target2" name="final_target2" class="field select medium" tabindex="11"> 
+                      <option value="Choose an item">Choose an item</option>
+                      <option value="Yes">Yes</option>
+                      <option value="No">No</option>
+                   </select>
+                </td>
+            </tr>      
+            <tr>
+              <td>
+                <input id="output3" name="output3" type="text">
+              </td>
+              <td>
+                <input id="target3" name="target3" type="text" class="field text fn" value="" size="8" tabindex="1">
+              </td>
+              <td>
+                <input id="midterm3" name="midterm3" type="text" class="field text fn" value="" size="8" tabindex="1">
+              </td>
+              <td>
+                <input id="final3" name="final3" type="text" class="field text fn" value="" size="8" tabindex="1">
+              </td>
+              <td>
+                <select id="midterm_target3" name="midterm_target3" class="field select medium" tabindex="11"> 
+                    <option value="Choose an item">Choose an item</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                 </select>                
+              </td>
+              <td>
+                <select id="final_target3" name="final_target3" class="field select medium" tabindex="11"> 
+                    <option value="Choose an item">Choose an item</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                 </select>
+              </td>
+          </tr> 
+          <tr>
+            <td>
+              <input id="output4" name="output4" type="text">
+            </td>
+            <td>
+              <input id="target4" name="target4" type="text" class="field text fn" value="" size="8" tabindex="1">
+            </td>
+            <td>
+              <input id="midterm4" name="midterm4" type="text" class="field text fn" value="" size="8" tabindex="1">
+            </td>
+            <td>
+              <input id="final4" name="final4" type="text" class="field text fn" value="" size="8" tabindex="1">
+            </td>
+            <td>
+              <select id="midterm_target4" name="midterm_target4" class="field select medium" tabindex="11"> 
+                  <option value="Choose an item">Choose an item</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+               </select>                
+            </td>
+            <td>
+              <select id="final_target4" name="final_target4" class="field select medium" tabindex="11"> 
+                  <option value="Choose an item">Choose an item</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+               </select>
+            </td>
+        </tr>    
+        <tr>
+          <td>
+            <input id="output5" name="output5" type="text">
+          </td>
+          <td>
+            <input id="target5" name="target5" type="text" class="field text fn" value="" size="8" tabindex="1">
+          </td>
+          <td>
+            <input id="midterm5" name="midterm5" type="text" class="field text fn" value="" size="8" tabindex="1">
+          </td>
+          <td>
+            <input id="final5" name="final5" type="text" class="field text fn" value="" size="8" tabindex="1">
+          </td>
+          <td>
+            <select id="midterm_target5" name="midterm_target5" class="field select medium" tabindex="11"> 
+                <option value="Choose an item">Choose an item</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+             </select>                
+          </td>
+          <td>
+            <select id="final_target5" name="final_target5" class="field select medium" tabindex="11"> 
+                <option value="Choose an item">Choose an item</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+             </select>
+          </td>
+        </tr>  
+        <tr>
+          <td>
+            <input id="output6" name="output6" type="text">
+          </td>
+          <td>
+            <input id="target6" name="target6" type="text" class="field text fn" value="" size="8" tabindex="1">
+          </td>
+          <td>
+            <input id="midterm6" name="midterm6" type="text" class="field text fn" value="" size="8" tabindex="1">
+          </td>
+          <td>
+            <input id="final6" name="final6" type="text" class="field text fn" value="" size="8" tabindex="1">
+          </td>
+          <td>
+            <select id="midterm_target6" name="midterm_target6" class="field select medium" tabindex="11"> 
+                <option value="Choose an item">Choose an item</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+             </select>                
+          </td>
+          <td>
+            <select id="final_target6" name="final_target6" class="field select medium" tabindex="11"> 
+                <option value="Choose an item">Choose an item</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+             </select>
+          </td>
+        </tr>        
+          </tbody>
+        </table>
+    </div>
+
+    <br>
+    <h4>Outcome Measures</h4>
+    <p>(These should be identical to the outcome measures in the original application)</p>
+
+    <div>
+        <table align="center" border=1 cellspacing="1" cellpadding="5">
+          <thead>
+              <tr>
+                  <th rowspan=2>Outcome Measures</th>
+                  <th rowspan=2>Target</th>
+                  <th colspan="2">Actual Achieved</th>
+                  <th rowspan=2>On Track To Meet Mid-term Target</th>
+                  <th rowspan=2>Final Target Achieved</th>
+              </tr>
+              <tr>
+                  <th>Mid-term</th>
+                  <th>Final</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr>
+                  <td>                    
+                    <input id="outcome1" name="outcome1" type="text"> 
+                  </td>
+                  <td>
+                    <input id="target1.1" name="target1.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+                  </td>
+                  <td>
+                    <input id="midterm1.1" name="midterm1.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+                  </td>
+                  <td>
+                    <input id="final1.1" name="final1.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+                  </td>
+                  <td>
+                    <select id="midterm_target1.1" name="midterm_target1.1" class="field select medium" tabindex="11"> 
+                        <option value="Choose an item">Choose an item</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                     </select>                
+                  </td>
+                  <td>
+                    <select id="final_target1.1" name="final_target1.1" class="field select medium" tabindex="11"> 
+                        <option value="Choose an item">Choose an item</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                     </select>
+                  </td>
+              </tr>
+              <tr>
+                  <td>
+                    <input id="outcome2" name="outcome2" type="text">
+                  </td>
+                  <td>
+                    <input id="target2.1" name="target2.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+                  </td>
+                  <td>
+                    <input id="midterm2.1" name="midterm2.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+                  </td>
+                  <td>
+                    <input id="final2.1" name="final2.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+                  </td>
+                  <td>
+                    <select id="midterm_target2.1" name="midterm_target2.1" class="field select medium" tabindex="11"> 
+                        <option value="Choose an item">Choose an item</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                     </select>                
+                  </td>
+                  <td>
+                    <select id="final_target2.1" name="final_target2.1" class="field select medium" tabindex="11"> 
+                        <option value="Choose an item">Choose an item</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                     </select>
+                  </td>
+              </tr>
+              <tr>
+                <td>
+                  <input id="outcome3" name="outcome3" type="text">
+                </td>
+                <td>
+                  <input id="target3.1" name="target3.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+                </td>
+                <td>
+                  <input id="midterm3.1" name="midterm3.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+                </td>
+                <td>
+                  <input id="final3.1" name="final3.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+                </td>
+                <td>
+                  <select id="midterm_target3.1" name="midterm_target3.1" class="field select medium" tabindex="11"> 
+                      <option value="Choose an item">Choose an item</option>
+                      <option value="Yes">Yes</option>
+                      <option value="No">No</option>
+                   </select>                
+                </td>
+                <td>
+                  <select id="final_target3.1" name="final_target3.1" class="field select medium" tabindex="11"> 
+                      <option value="Choose an item">Choose an item</option>
+                      <option value="Yes">Yes</option>
+                      <option value="No">No</option>
+                   </select>
+                </td>
+            </tr>      
+            <tr>
+              <td>
+                <input id="outcome4" name="outcome4" type="text">
+              </td>
+              <td>
+                <input id="target4.1" name="target4.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+              </td>
+              <td>
+                <input id="midterm4.1" name="midterm4.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+              </td>
+              <td>
+                <input id="final4.1" name="final4.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+              </td>
+              <td>
+                <select id="midterm_target4.1" name="midterm_target4.1" class="field select medium" tabindex="11"> 
+                    <option value="Choose an item">Choose an item</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                 </select>                
+              </td>
+              <td>
+                <select id="final_target4.1" name="final_target4.1" class="field select medium" tabindex="11"> 
+                    <option value="Choose an item">Choose an item</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                 </select>
+              </td>
+          </tr> 
+          <tr>
+            <td>
+              <input id="outcome5" name="outcome5" type="text">
+            </td>
+            <td>
+              <input id="target5.1" name="target5.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+            </td>
+            <td>
+              <input id="midterm5.1" name="midterm5.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+            </td>
+            <td>
+              <input id="final5.1" name="final5.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+            </td>
+            <td>
+              <select id="midterm_target5.1" name="midterm_target5.1" class="field select medium" tabindex="11"> 
+                  <option value="Choose an item">Choose an item</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+               </select>                
+            </td>
+            <td>
+              <select id="final_target5.1" name="final_target5.1" class="field select medium" tabindex="11"> 
+                  <option value="Choose an item">Choose an item</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+               </select>
+            </td>
+        </tr>    
+          <tr>
+            <td>
+              <input id="outcome6" name="outcome6" type="text">
+            </td>
+            <td>
+              <input id="target6.1" name="target6.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+            </td>
+            <td>
+              <input id="midterm6.1" name="midterm6.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+            </td>
+            <td>
+              <input id="final6.1" name="final6.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+            </td>
+            <td>
+              <select id="midterm_target6.1" name="midterm_target6.1" class="field select medium" tabindex="11"> 
+                  <option value="Choose an item">Choose an item</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+              </select>                
+            </td>
+            <td>
+              <select id="final_target6.1" name="final_target6.1" class="field select medium" tabindex="11"> 
+                  <option value="Choose an item">Choose an item</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+              </select>
+            </td>
+          </tr>         
+          </tbody>
+        </table>
+    </div>
+
+  <br><br>
+  <h3>Programmatic Considerations</h3>
+
+    <div>
+      <label for="funds_explain"><b>Award Amendment</b> <p>If the YSAB award needs to be increased for this project before the end of the period, make the request and provide a justification for the increase and the amount of the increase.</p></label>
+      <div>
+        <textarea id="funds_explain" name="funds_explain" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder="Maximum 250 words"></textarea>
+      </div>
+  </div>
+
+    <div>
+      <p style="color:red;">Mid-term Report Only</p>
+      <label for="midterm_full_amount">Are you on track to spend the full amount awarded in your application?</label>
+      <div>
+        <select id="midterm_full_amount" name="midterm_full_amount" class="field select medium" tabindex="11"> 
+          <option value="Choose an item">Choose an item</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+    </div>
+
+    <div>
+      <label for="midterm_full_amount_no">
+        If no, describe any problems or obstacles that have affected your ability to spend your grant funds.
+      </label>
+      <div>
+       <textarea id="midterm_full_amount_no" name="midterm_full_amount_no" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder=""></textarea>
+     </div>
+   </div>
+   <div>
+      <label for="midterm_full_amount_no2">
+        If you are <b>not</b> on track to meet output and/or outcome target levels, describe any problems or obstacles that have affected your ability to achieve them.
+      </label>
+      <div>
+        <textarea id="midterm_full_amount_no2" name="midterm_full_amount_no2" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder=""></textarea>
+      </div>
+    </div>
+    
+    <div>
+      <p style="color:red;">Final Report Only</p>
+      <label for="final_full_amount">Did you spend the full amount awarded in your application?</label>
+      <div>
+        <select id="final_full_amount" name="final_full_amount" class="field select medium" tabindex="11"> 
+          <option value="Choose an item">Choose an item</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+    </div>
+
+    <div>
+      <label for="final_full_amount_no">
+      If no, describe any problems or obstacles that have affected your ability to spend your grant funds and <u>indicate the percentage spent</u>.
+      </label>
+      <div>
+       <textarea id="final_full_amount_no" name="final_full_amount_no" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder=""></textarea>
+     </div>
+   </div>
+   <div>
+      <label for="final_full_amount_no2">
+        If your output and/or outcome target levels were <b>not</b> met, describe any problems or obstacles that affected your ability to achieve them. 
+      </label>
+      <div>
+        <textarea id="final_full_amount_no2" name="final_full_amount_no2" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder=""></textarea>
+      </div>
+    </div>
+
+    <div>
+      <label for="challenges_discrepances">Provide any overlooked challenges or discrepancies encountered while managing the grant funds, such as discrepancies between the intended and actual use of funds or unanticipated issues not addressed elsewhere.</label>
+      <div>
+        <textarea id="challenges_discrepances" name="challenges_discrepances" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder=""></textarea>
+      </div>
+    </div>
+
+    <br><br>
+
+    <div style="text-align: justify;">
+      <div style="display: inline-flex; align-items: center; border: 1px solid red; padding: 15px;">
+        <input type="checkbox" id="disclaimer_check" name="disclaimer_check" value="agree" required style="width: 15px; height: 15px;" required>
+        <label for="disclaimer_check" style="margin-left: 10px;">All of the information contained within this progress report is true and accurate as of the date this report is being submitted. As the informant, you affirm that all due diligence has been completed. This report is made in good faith and with respect for the purpose of the Youth Services Advisory Board grant program for the express direct benefit of the youth under the authority of the Dallas County Juvenile Department.</label>
+      </div>
+    </div>
+
+    <br>
+
+    <div class="container">
+      <div class="center">
+        <input id="saveForm" name="saveForm" type="submit" value="Submit" class="submit-button" disabled>
+      </div>
+    </div>
+
+    <script>
+      const disclaimerCheckbox = document.getElementById('disclaimer_check');
+      const submitButton = document.getElementById('saveForm');
+    
+      disclaimerCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+          submitButton.style.backgroundColor = 'blue';
+          submitButton.disabled = false;
+        } else {
+          submitButton.style.backgroundColor = 'grey';
+          submitButton.disabled = true;
+        }
+      });
+    </script>
+
+  </form>
+  <footer>
+    <p>Date Updated: May 21, 2024<br>
+  </footer>
+</html>

@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="{{url_for('static', filename='/style.css')}}"> 
+  <title>YSAB External Application</title>   
+  <link rel="icon" href="{{url_for('static', filename='images/fav-icon-orange.svg')}}">
+</head>
+
+<form action="/submit_external_form" method="POST">
+<div class="container">
+  <div class="center">
+    <a href="{{ url_for('index') }}"><img src="{{url_for('static', filename='images/juvenile-logo.svg')}}" alt="Dallas Juvenile Logo" width="100" height="100" title="Home page"></a>
+  </div>
+</div>
+    <header>
+      <h2>Dallas County Juror Fund Application for Community-Based Organizations</h2>
+      <div>Dallas County jurors have the option of contributing their juror fund stipend to help at risk youth in the Dallas County Juvenile Department and the foster care system.  The Youth Services Advisory Board (YSAB) oversees the use of the Dallas County Juror Fund for special projects to address specific concerns related to juvenile crime prevention. In order to be eligible for YSAB recommendation, Dallas County Juvenile Department fund requestors must complete the following application. </div>
+    </header>
+
+    <p><b>Disclaimer:</b> For privacy and security reasons, please be advised not to include any confidential or sensitive information in your submission.</p>
+
+    <div>
+      <label for="name">Applicant Name</label>
+      <div>
+        <input id="name" name="name" type="text" value="" size="8" tabindex="1" required>
+      </div>
+    </div>
+
+    <div>
+        <label for="app_title">
+        Applicant Title
+        </label>
+        <div>
+          <input id="app_title" name="app_title" type="text" class="field text fn" value="" size="8" tabindex="1">
+       </div>
+    </div>
+
+    <div>
+        <label for="email">
+          Applicant Contact Email
+        </label>
+        <div>
+          <input id="email" name="email" type="email" spellcheck="false" value="" maxlength="255" tabindex="3" required> 
+       </div>
+    </div>
+
+    <div>
+      <label for="phone">
+        Applicant Contact Phone Number
+      </label>
+      <div>
+        <input id="phone" name="phone" type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="123-456-7890" oninput="formatPhoneNumber(this)" maxlength="12" required>
+      </div>
+    </div>
+  <script>
+    function formatPhoneNumber(input) {
+      // Remove any non-numeric characters
+      var phoneNumber = input.value.replace(/\D/g, '');
+
+      // Check if the length is greater than 10, trim it
+      if (phoneNumber.length > 10) {
+        phoneNumber = phoneNumber.substr(0, 10);
+      }
+
+      // Add dashes in the required format
+      var formattedPhoneNumber =
+        phoneNumber.slice(0, 3) + '-' + phoneNumber.slice(3, 6) + '-' + phoneNumber.slice(6, 10);
+
+      // Update the input field value
+      input.value = formattedPhoneNumber;
+    }
+  </script>
+
+    <div>
+        <label for="application_type">
+            Application Type
+        </label>
+        <div>
+        <select id="application_type" name="application_type" class="field select medium" tabindex="11"> 
+          <option disabled selected>Choose an item</option>
+          <option value="new">New</option>
+          <option value="renewal">Renewal</option>
+        </select>
+        </div>
+    </div>
+
+  <h3>Profile</h3>
+
+    <div>
+      <label for="org_name">Organization Name</label>
+      <div>
+        <input id="org_name" name="org_name" type="text" value="" size="8" tabindex="1" required>
+      </div>
+    </div>
+
+    <div>
+      <label for="org_website">Organization Website</label>
+      <div>
+        <input id="org_website" name="org_website" type="text" value="" size="8" tabindex="1" required>
+      </div>
+    </div>
+
+    <div>
+        <label for="title">
+          Project Title
+        </label>
+        <div>
+          <input id="title" name="title" type="text" class="field text fn" value="" size="8" tabindex="1">
+       </div>
+    </div>
+
+    <div>
+        <label class="desc" id="service_area" for="service_area">
+            Service Area
+        </label>
+        <div>
+        <select id="service_area" name="service_area" class="field select medium" tabindex="11"> 
+          <option disabled selected>Choose an item</option>
+          <option value="Clinical Services">Clinical Services</option>
+          <option value="Detention Services">Detention Services</option>
+          <option value="Educational Services">Educational Services</option>
+          <option value="Probation Services">Probation Services</option>
+          <option value="Residential Services">Residential Services</option>
+          <option value="Administration">Administration</option>
+        </select>
+        </div>
+    </div>
+
+    <div>
+        <label for="address">
+        Address
+        </label>
+        <div>
+          <input id="address" name="address" type="text" class="field text fn" value="" size="8" tabindex="1">
+       </div>
+    </div>
+
+    <div>
+        <label for="amount">
+        Amount Requested
+        </label>
+        <div>
+          <input id="amount" name="amount" type="number" class="field text fn" value="" size="8" tabindex="1" min="1" max="99999">
+       </div>
+     </div>
+
+    <div>
+      <label for="mission_statement"><b>Organization Mission Statement</b></label>
+      <div>
+        <textarea id="mission_statement" name="mission_statement" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder="Maximum 250 words"></textarea>
+      </div>
+   </div>
+
+    <div>
+      <label for="org_history"><b>Organization History</b><p>(Including the year it was founded, and list current programs)</p></label>
+      <div>
+        <textarea id="org_history" name="org_history" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder="Maximum 250 words"></textarea>
+      </div>
+   </div>
+
+   <div>
+    <label for="org_worked_with_other_juv_dept">
+      Has your organization worked with any juvenile departments within the state of Texas?
+    </label>
+    <div>
+    <select id="org_worked_with_other_juv_dept" name="org_worked_with_other_juv_dept" tabindex="11"> 
+      <option disabled selected>Choose an item</option>
+      <option value="Yes">Yes</option>
+      <option value="No">No</option>
+    </select>
+    </div>
+   </div>
+
+   <div>
+     <label for="org_worked_with_other_juv_dept2">If yes, please indicate when, where, and how long the project was held. Include details of services provided by your project for those juvenile departments.</label>
+      <div>
+        <textarea id="org_worked_with_other_juv_dept2" name="org_worked_with_other_juv_dept2" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder="Maximum 250 words"></textarea>
+      </div>
+   </div>
+
+   <div>
+    <label for="hear_about_funding_source">
+      How did you hear about this funding source?
+    </label>
+    <div>
+      <input id="hear_about_funding_source" name="hear_about_funding_source" type="text" class="field text fn" value="" size="8" tabindex="1">
+   </div>
+  </div>
+
+  <h3>Proposed Project</h3>
+
+  <div>
+    <label for="problem_statement"><b>Problem Statement</b><p>(Identify the main challenge your program faces that will be addressed through using YSAB funds and how will they improve the program's objectives)</p></label>
+    <div>
+      <textarea id="problem_statement" name="problem_statement" spellcheck="true" rows="8" cols="50" tabindex="4" placeholder=""></textarea>
+    </div>
+  </div>
+
+    <div>
+      <label for="target_group"><b>Target Group/Population</b><p>(Be <u><b>specific</b></u> about which youth from the program will benefit from expending these funds)</p></label>
+      <div>
+        <textarea id="target_group" name="target_group" spellcheck="true" rows="8" cols="50" tabindex="4" placeholder="Maximum 250 words"></textarea>
+      </div>
+   </div>
+
+    <div>
+      <label for="project_appoarch"><b>Project Approach & Activities</b><p>(Provide a detailed justification for proposing this project, including specific items to be purchased with the funds)</p> <p>All items specified here must reflect the items in the section <i>Budget Estimate</i>.</p></label>
+      <div>
+        <textarea id="project_appoarch" name="project_appoarch" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder="Maximum 500 words"></textarea>
+      </div>
+  </div>
+      
+  <h3>Performance Management </h3>
+
+  <div>
+    <label for="capacity_capabilities"><b>Capacity & Capabilities</b><p>Provide the names and titles of staff who will be responsible for the administration, data collection/monitoring, and management of the project.</p></label>
+    <div>
+      <textarea id="capacity_capabilities" name="capacity_capabilities" spellcheck="true" rows="10" cols="50" tabindex="4"></textarea>
+    </div>
+  </div>
+
+  
+  <div>
+    <label for="goals">
+      What are the project's goals?
+    </label>
+    <div>
+      <textarea id="goals" name="goals" spellcheck="true" rows="8" cols="50" tabindex="4" placeholder=""></textarea>
+    </div>
+  </div> 
+
+  <br>
+
+    <div>
+      <label for="reporting_interval">
+          Select the suggested reporting interval for the expenditure of these funds.
+      </label>
+      <div>
+        <select id="reporting_interval" name="reporting_interval" class="field select medium" tabindex="11"> 
+          <option disabled selected>Choose an item</option>
+          <option value="Quarterly">Quarterly</option>
+          <option value=">Bi-annually">Bi-annually</option>
+          <option value=">Annually">Annually</option>
+        </select>
+      </div>
+    </div>
+
+    <br>
+
+    <div>
+      <label class="desc" id="output_measures" for="output_measures"><b>List Project Output Measures</b><p>(Output measures represent the immediate and tangible products generated by program activities. Target values should indicate number of youth, number of individuals, number of units, etc.)</p></label>
+      <div>
+        <table id="output_measures">
+          <thead>
+              <tr>
+                  <th>Output Measures</th>
+                  <th>Target</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr>
+                  <td><input type="text" name="output1"></td>
+                  <td><input type="text" name="target1"></td>
+              </tr>
+              <tr>
+                  <td><input type="text" name="output2"></td>
+                  <td><input type="text" name="target2"></td>
+              </tr>
+              <tr>
+                  <td><input type="text" name="output3"></td>
+                  <td><input type="text" name="target3"></td>
+              </tr>
+              <tr>
+                  <td><input type="text" name="output4"></td>
+                  <td><input type="text" name="target4"></td>
+              </tr>
+              <tr>
+                  <td><input type="text" name="output5"></td>
+                  <td><input type="text" name="target5"></td>
+              </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>  
+
+    <div>
+      <label for="outcome_measures"><b>List Project Outcome Measures</b><p>(Outcome measures help determine whether the program is achieving its stated goals. For example, increasing the number of youth who make  the “honor roll,” or reduces the recidivism rate, or increasing the number and rate of youth who apply to a post-secondary institution)</p></label>
+      <div>
+        <table id="outcome_measures">
+          <thead>
+              <tr>
+                  <th>Outcome Measures</th>
+                  <th>Target</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr>
+                  <td><input type="text" name="outcome1"></td>
+                  <td><input type="text" name="target1.1"></td>
+              </tr>
+              <tr>
+                  <td><input type="text" name="outcome2"></td>
+                  <td><input type="text" name="target2.1"></td>
+              </tr>
+              <tr>
+                  <td><input type="text" name="outcome3"></td>
+                  <td><input type="text" name="target3.1"></td>
+              </tr>
+              <tr>
+                  <td><input type="text" name="outcome4"></td>
+                  <td><input type="text" name="target4.1"></td>
+              </tr>
+              <tr>
+                  <td><input type="text" name="outcome5"></td>
+                  <td><input type="text" name="target5.1"></td>
+              </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>  
+
+    <div>
+      <label for="data_management"><b>Data Management </b><p>What data will be collected, how, and by whom to determine if the project is achieving the established output and outcome measures throughout the grant period? Include a detailed data collection and analysis plan.</p></label>
+      <div>
+        <textarea id="data_management" name="data_management" spellcheck="true" rows="10" cols="50" tabindex="4"></textarea>
+      </div>
+    </div>
+
+  <h3>Budget Summary</h3>
+    <div>
+      <label for="other_funding">
+        Provide the name of any other source of funding that may be used for this project. <p>(Indicate NONE if there are no other sources of funding)</p>
+      </label>
+      <div>
+        <input id="other_funding" name="other_funding" type="text" class="field text fn" value="" size="8" tabindex="1">
+    </div>
+    </div>
+    <br>
+    <div>
+      <label class="desc" id="budget_estimate" for="budget_estimate"><b>Budget Estimate</b>: Indicate the different categories of expenses proposed in the project. Provide, in the "Description" column, an explanation of each expense associated with the category.  Expenses listed in the budget must be justified in the Project Approach & Activities section.</label>
+      <div>
+        <p>Category definitions: Use the follow category definitions as guidelines for selecting the appropriate label.</p>
+        <ul>
+          <li><b>Food</b>: Expenses related to food for various occasions. Items could include but not limited to: lunch, dinners, snacks, refreshments, pantry items.</li>
+          <li><b>Gifts</b>: Expenditures made as a gesture of goodwill, appreciation, or celebration. They are not tied to incentives or rewards for specific achievements or behaviors. Items could include but not limited to: gift bags, small electronics, notebooks, makeup.</li>
+          <li><b>SEM (Supplies, Equipment, Materials)</b>: Expenditures related to supplies, equipment, or materials for enhancing the program's activities and enriching the experience for participants. Items could include but not limited to: school/art supplies, games (table games, board games, gym games, etc.), books, decorations.</li>
+          <li><b>Field Trips</b>: Expenditures related to organizing and facilitating educational or recreational outings outside of the program's usual location.</li>
+          <li><b>Clothing</b>: Expenditures related to the purchase of clothing items such as uniforms, or other attire, as needed.</li>
+          <li><b>Scholarships</b>: Expenditures related to providing financial assistance to individuals to support their education. Scholarships may take various forms, including monetary awards, educational materials such as textbooks or laptops, or direct payment for tuition and/or fees to educational institutions.</li>
+          <li><b>Other</b>: For expenditures that do not fit into any of the predefined budget categories.</li>
+        </ul>
+      </div>
+      <div>
+    
+        <table id="budget_estimate">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Cost per Item</th>
+                    <th>Number of Items</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>      
+                      <select id="category1" name="category1" class="field select medium" tabindex="11"> 
+                        <option value="Null"></option>
+                        <option value="Food">Food</option>
+                        <option value="Gifts">Gifts</option>
+                        <option value="SEM">SEM</option>
+                        <option value="Field Trips">Field Trips</option>
+                        <option value="Clothes">Clothes</option>
+                        <option value="Scholarships">Scholarships</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </td>
+                    <td><input type="text" name="description1"></td>
+                    <td><input type="text" name="cost1"></td>
+                    <td><input type="text" name="items1"></td>
+                    <td><input type="text" name="total1" readonly></td>
+                </tr>
+                <tr>
+                    <td>      
+                      <select id="category2" name="category2" class="field select medium" tabindex="11"> 
+                        <option value="Null"></option>
+                        <option value="Food">Food</option>
+                        <option value="Gifts">Gifts</option>
+                        <option value="SEM">SEM</option>
+                        <option value="Field Trips">Field Trips</option>
+                        <option value="Clothes">Clothes</option>
+                        <option value="Scholarships">Scholarships</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </td>
+                    <td><input type="text" name="description2"></td>
+                    <td><input type="text" name="cost2"></td>
+                    <td><input type="text" name="items2"></td>
+                    <td><input type="text" name="total2" readonly></td>
+                </tr>
+                <tr>
+                    <td>      
+                      <select id="category3" name="category3" class="field select medium" tabindex="11"> 
+                        <option value="Null"></option>
+                        <option value="Food">Food</option>
+                        <option value="Gifts">Gifts</option>
+                        <option value="SEM">SEM</option>
+                        <option value="Field Trips">Field Trips</option>
+                        <option value="Clothes">Clothes</option>
+                        <option value="Scholarships">Scholarships</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </td>
+                    <td><input type="text" name="description3"></td>
+                    <td><input type="text" name="cost3"></td>
+                    <td><input type="text" name="items3"></td>
+                    <td><input type="text" name="total3" readonly></td>
+                </tr>
+                <tr>
+                  <td>      
+                    <select id="category4" name="category4" class="field select medium" tabindex="11"> 
+                      <option value="Null"></option>
+                      <option value="Food">Food</option>
+                      <option value="Gifts">Gifts</option>
+                      <option value="SEM">SEM</option>
+                      <option value="Field Trips">Field Trips</option>
+                      <option value="Clothes">Clothes</option>
+                      <option value="Scholarships">Scholarships</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </td>
+                    <td><input type="text" name="description4"></td>
+                    <td><input type="text" name="cost4"></td>
+                    <td><input type="text" name="items4"></td>
+                    <td><input type="text" name="total4" readonly></td>
+                </tr>
+                <tr>
+                    <td>      
+                      <select id="category5" name="category5" class="field select medium" tabindex="11"> 
+                        <option value="Null"></option>
+                        <option value="Food">Food</option>
+                        <option value="Gifts">Gifts</option>
+                        <option value="SEM">SEM</option>
+                        <option value="Field Trips">Field Trips</option>
+                        <option value="Clothes">Clothes</option>
+                        <option value="Scholarships">Scholarships</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </td>
+                    <td><input type="text" name="description5"></td>
+                    <td><input type="text" name="cost5"></td>
+                    <td><input type="text" name="items5"></td>
+                    <td><input type="text" name="total5" readonly></td>
+                </tr>
+                <tr>
+                    <td>      
+                      <select id="category6" name="category6" class="field select medium" tabindex="11"> 
+                        <option value="Null"></option>
+                        <option value="Food">Food</option>
+                        <option value="Gifts">Gifts</option>
+                        <option value="SEM">SEM</option>
+                        <option value="Field Trips">Field Trips</option>
+                        <option value="Clothes">Clothes</option>
+                        <option value="Scholarships">Scholarships</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </td>
+                    <td><input type="text" name="description6"></td>
+                    <td><input type="text" name="cost6"></td>
+                    <td><input type="text" name="items6"></td>
+                    <td><input type="text" name="total6" readonly></td>
+                </tr>
+                <tr>
+                    <td>      
+                      <select id="category7" name="category7" class="field select medium" tabindex="11"> 
+                        <option value="Null"></option>
+                        <option value="Food">Food</option>
+                        <option value="Gifts">Gifts</option>
+                        <option value="SEM">SEM</option>
+                        <option value="Field Trips">Field Trips</option>
+                        <option value="Clothes">Clothes</option>
+                        <option value="Scholarships">Scholarships</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </td>
+                    <td><input type="text" name="description7"></td>
+                    <td><input type="text" name="cost7"></td>
+                    <td><input type="text" name="items7"></td>
+                    <td><input type="text" name="total7" readonly></td>
+                </tr>
+            </tbody>
+        </table>
+      </div>
+    
+      <div>
+        <table class="grand-total-table" id="budget_estimate">
+          <thead>
+              <tr>
+                  <th>Overall Project Cost</th>
+                  <td><input type="text" name="grandTotal" id="grandTotal" readonly></td>
+              </tr>
+          </thead>
+        </table>
+      </div>
+
+      <div>
+        <table class="grand-total-table" id="youth_total">
+          <thead>
+            <tr>
+              <th>Number of Youth Who Will Benefit</th>
+              <td><input type="text" name="youth_total" id="youth_total_input" required></td>
+            </tr>
+          </thead>
+        </table>
+      </div>
+      
+      <div>
+        <table class="grand-total-table" id="benefit_per_youth">
+          <thead>
+            <tr>
+              <th>Individual Youth Benefit ($)</th>
+              <td><input type="text" name="benefit_per_youth" id="benefit_per_youth" readonly></td>
+            </tr>
+          </thead>
+        </table>
+      </div>
+      
+      <script>
+        // JavaScript to calculate the total based on cost per item and number of items
+        document.addEventListener("input", function(e) {
+          if (e.target.name.startsWith("cost") || e.target.name.startsWith("items")) {
+            const index = e.target.name.slice(-1);
+            const cost = parseFloat(document.getElementsByName("cost" + index)[0].value) || 0;
+            const items = parseInt(document.getElementsByName("items" + index)[0].value) || 0;
+            const total = cost * items;
+            document.getElementsByName("total" + index)[0].value = total.toFixed(2);
+      
+            // Calculate and update the Grand Total
+            calculateGrandTotal();
+          }
+        });
+      
+        function calculateGrandTotal() {
+          const totalInputs = document.querySelectorAll('[name^="total"]');
+          let grandTotal = 0;
+          totalInputs.forEach(input => {
+            grandTotal += parseFloat(input.value) || 0;
+          });
+          document.getElementById("grandTotal").value = grandTotal.toFixed(2);
+        }
+      
+        document.addEventListener("input", function(e) {
+          if (e.target.id === "grandTotal" || e.target.id === "youth_total_input") {
+            calculateBenefitPerYouth();
+          }
+        });
+
+        function calculateBenefitPerYouth() {
+          // console.log("Calculating benefit per youth...");
+          const budgetEstimate = parseFloat(document.getElementById('grandTotal').value);
+          const youthTotal = parseInt(document.getElementById('youth_total_input').value);
+          const benefitPerYouthInput = document.querySelector('[name="benefit_per_youth"]');
+
+          if (!isNaN(budgetEstimate) && !isNaN(youthTotal) && youthTotal !== 0) {
+            const benefitPerYouth = budgetEstimate / youthTotal;
+            // console.log("Benefit per youth:", benefitPerYouth.toFixed(2));
+            benefitPerYouthInput.value = benefitPerYouth.toFixed(2);
+          } else {
+            benefitPerYouthInput.value = '';
+          }
+        }
+      </script>
+    </div> 
+
+  </div> 
+
+  <br><br>
+
+  <div style="text-align: justify;">
+    <div style="display: inline-flex; align-items: center; border: 1px solid red; padding: 15px;">
+      <input type="checkbox" id="disclaimer_check" name="disclaimer_check" value="agree" required style="width: 15px; height: 15px;" required>
+      <label for="disclaimer_check" style="margin-left: 10px;">All of the information contained within this application is true and accurate as of the date the application is submitted. As the applicant, you affirm that all due diligence has been completed, this request for Dallas County Juror funds administered and managed by the Youth Services Advisory Board does not duplicate any other fund source or service within the Dallas County Juvenile Department, and is made in good faith and with respect for the purpose of the Youth Services Advisory Board grant program for the express direct benefit of the youth under the authority of the Dallas County Juvenile Department.</label>
+    </div>
+  </div>
+  
+    <br><br>
+
+    <div class="container">
+      <div class="center">
+        <input id="saveForm" name="saveForm" type="submit" value="Submit" class="submit-button" disabled>
+      </div>
+    </div>
+
+    <script>
+      const disclaimerCheckbox = document.getElementById('disclaimer_check');
+      const submitButton = document.getElementById('saveForm');
+    
+      disclaimerCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+          submitButton.style.backgroundColor = 'blue';
+          submitButton.disabled = false;
+        } else {
+          submitButton.style.backgroundColor = 'grey';
+          submitButton.disabled = true;
+        }
+      });
+    </script>
+  </form>
+  <footer>
+    <p>Date Updated: May 21, 2024<br>
+  </footer>
+</html>

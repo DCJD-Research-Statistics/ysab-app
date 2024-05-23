@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>YSAB Continuation</title>   
+  <style>
+    * {
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+    }
+
+    body {
+      padding: 20px 15%;
+    }
+    form header {
+      margin: 0 0 20px 0; 
+    }
+    form header div {
+      font-size: 90%;
+      color: #999;
+    }
+    form header h2 {
+      margin: 0 0 5px 0;
+    }
+    form > div {
+      clear: both;
+      overflow: hidden;
+      padding: 1px;
+      margin: 0 0 10px 0;
+    }
+    form > div > fieldset > div > div {
+      margin: 0 0 5px 0;
+    }
+    form > div > label,
+    legend {
+        width: 25%;
+      float: left;
+      padding-right: 10px;
+    }
+    form > div > div,
+    form > div > fieldset > div {
+      width: 75%;
+      float: right;
+    }
+    form > div > fieldset label {
+        font-size: 90%;
+    }
+    fieldset {
+        border: 0;
+      padding: 0;
+    }
+
+    input[type=text],
+    input[type=email],
+    input[type=url],
+    input[type=password],
+    textarea {
+        width: 100%;
+      border-top: 1px solid #ccc;
+      border-left: 1px solid #ccc;
+      border-right: 1px solid #eee;
+      border-bottom: 1px solid #eee;
+      resize: none;
+      overflow: none;
+    }
+    input[type=text],
+    input[type=email],
+    input[type=url],
+    input[type=password] {
+      width: 50%;
+    }
+    input[type=text]:focus,
+    input[type=email]:focus,
+    input[type=url]:focus,
+    input[type=password]:focus,
+    textarea:focus {
+      outline: 0;
+      border-color: #4697e4;
+    }
+
+    @media (max-width: 600px) {
+      form > div {
+        margin: 0 0 15px 0; 
+      }
+      form > div > label,
+      legend {
+          width: 100%;
+        float: none;
+        margin: 0 0 5px 0;
+      }
+      form > div > div,
+      form > div > fieldset > div {
+        width: 100%;
+        float: none;
+      }
+      input[type=text],
+      input[type=email],
+      input[type=url],
+      input[type=password],
+      textarea,
+      select {
+        width: 100%; 
+      }
+    }
+    @media (min-width: 1200px) {
+      form > div > label,
+        legend {
+          text-align: right;
+      }
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: left;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+
+    /* Adjust the width of the input text boxes */
+    input[type="text"] {
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .grand-total-table {
+      width: 50%;
+      margin-top: 20px;
+    }
+
+    .center {
+      margin: 0;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      -ms-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+    }
+
+    .container {
+      height: 110px;
+      position: relative;
+      text-align: center;
+    }
+
+    .submit-button {
+      position: absolute;
+      width: 150px;
+      height: 40px;
+      background-color: grey;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      cursor:pointer
+    }
+
+    .value{
+      text-align:left;
+    }
+  </style>
+</head>
+
+<form action="/submit_form" method="POST">
+<div class="container">
+  <div class="center">
+    <h2 style="color:blue">Submission Record</h2>
+    <h4></h4>
+  </div>
+</div>
+    <header>
+      <h2>Dallas County Juror Fund YSAB Continuation Project (No Application) (YSAB Funds)</h2>
+      <div>Dallas County jurors have the option of contributing their juror fund stipend to help at risk youth in the Dallas County Juvenile Department and the foster care system.  The Youth Services Advisory Board (YSAB) oversees the use of the Dallas County Juror Fund for special projects to address specific concerns related to juvenile crime prevention. In order to be eligible for YSAB recommendation, Dallas County Juvenile Department fund requestors must complete the following application. </div>
+    </header>
+
+    <div>
+    <br>
+      <label for="name">Applicant Name</label>
+      <div>
+        <input id="name" name="name" type="text" size="8" tabindex="1" oninput="checkField('name', 'app_title')" required>
+      </div>
+    </div>
+
+    <div>
+        <label for="app_title">
+        Applicant Title
+        </label>
+        <div>
+          <input id="app_title" name="app_title" type="text" size="8" tabindex="1" oninput="checkField('app_title', 'email')">
+       </div>
+    </div>
+
+    <div>
+        <label for="email">
+          Applicant Contact Email
+        </label>
+        <div>
+          <input id="email" name="email" type="email" spellcheck="false" value="" maxlength="255" tabindex="3" required oninput="checkField('email', 'phone')"> 
+       </div>
+    </div>
+
+    <div>
+      <label for="phone">
+        Applicant Contact Phone Number
+      </label>
+      <div>
+        <input id="phone" name="phone" type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="123-456-7890" oninput="formatPhoneNumber(this);checkField('phone', 'title')" maxlength="12" required>
+      </div>
+    </div>
+  <script>
+    function formatPhoneNumber(input) {
+      // Remove any non-numeric characters
+      var phoneNumber = input.value.replace(/\D/g, '');
+
+      // Check if the length is greater than 10, trim it
+      if (phoneNumber.length > 10) {
+        phoneNumber = phoneNumber.substr(0, 10);
+      }
+
+      // Add dashes in the required format
+      var formattedPhoneNumber =
+        phoneNumber.slice(0, 3) + '-' + phoneNumber.slice(3, 6) + '-' + phoneNumber.slice(6, 10);
+
+      // Update the input field value
+      input.value = formattedPhoneNumber;
+    }
+
+  </script>
+
+    <div>
+      <label for="application_renewal">
+            Application Renewal
+      </label>
+      <div>
+        This form is intended solely for non-application continuation projects.
+      </div>
+    </div>
+
+  <h3>Profile</h3>
+    <div>
+        <label for="title">
+          Project Title
+        </label>
+        <div>
+          <input id="title" name="title" type="text"  value="" size="8" tabindex="1" oninput="checkField('title', 'service_area')">
+       </div>
+    </div>
+
+    <div>
+        <label for="service_area">
+            Service Area
+        </label>
+        <div>
+        <select id="service_area" name="service_area" class="field select medium" tabindex="11" oninput="checkField('service_area', 'facility')"> 
+          <option disabled selected>Choose an item</option>
+          <option value="Clinical Services">Clinical Services</option>
+          <option value="Detention Services">Detention Services</option>
+          <option value="Educational Services">Educational Services</option>
+          <option value="Probation Services">Probation Services</option>
+          <option value="Residential Services">Residential Services</option>
+          <option value="Administration">Administration</option>
+        </select>
+        </div>
+    </div>
+
+    <div>
+        <label for="facility">
+        Facility/Program to Administer the Project
+        </label>
+        <div>
+          <input id="facility" name="facility" type="text"  value="" size="8" tabindex="1" oninput="checkField('facility', 'address')">
+       </div>
+    </div>
+
+    <div>
+        <label for="address">
+        Address
+        </label>
+        <div>
+          <input id="address" name="address" type="text" value="" size="8" tabindex="1" oninput="checkField('address', 'amount_awarded')">
+       </div>
+    </div>
+
+    <div>
+        <label for="amount_awarded">
+        Original Amount Awarded
+        </label>
+        <div>
+          <input id="amount_awarded" name="amount_awarded" type="number" value="" size="8" tabindex="1" min="1" max="99999" oninput="checkField('amount_awarded', 'amount_requested')">
+       </div>
+    </div>
+
+    <div>
+      <label for="amount_requested">
+      Amount Requested For The Continuation Period
+      </label>
+      <div>
+        <input id="amount_requested" name="amount_requested" type="number" value="" size="8" tabindex="1" min="1" max="99999" required oninput="checkField('amount_requested', 'budget_admended')">
+     </div>
+  </div>
+
+
+  <div>
+    <label for="budget_amended">
+        Will budget be amended? (If Yes, complete budget amended below. If No, then do not complete the budget amendment)
+    </label>
+    <div>
+    <select id="budget_amended" name="budget_amended" tabindex="11"> 
+      <option disabled selected>Choose an item</option>
+      <option value="Yes">Yes</option>
+      <option value="No">No</option>
+    </select>
+    </div>
+</div>
+
+    <h3>Problem Statement</h3>
+
+    <div>
+      <label for="problem_statement">(Identify the continued challenges your program faces that will be addressed through using YSAB funds and how these funds will contribute to enhancing the program's objectives)</label>
+      <div>
+        <textarea id="problem_statement" name="problem_statement" spellcheck="true" rows="6" cols="50" tabindex="4" placeholder="" oninput="checkField('problem_statement', 'continuation_justification')"></textarea>
+      </div>
+  </div>
+
+  <h3>Continuation Justification</h3>
+
+    <div>
+      <label for="continuation_justification">(<u><b>Justify</b></u> the continuation of this YSAB funded project)</label>
+      <div>
+        <textarea id="continuation_justification" name="continuation_justification" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder="Maximum 250 words"></textarea>
+      </div>
+  </div>
+
+  <h3>Budget Admendment</h3>
+    <br>
+    <div>
+      <label class="desc" id="budget_estimate" for="budget_estimate"><b>Budget Estimate</b>: Indicate the different categories of expenses proposed in the project. Provide, in the “Description” column, an explanation of each expense associated with the category.  Expenses listed in the budget must be justified in the Project Approach & Activities section.</label>
+      <div>
+        <p>Category definitions: Use the follow category definitions as guidelines for selecting the appropriate label.</p>
+        <ul>
+          <li><b>Food</b>: Expenses related to food for various occasions. Items could include but not limited to: lunch, dinners, snacks, refreshments, pantry items.</li>
+          <li><b>Gifts</b>: Expenditures made as a gesture of goodwill, appreciation, or celebration. They are not tied to incentives or rewards for specific achievements or behaviors. Items could include but not limited to: gift bags, small electronics, notebooks, makeup.</li>
+          <li><b>SEM (Supplies, Equipment, Materials)</b>: Expenditures related to supplies, equipment, or materials for enhancing the program's activities and enriching the experience for participants. Items could include but not limited to: school/art supplies, games (table games, board games, gym games, etc.), books, decorations.</li>
+          <li><b>Field Trips</b>: Expenditures related to organizing and facilitating educational or recreational outings outside of the program's usual location.</li>
+          <li><b>Clothing</b>: Expenditures related to the purchase of clothing items such as uniforms, or other attire, as needed.</li>
+          <li><b>Scholarships</b>: Expenditures related to providing financial assistance to individuals to support their education. Scholarships may take various forms, including monetary awards, educational materials such as textbooks or laptops, or direct payment for tuition and/or fees to educational institutions.</li>
+          <li><b>Other</b>: For expenditures that do not fit into any of the predefined budget categories.</li>
+        </ul>
+      </div>
+      <div>
+    
+        <table id="budget_estimate">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Cost per Item</th>
+                    <th>Number of Items</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>      
+                      <select id="category1" name="category1" class="field select medium" tabindex="11"> 
+                        <option value="Null"></option>
+                        <option value="Food">Food</option>
+                        <option value="Gifts">Gifts</option>
+                        <option value="SEM">SEM</option>
+                        <option value="Field Trips">Field Trips</option>
+                        <option value="Clothes">Clothes</option>
+                        <option value="Scholarships">Scholarships</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </td>
+                    <td><input type="text" id="description1" name="description1"></td>
+                    <td><input type="text" id="cost1" name="cost1"></td>
+                    <td><input type="text" id="items1" name="items1"></td>
+                    <td><input type="text" id="total1" name="total1"></td>
+                </tr>
+                <tr>
+                    <td>      
+                      <select id="category2" name="category2" class="field select medium" tabindex="11"> 
+                        <option value="Null"></option>
+                        <option value="Food">Food</option>
+                        <option value="Gifts">Gifts</option>
+                        <option value="SEM">SEM</option>
+                        <option value="Field Trips">Field Trips</option>
+                        <option value="Clothes">Clothes</option>
+                        <option value="Scholarships">Scholarships</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </td>
+                    <td><input type="text" id="description2" name="description2"></td>
+                    <td><input type="text" id="cost2" name="cost2"></td>
+                    <td><input type="text" id="items2" name="items2"></td>
+                    <td><input type="text" id="total2" name="total2"></td>
+                </tr>
+                <tr>
+                    <td>      
+                      <select id="category3" name="category3" class="field select medium" tabindex="11"> 
+                        <option value="Null"></option>
+                        <option value="Food">Food</option>
+                        <option value="Gifts">Gifts</option>
+                        <option value="SEM">SEM</option>
+                        <option value="Field Trips">Field Trips</option>
+                        <option value="Clothes">Clothes</option>
+                        <option value="Scholarships">Scholarships</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </td>
+                    <td><input type="text" id="description3" name="description3"></td>
+                    <td><input type="text" id="cost3" name="cost3"></td>
+                    <td><input type="text" id="items3" name="items3"></td>
+                    <td><input type="text" id="total3" name="total3"></td>
+                </tr>
+                <tr>
+                  <td>      
+                    <select id="category4" name="category4" class="field select medium" tabindex="11"> 
+                      <option value="Null"></option>
+                      <option value="Food">Food</option>
+                      <option value="Gifts">Gifts</option>
+                      <option value="SEM">SEM</option>
+                      <option value="Field Trips">Field Trips</option>
+                      <option value="Clothes">Clothes</option>
+                      <option value="Scholarships">Scholarships</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </td>
+                    <td><input type="text" id="description4" name="description4"></td>
+                    <td><input type="text" id="cost4" name="cost4"></td>
+                    <td><input type="text" id="items4" name="items4"></td>
+                    <td><input type="text" id="total4" name="total4"></td>
+                </tr>
+                <tr>
+                    <td>      
+                      <select id="category5" name="category5" class="field select medium" tabindex="11"> 
+                        <option value="Null"></option>
+                        <option value="Food">Food</option>
+                        <option value="Gifts">Gifts</option>
+                        <option value="SEM">SEM</option>
+                        <option value="Field Trips">Field Trips</option>
+                        <option value="Clothes">Clothes</option>
+                        <option value="Scholarships">Scholarships</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </td>
+                    <td><input type="text" id="description5" name="description5"></td>
+                    <td><input type="text" id="cost5" name="cost5"></td>
+                    <td><input type="text" id="items5" name="items5"></td>
+                    <td><input type="text" id="total5" name="total5"></td>
+                </tr>
+                <tr>
+                    <td>      
+                      <select id="category6" name="category6" class="field select medium" tabindex="11"> 
+                        <option value="Null"></option>
+                        <option value="Food">Food</option>
+                        <option value="Gifts">Gifts</option>
+                        <option value="SEM">SEM</option>
+                        <option value="Field Trips">Field Trips</option>
+                        <option value="Clothes">Clothes</option>
+                        <option value="Scholarships">Scholarships</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </td>
+                    <td><input type="text" id="description6" name="description6"></td>
+                    <td><input type="text" id="cost6" name="cost6"></td>
+                    <td><input type="text" id="items6" name="items6"></td>
+                    <td><input type="text" id="total6" name="total6"></td>
+                </tr>
+                <tr>
+                    <td>      
+                      <select id="category7" name="category7" class="field select medium" tabindex="11"> 
+                        <option value="Null"></option>
+                        <option value="Food">Food</option>
+                        <option value="Gifts">Gifts</option>
+                        <option value="SEM">SEM</option>
+                        <option value="Field Trips">Field Trips</option>
+                        <option value="Clothes">Clothes</option>
+                        <option value="Scholarships">Scholarships</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </td>
+                    <td><input type="text" id="description7" name="description7"></td>
+                    <td><input type="text" id="cost7" name="cost7"></td>
+                    <td><input type="text" id="items7" name="items7"></td>
+                    <td><input type="text" id="total7" name="total7"></td>
+                </tr>
+            </tbody>
+        </table>
+      </div>
+    
+      <div>
+        <table class="grand-total-table" id="budget_estimate">
+          <thead>
+              <tr>
+                  <th>Overall Project Cost</th>
+                  <td><input type="text" name="grandTotal" id="grandTotal"></td>
+              </tr>
+          </thead>
+        </table>
+      </div>
+
+      <div>
+        <table class="grand-total-table" id="youth_total">
+          <thead>
+            <tr>
+              <th>Number of Youth Who Will Benefit</th>
+              <td><input type="text" name="youth_total" id="youth_total_input" required></td>
+            </tr>
+          </thead>
+        </table>
+      </div>
+      
+      <div>
+        <table class="grand-total-table">
+          <thead>
+            <tr>
+              <th>Individual Youth Benefit ($)</th>
+              <td><input type="text" name="benefit_per_youth" id="benefit_per_youth"></td>
+            </tr>
+          </thead>
+        </table>
+      </div>
+      
+      <script>
+        // JavaScript to calculate the total based on cost per item and number of items
+        document.addEventListener("input", function(e) {
+          if (e.target.name.startsWith("cost") || e.target.name.startsWith("items")) {
+            const index = e.target.name.slice(-1);
+            const cost = parseFloat(document.getElementsByName("cost" + index)[0].value) || 0;
+            const items = parseInt(document.getElementsByName("items" + index)[0].value) || 0;
+            const total = cost * items;
+            document.getElementsByName("total" + index)[0].value = total.toFixed(2);
+      
+            // Calculate and update the Grand Total
+            calculateGrandTotal();
+          }
+        });
+      
+        function calculateGrandTotal() {
+          const totalInputs = document.querySelectorAll('[name^="total"]');
+          let grandTotal = 0;
+          totalInputs.forEach(input => {
+            grandTotal += parseFloat(input.value) || 0;
+          });
+          document.getElementById("grandTotal").value = grandTotal.toFixed(2);
+        }
+      
+        document.addEventListener("input", function(e) {
+          if (e.target.id === "grandTotal" || e.target.id === "youth_total_input") {
+            calculateBenefitPerYouth();
+          }
+        });
+
+        function calculateBenefitPerYouth() {
+          // console.log("Calculating benefit per youth...");
+          const budgetEstimate = parseFloat(document.getElementById('grandTotal').value);
+          const youthTotal = parseInt(document.getElementById('youth_total_input').value);
+          const benefitPerYouthInput = document.querySelector('[name="benefit_per_youth"]');
+
+          if (!isNaN(budgetEstimate) && !isNaN(youthTotal) && youthTotal !== 0) {
+            const benefitPerYouth = budgetEstimate / youthTotal;
+            // console.log("Benefit per youth:", benefitPerYouth.toFixed(2));
+            benefitPerYouthInput.value = benefitPerYouth.toFixed(2);
+          } else {
+            benefitPerYouthInput.value = '';
+          }
+        }
+      </script>
+    </div> 
+  </div> 
+</form>
+</html>

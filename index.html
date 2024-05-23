@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="style.css"> 
+  <title>YSAB Application</title>   
+</head>
+<!-- <form action="https://getform.io/f/b088edd5-e5f9-4d4f-bd70-5e760247916b" method="POST"> -->
+<form action="/submit_form" method="POST">
+
+<div class="container">
+  <div class="center">
+    <img src="juvenile-logo.svg" alt="Dallas Juvenile Logo" width="200" height="200">
+  </div>
+</div>
+
+    <header>
+      <h2>Dallas County Juror Fund Application (YSAB Funds)</h2>
+      <div>Dallas County jurors have the option of contributing their juror fund stipend to help at risk youth in the Dallas County Juvenile Department and the foster care system.  The Youth Services Advisory Board (YSAB) oversees the use of the Dallas County Juror Fund for special projects to address specific concerns related to juvenile crime prevention. In order to be eligible for YSAB recommendation, Dallas County Juvenile Department fund requestors must complete the following application. </div>
+    </header>
+
+    <h3>Submission Instructions:</h2>
+        <ol>
+            <li>Applicants must answer all questions</li>
+            <li>Length of answers have to adhere to the specified word limit indicated in the question</li>
+            <li>Applications must click the submit button to complete the application</li>
+            <li>The application form must be completed by <span style="color:red"> no later than 5:00 PM CST on April 21st, 2023</span></li>
+          </ol>
+
+    <p><b>Disclamer:</b> For privacy and security reasons, please be advised not to include any confidential or sensitive information in your submission.</p>
+    
+    <div>
+    <br>
+      <label class="desc" id="name" for="name">Name</label>
+      <div>
+        <input id="name" name="name" type="text" class="field text fn" value="" size="8" tabindex="1" required>
+      </div>
+    </div>
+
+    <div>
+        <label class="desc" id="app_title" for="app_title">
+        Applicant Title
+        </label>
+        <div>
+          <input id="app_title" name="app_title" type="text" class="field text fn" value="" size="8" tabindex="1">
+       </div>
+    </div>
+
+    <div>
+        <label class="desc" id="email" for="email">
+          Email
+        </label>
+        <div>
+          <input id="email" name="email" type="email" spellcheck="false" value="" maxlength="255" tabindex="3" required> 
+       </div>
+    </div>
+
+    <div>
+      <label class="desc" id="phone" for="phone">
+        Phone Number
+      </label>
+      <div>
+        <input id="phone" name="phone" type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="123-456-7890" oninput="formatPhoneNumber(this)" maxlength="12" required>
+     </div>
+  </div>
+  <script>
+    function formatPhoneNumber(input) {
+      // Remove any non-numeric characters
+      var phoneNumber = input.value.replace(/\D/g, '');
+
+      // Check if the length is greater than 10, trim it
+      if (phoneNumber.length > 10) {
+        phoneNumber = phoneNumber.substr(0, 10);
+      }
+
+      // Add dashes in the required format
+      var formattedPhoneNumber =
+        phoneNumber.slice(0, 3) + '-' + phoneNumber.slice(3, 6) + '-' + phoneNumber.slice(6, 10);
+
+      // Update the input field value
+      input.value = formattedPhoneNumber;
+    }
+  </script>
+
+    <div>
+        <label class="desc" id="application_renewal" for="application_renewal">
+            Application Renewal
+        </label>
+        <div>
+        <select id="application_renewal" name="application_renewal" class="field select medium" tabindex="11"> 
+          <option value="Choose an item">Choose an item</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+        </div>
+    </div>
+
+  <h3>Profile</h3>
+    <div>
+        <label class="desc" id="title" for="title">
+          Project Title
+        </label>
+        <div>
+          <input id="title" name="title" type="text" class="field text fn" value="" size="8" tabindex="1">
+       </div>
+    </div>
+
+    <div>
+        <label class="desc" id="service_area" for="service_area">
+            Service Area
+        </label>
+        <div>
+        <select id="service_area" name="service_area" class="field select medium" tabindex="11"> 
+          <option value="Choose an item">Choose an item</option>
+          <option value="Clinical Services">Clinical Services</option>
+          <option value="Detention Services">Detention Services</option>
+          <option value="Educational Services">Educational Services</option>
+          <option value="Probation Services">Probation Services</option>
+          <option value="Residential Services">Residential Services</option>
+        </select>
+        </div>
+    </div>
+
+    <div>
+        <label class="desc" id="facility" for="facility">
+        Facility/Program to Administer the Project
+        </label>
+        <div>
+          <input id="facility" name="facility" type="text" class="field text fn" value="" size="8" tabindex="1">
+       </div>
+    </div>
+
+    <div>
+        <label class="desc" id="address" for="address">
+        Address
+        </label>
+        <div>
+          <input id="address" name="address" type="text" class="field text fn" value="" size="8" tabindex="1">
+       </div>
+    </div>
+
+    <div>
+        <label class="desc" id="amount" for="amount">
+        Amount Requested
+        </label>
+        <div>
+          <input id="amount" name="amount" type="number" class="field text fn" value="" size="8" tabindex="1" min="1" max="99999">
+       </div>
+    </div>
+
+  <h3>Purpose Project</h3>
+      
+    <div>
+      <label class="desc" id="problem_statement" for="problem_statement">
+        Problem Statement & Supporting Data
+      </label>
+      <div>
+        <textarea id="problem_statement" name="problem_statement" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder="Maximum 600 words"></textarea>
+      </div>
+    </div>
+
+    <div>
+      <label class="desc" id="target_group" for="target_group">Target Group</label>
+      <div>
+        <textarea id="target_group" name="target_group" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder="Maximum 250 words"></textarea>
+      </div>
+  </div>
+
+    <div>
+      <label class="desc" id="project_appoarch" for="project_appoarch">Project Approach and Activities</label>
+      <div>
+        <textarea id="project_appoarch" name="project_appoarch" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder="Maximum 500 words"></textarea>
+      </div>
+  </div>
+
+    <div>
+      <label class="desc" id="capacity_capabilities" for="capacity_capabilities">Capacity and Capabilities</label>
+      <div>
+        <textarea id="capacity_capabilities" name="capacity_capabilities" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder="Maximum 500 words"></textarea>
+      </div>
+    </div>
+      
+  <h3>Performance Management </h3>
+    <div>
+      <label class="desc" id="project_goals" for="project_goals">What are the project goals?</label>
+      <div>
+        <textarea id="project_goals" name="project_goals" spellcheck="true" rows="10" cols="50" tabindex="4"></textarea>
+      </div>
+    </div>
+
+    <div>
+      <label class="desc" id="output_measures" for="output_measures">List project output measures</label>
+      <div>
+        <table id="output_measures">
+          <thead>
+              <tr>
+                  <th>Output Measures</th>
+                  <th>Target</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr>
+                  <td><input type="text" name="measure1"></td>
+                  <td><input type="text" name="target1"></td>
+              </tr>
+              <tr>
+                  <td><input type="text" name="measure2"></td>
+                  <td><input type="text" name="target2"></td>
+              </tr>
+              <tr>
+                  <td><input type="text" name="measure3"></td>
+                  <td><input type="text" name="target3"></td>
+              </tr>
+              <tr>
+                  <td><input type="text" name="measure4"></td>
+                  <td><input type="text" name="target4"></td>
+              </tr>
+              <tr>
+                  <td><input type="text" name="measure5"></td>
+                  <td><input type="text" name="target5"></td>
+              </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>  
+
+    <div>
+      <label class="desc" id="expected_outcome" for="expected_outcome">List project expected outcome measures</label>
+      <div>
+        <table id="expected_outcome">
+          <thead>
+              <tr>
+                  <th>Output Measures</th>
+                  <th>Target</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr>
+                  <td><input type="text" name="measure1.1"></td>
+                  <td><input type="text" name="target1.1"></td>
+              </tr>
+              <tr>
+                  <td><input type="text" name="measure2.1"></td>
+                  <td><input type="text" name="target2.1"></td>
+              </tr>
+              <tr>
+                  <td><input type="text" name="measure3.1"></td>
+                  <td><input type="text" name="target3.1"></td>
+              </tr>
+              <tr>
+                  <td><input type="text" name="measure4.1"></td>
+                  <td><input type="text" name="target4.1"></td>
+              </tr>
+              <tr>
+                  <td><input type="text" name="measure5.1"></td>
+                  <td><input type="text" name="target5.1"></td>
+              </tr>
+          </tbody>
+        </table>
+      </div>
+    </div> 
+
+    <div>
+      <label class="desc" id="project_goals" for="project_goals">Data Management: What data will be collected, how, and by whom to determine if the project is achieving the established output and outcome measures throughout the grant period?</label>
+      <div>
+        <textarea id="project_goals" name="project_goals" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder="Maximum 250 words"></textarea>
+      </div>
+    </div>
+
+  <h3>Budget Summary</h3>
+    <div>
+      <label class="desc" id="other_funding" for="other_funding">
+        List other funding sources or proposed funding sources for this project (if any).
+      </label>
+      <div>
+        <input id="other_funding" name="other_funding" type="text" class="field text fn" value="" size="8" tabindex="1">
+    </div>
+    </div>
+    <br>
+    <div>
+      <label class="desc" id="budget_estimate" for="budget_estimate">Budget Estimate: Indicate the different categories of expenses proposed in the project. Provide, in the “Description” column, an explanation of each expense associated with the category.  Expenses listed in the budget must be substantiated in sections Proposed Project and Performance Management.</label>
+      <div>
+        <p>Catetory definitions: Use the follow category definitions as guidelines for selecting the appropriate label.</p>
+        <ul>
+          <li>Food: Expenses related to food for various occasions. Items could include but not limited to: lunch, snacks, refreshments, pantry items.</li>
+          <li>Incentives: Expenditures associated with incentives, rewards, or motivational items. Items could include but not limited to: field trips, merchandise, entertainment</li>
+          <li>Gifts: Expenditures made as a gesture of goodwill, appreciation, or celebration. Items could include but not limited to: gift bags, consumer electronics (laptops, headphones, etc.)</li>
+          <li>Supplies/Equipment</li>
+          <li>Other</li>
+        </ul>
+      </div>
+      <div>
+    
+        <table id="budget_estimate">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Cost per Item</th>
+                    <th>Number of Items</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>      
+                      <select id="category1" name="category1" class="field select medium" tabindex="11"> 
+                        <option value="Null"></option>
+                        <option value="Food">Food</option>
+                        <option value="Incentives">Incentives</option>
+                        <option value="Gifts">Gifts</option>
+                        <option value="Supplies/Equipment">Supplies/Equipment</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </td>
+                    <td><input type="text" name="description1"></td>
+                    <td><input type="text" name="cost1"></td>
+                    <td><input type="text" name="items1"></td>
+                    <td><input type="text" name="total1" readonly></td>
+                </tr>
+                <tr>
+                    <td>      
+                      <select id="category2" name="category2" class="field select medium" tabindex="11"> 
+                        <option value="Null"></option>
+                        <option value="Food">Food</option>
+                        <option value="Incentives">Incentives</option>
+                        <option value="Gifts">Gifts</option>
+                        <option value="Supplies/Equipment">Supplies/Equipment</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </td>
+                    <td><input type="text" name="description2"></td>
+                    <td><input type="text" name="cost2"></td>
+                    <td><input type="text" name="items2"></td>
+                    <td><input type="text" name="total2" readonly></td>
+                </tr>
+                <tr>
+                    <td>      
+                      <select id="category3" name="category3" class="field select medium" tabindex="11"> 
+                        <option value="Null"></option>
+                        <option value="Food">Food</option>
+                        <option value="Incentives">Incentives</option>
+                        <option value="Gifts">Gifts</option>
+                        <option value="Supplies/Equipment">Supplies/Equipment</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </td>
+                    <td><input type="text" name="description3"></td>
+                    <td><input type="text" name="cost3"></td>
+                    <td><input type="text" name="items3"></td>
+                    <td><input type="text" name="total3" readonly></td>
+                </tr>
+                <tr>
+                  <td>      
+                    <select id="category4" name="category4" class="field select medium" tabindex="11"> 
+                      <option value="Null"></option>
+                      <option value="Food">Food</option>
+                      <option value="Incentives">Incentives</option>
+                      <option value="Gifts">Gifts</option>
+                      <option value="Supplies/Equipment">Supplies/Equipment</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </td>
+                    <td><input type="text" name="description4"></td>
+                    <td><input type="text" name="cost4"></td>
+                    <td><input type="text" name="items4"></td>
+                    <td><input type="text" name="total4" readonly></td>
+                </tr>
+                <tr>
+                    <td>      
+                      <select id="category5" name="category5" class="field select medium" tabindex="11"> 
+                        <option value="Null"></option>
+                        <option value="Food">Food</option>
+                        <option value="Incentives">Incentives</option>
+                        <option value="Gifts">Gifts</option>
+                        <option value="Supplies/Equipment">Supplies/Equipment</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </td>
+                    <td><input type="text" name="description5"></td>
+                    <td><input type="text" name="cost5"></td>
+                    <td><input type="text" name="items5"></td>
+                    <td><input type="text" name="total5" readonly></td>
+                </tr>
+                <tr>
+                    <td>      
+                      <select id="category6" name="category6" class="field select medium" tabindex="11"> 
+                        <option value="Null"></option>
+                        <option value="Food">Food</option>
+                        <option value="Incentives">Incentives</option>
+                        <option value="Gifts">Gifts</option>
+                        <option value="Supplies/Equipment">Supplies/Equipment</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </td>
+                    <td><input type="text" name="description6"></td>
+                    <td><input type="text" name="cost6"></td>
+                    <td><input type="text" name="items6"></td>
+                    <td><input type="text" name="total6" readonly></td>
+                </tr>
+                <tr>
+                    <td>      
+                      <select id="category" name="category" class="field select medium" tabindex="11"> 
+                        <option value="Null"></option>
+                        <option value="Food">Food</option>
+                        <option value="Incentives">Incentives</option>
+                        <option value="Gifts">Gifts</option>
+                        <option value="Supplies/Equipment">Supplies/Equipment</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </td>
+                    <td><input type="text" name="description7"></td>
+                    <td><input type="text" name="cost7"></td>
+                    <td><input type="text" name="items7"></td>
+                    <td><input type="text" name="total7" readonly></td>
+                </tr>
+            </tbody>
+        </table>
+      </div>
+    
+      <div>
+        <table class="grand-total-table" id="budget_estimate">
+          <thead>
+              <tr>
+                  <th>Grand Total</th>
+                  <td><input type="text" name="grandTotal" id="grandTotal" readonly></td>
+              </tr>
+          </thead>
+        </table>
+      </div>
+
+      <script>
+          // JavaScript to calculate the total based on cost per item and number of items
+          document.addEventListener("input", function(e) {
+              if (e.target.name.startsWith("cost") || e.target.name.startsWith("items")) {
+                  const index = e.target.name.slice(-1);
+                  const cost = parseFloat(document.getElementsByName("cost" + index)[0].value) || 0;
+                  const items = parseInt(document.getElementsByName("items" + index)[0].value) || 0;
+                  const total = cost * items;
+                  document.getElementsByName("total" + index)[0].value = total.toFixed(2);
+
+                  // Calculate and update the Grand Total
+                  calculateGrandTotal();
+              }
+          });
+
+          function calculateGrandTotal() {
+            const totalInputs = document.querySelectorAll('[name^="total"]');
+            let grandTotal = 0;
+            totalInputs.forEach(input => {
+                grandTotal += parseFloat(input.value) || 0;
+            });
+            document.getElementById("grandTotal").value = grandTotal.toFixed(2);
+        }
+      </script>
+    </div> 
+    <br><br>
+    <div>
+      <label class="desc" id="print" for="print">Click the button to print your application.</label>
+      <div>
+        <button onclick="window.print()">Print application</button>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="center">
+        <input id="saveForm" name="saveForm" type="submit" value="Submit" class="submit-button">
+      </div>
+    </div>
+  </form>
+</html>
