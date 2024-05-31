@@ -158,7 +158,7 @@ def make_app_form(form_data):
     # Parse the HTML content with BeautifulSoup
     soup = BeautifulSoup(html_content, 'html.parser')
 
-    # Find the existing h3 tag and update it with the timestamp
+    # Find the existing h4 tag and update it with the timestamp
     h4_tag = soup.find('h4')
     if h4_tag:
         h4_tag.string = f"{get_timestamp()}"
