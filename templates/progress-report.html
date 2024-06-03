@@ -72,11 +72,33 @@
         document.getElementById('reporting_period').addEventListener('change', function() {
             // Hide all sections
             document.getElementById('quarter').classList.add('hidden');
-            
+            document.getElementById('midterm_full_amount').classList.add('hidden');
+            document.getElementById('midterm_full_amount_no').classList.add('hidden');
+            document.getElementById('midterm_full_amount_no2').classList.add('hidden');
+            document.getElementById('final_full_amount').classList.add('hidden');
+            document.getElementById('final_full_amount_no').classList.add('hidden');
+            document.getElementById('final_full_amount_no2').classList.add('hidden');
+            document.getElementById('qt_full_amount').classList.add('hidden');
+            document.getElementById('qt_full_amount_no').classList.add('hidden');
+            document.getElementById('qt_full_amount_no2').classList.add('hidden');
+
             // Show the selected section
             const value = this.value;
             if (value === 'Q') {
-                document.getElementById('quarter').classList.remove('hidden');
+                document.getElementById('quarter').classList.remove('hidden');4                
+                document.getElementById('qt_full_amount').classList.remove('hidden');
+                document.getElementById('qt_full_amount_no').classList.remove('hidden');
+                document.getElementById('qt_full_amount_no2').classList.remove('hidden');
+            }
+            else if (value === 'M') {
+                document.getElementById('midterm_full_amount').classList.remove('hidden');
+                document.getElementById('midterm_full_amount_no').classList.remove('hidden');
+                document.getElementById('midterm_full_amount_no2').classList.remove('hidden');
+            }
+            else if (value === 'F') {
+                document.getElementById('final_full_amount').classList.remove('hidden');
+                document.getElementById('final_full_amount_no').classList.remove('hidden');
+                document.getElementById('final_full_amount_no2').classList.remove('hidden');
             }
         });
       document.getElementById("app_record").addEventListener("change", function() {
@@ -690,11 +712,41 @@
       </div>
   </div>
 
+  <div id="qt_full_amount" class="hidden">
+    <p style="color:red;">Quarterly-term Report Only</p>
+    <label for="qt_full_amount">Are you on track to spend the full amount awarded in your application?</label>
     <div>
+      <select name="qt_full_amount" tabindex="11"> 
+        <option value="Choose an item">Choose an item</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+    </div>
+  </div>
+
+  <div id="qt_full_amount_no" class="hidden">
+    <label for="qt_full_amount_no">
+      If no, describe any problems or obstacles that have affected your ability to spend your grant funds.
+    </label>
+    <div>
+     <textarea name="qt_full_amount_no" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder=""></textarea>
+   </div>
+ </div>
+
+ <div id="qt_full_amount_no2" class="hidden">
+    <label for="qt_full_amount_no2">
+      If you are <b>not</b> on track to meet output and/or outcome target levels, describe any problems or obstacles that have affected your ability to achieve them.
+    </label>
+    <div>
+      <textarea name="qt_full_amount_no2" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder=""></textarea>
+    </div>
+  </div>
+
+    <div id="midterm_full_amount" class="hidden">
       <p style="color:red;">Mid-term Report Only</p>
       <label for="midterm_full_amount">Are you on track to spend the full amount awarded in your application?</label>
       <div>
-        <select id="midterm_full_amount" name="midterm_full_amount" class="field select medium" tabindex="11"> 
+        <select name="midterm_full_amount" tabindex="11"> 
           <option value="Choose an item">Choose an item</option>
           <option value="Yes">Yes</option>
           <option value="No">No</option>
@@ -702,28 +754,29 @@
       </div>
     </div>
 
-    <div>
+    <div id="midterm_full_amount_no" class="hidden">
       <label for="midterm_full_amount_no">
         If no, describe any problems or obstacles that have affected your ability to spend your grant funds.
       </label>
       <div>
-       <textarea id="midterm_full_amount_no" name="midterm_full_amount_no" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder=""></textarea>
+       <textarea name="midterm_full_amount_no" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder=""></textarea>
      </div>
    </div>
-   <div>
+
+   <div id="midterm_full_amount_no2" class="hidden">
       <label for="midterm_full_amount_no2">
         If you are <b>not</b> on track to meet output and/or outcome target levels, describe any problems or obstacles that have affected your ability to achieve them.
       </label>
       <div>
-        <textarea id="midterm_full_amount_no2" name="midterm_full_amount_no2" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder=""></textarea>
+        <textarea name="midterm_full_amount_no2" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder=""></textarea>
       </div>
     </div>
     
-    <div>
+    <div id="final_full_amount" class="hidden">
       <p style="color:red;">Final Report Only</p>
       <label for="final_full_amount">Did you spend the full amount awarded in your application?</label>
       <div>
-        <select id="final_full_amount" name="final_full_amount" class="field select medium" tabindex="11"> 
+        <select name="final_full_amount" class="field select medium" tabindex="11"> 
           <option value="Choose an item">Choose an item</option>
           <option value="Yes">Yes</option>
           <option value="No">No</option>
@@ -731,22 +784,25 @@
       </div>
     </div>
 
-    <div>
+    <div id="final_full_amount_no" class="hidden">
       <label for="final_full_amount_no">
       If no, describe any problems or obstacles that have affected your ability to spend your grant funds and <u>indicate the percentage spent</u>.
       </label>
       <div>
-       <textarea id="final_full_amount_no" name="final_full_amount_no" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder=""></textarea>
-     </div>
+       <textarea name="final_full_amount_no" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder=""></textarea>
+      </div>
    </div>
-   <div>
+
+   <div id="final_full_amount_no2" class="hidden">
       <label for="final_full_amount_no2">
         If your output and/or outcome target levels were <b>not</b> met, describe any problems or obstacles that affected your ability to achieve them. 
       </label>
       <div>
-        <textarea id="final_full_amount_no2" name="final_full_amount_no2" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder=""></textarea>
+        <textarea name="final_full_amount_no2" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder=""></textarea>
       </div>
     </div>
+
+    <br>
 
     <div>
       <label for="challenges_discrepances">Provide any overlooked challenges or discrepancies encountered while managing the grant funds, such as discrepancies between the intended and actual use of funds or unanticipated issues not addressed elsewhere.</label>
@@ -789,6 +845,6 @@
 
   </form>
   <footer>
-    <p>Date Updated: May 24, 2024<br>
+    <p>Date Updated: June 3, 2024<br>
   </footer>
 </html>
