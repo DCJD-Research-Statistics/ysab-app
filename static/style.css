@@ -159,3 +159,7 @@
 }
 
 .hidden { display: none; }
+
+.hidden-column {
+  display: none;
+}
