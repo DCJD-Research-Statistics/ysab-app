@@ -8,6 +8,7 @@ import pytz
 import pandas as pd
 import re
 from bs4 import BeautifulSoup
+import math
 
 load_dotenv() 
 
@@ -48,6 +49,22 @@ def get_app_list():
     # Create a Pandas DataFrame
     df = pd.DataFrame(records)
     df['app_record'] = pd.concat([df.timestamp.str[:10], df[['name', 'app_title', 'email', 'phone', 'title', 'amount', 'output1', 'output2', 'output3', 'output4', 'output5', 'target1', 'target2', 'target3', 'target4', 'target5', 'outcome1', 'outcome2', 'outcome3', 'outcome4', 'outcome5', 'target1.1', 'target2.1', 'target3.1', 'target4.1', 'target5.1']].astype(str)], axis=1).apply(lambda row: ' : '.join(row), axis=1)
+    cluster.close()
+    return df.app_record.to_list()
+
+# pre-populate fields auto - progress report 
+def get_prog_list():
+    cluster = MongoClient(mongo_uri)
+    db = cluster[db_name]
+    collection = db['progress_reports']
+    # Retrieve all records from the collection
+    cursor = collection.find()
+    # Convert the cursor to a list of dictionaries
+    records = list(cursor)
+    # Create a Pandas DataFrame
+    df = pd.DataFrame(records)
+    df['app_record'] = pd.concat([df.timestamp.str[:10], df[['name', 'title', 'midterm_a', 'midterm_b', 'midterm1', 'midterm2', 'midterm3', 'midterm4', 'midterm5', 'midterm6', 
+                                                                'midterm1.1', 'midterm2.1', 'midterm3.1', 'midterm4.1', 'midterm5.1', 'midterm6.1']].astype(str)], axis=1).apply(lambda row: ' : '.join(row), axis=1)
     cluster.close()
     return df.app_record.to_list()
 
@@ -181,7 +198,15 @@ def make_app_form(form_data):
         # Handle textarea fields
         textarea_field = soup.find('textarea', {'id': key})
         if textarea_field:
+            # Calculate required rows for the textarea content
+            cols = int(textarea_field.get('cols', 50))
+            lines = value.split('\n')
+            rows = 0
+            for line in lines:
+                rows += math.ceil(len(line) / cols)
+
             textarea_field.string = value
+            textarea_field['rows'] = str(rows)
             
         # Handle table input fields
         table_input_field = soup.find('input', {'name': key})
@@ -325,7 +350,7 @@ def application():
 
 @app.route('/progress-report')
 def progress_report():
-    return render_template('progress-report.html', dropdown_items = get_program_list(), app_list = get_app_list())
+    return render_template('progress-report.html', dropdown_items = get_program_list(), app_list = get_app_list(), prog_list = get_prog_list())
 
 @app.route('/continuation')
 def continuation():
@@ -455,4 +480,4 @@ def download_file_c():
     return send_file(p, as_attachment=True)
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=True)

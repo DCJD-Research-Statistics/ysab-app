@@ -68,6 +68,22 @@
       </div>
     </div>
 
+    <div>
+      <label for="prog_record" style="color: #001aff">
+        <b>Select Progress Report Record</b>
+      </label>
+      <div>
+        <select id="prog_record" name="prog_record">
+          <option disabled selected>Choose an item</option>
+          {% for item in prog_list %}
+            {% set split_item = item.split(' : ') %}
+            {% set display_item = split_item[0] ~ ' : ' ~ split_item[1] %}
+          <option value="{{ item }}">{{ display_item }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
     <script>
         document.getElementById('reporting_period').addEventListener('change', function() {
             // Hide all sections
@@ -81,6 +97,9 @@
             document.getElementById('qt_full_amount').classList.add('hidden');
             document.getElementById('qt_full_amount_no').classList.add('hidden');
             document.getElementById('qt_full_amount_no2').classList.add('hidden');
+            document.getElementById('amount_expended_qt').classList.add('hidden');
+            document.getElementById('amount_expended_mid').classList.add('hidden');
+            document.getElementById('amount_expended_final').classList.add('hidden');
 
             // hide output table columns
             const allQtColumns = document.querySelectorAll('.qt-column');
@@ -94,19 +113,22 @@
             // Show the selected section
             const value = this.value;
             if (value === 'Q') {
-                document.getElementById('quarter').classList.remove('hidden');4                
+                document.getElementById('quarter').classList.remove('hidden');
+                document.getElementById('amount_expended_qt').classList.remove('hidden');                
                 document.getElementById('qt_full_amount').classList.remove('hidden');
                 document.getElementById('qt_full_amount_no').classList.remove('hidden');
                 document.getElementById('qt_full_amount_no2').classList.remove('hidden');
                 allQtColumns.forEach(column => column.classList.remove('hidden-column'));
             }
             else if (value === 'M') {
+                document.getElementById('amount_expended_mid').classList.remove('hidden');
                 document.getElementById('midterm_full_amount').classList.remove('hidden');
                 document.getElementById('midterm_full_amount_no').classList.remove('hidden');
                 document.getElementById('midterm_full_amount_no2').classList.remove('hidden');
                 allMidtermColumns.forEach(column => column.classList.remove('hidden-column'));
             }
             else if (value === 'F') {
+                document.getElementById('amount_expended_final').classList.remove('hidden');
                 document.getElementById('final_full_amount').classList.remove('hidden');
                 document.getElementById('final_full_amount_no').classList.remove('hidden');
                 document.getElementById('final_full_amount_no2').classList.remove('hidden');
@@ -114,6 +136,39 @@
             }
         });
       document.getElementById("app_record").addEventListener("change", function() {
+        // Get the selected option
+        var selectedOption = this.options[this.selectedIndex];
+        // Split the value of selected option to get name, email, and project title
+        var values = selectedOption.value.split(' : ');
+        // Populate the fields
+        document.getElementById("name").value = values[1];
+        document.getElementById("app_title").value = values[2];
+        document.getElementById("email").value = values[3];
+        document.getElementById("phone").value = values[4];
+        document.getElementById("title").value = values[5];
+        document.getElementById("amount_awarded").value = parseInt(values[6]);
+        document.getElementById("output1").value = values[7];
+        document.getElementById("output2").value = values[8];
+        document.getElementById("output3").value = values[9];
+        document.getElementById("output4").value = values[10];
+        document.getElementById("output5").value = values[11];
+        document.getElementById("target1").value = values[12];
+        document.getElementById("target2").value = values[13];
+        document.getElementById("target3").value = values[14];
+        document.getElementById("target4").value = values[15];
+        document.getElementById("target5").value = values[16];
+        document.getElementById("outcome1").value = values[17];
+        document.getElementById("outcome2").value = values[18];
+        document.getElementById("outcome3").value = values[19];
+        document.getElementById("outcome4").value = values[20];
+        document.getElementById("outcome5").value = values[21];
+        document.getElementById("target1.1").value = values[22];
+        document.getElementById("target2.1").value = values[23];
+        document.getElementById("target3.1").value = values[24];
+        document.getElementById("target4.1").value = values[25];
+        document.getElementById("target5.1").value = values[26];
+        });
+      document.getElementById("prog_record").addEventListener("change", function() {
         // Get the selected option
         var selectedOption = this.options[this.selectedIndex];
         // Split the value of selected option to get name, email, and project title
@@ -255,25 +310,34 @@
         Amount Awarded
         </label>
         <div>
-          <input id="amount_awarded" name="amount_awarded" type="number" class="field text fn" value="" size="8" tabindex="1" min="1" max="99999">
+          <input id="amount_awarded" name="amount_awarded" type="number" size="8" tabindex="1" min="1" max="99999">
        </div>
     </div>
 
-    <div>
+    <div id="amount_expended_qt" class="hidden">
+      <label for="amount_expended_qt">
+      Amount Expended - Quarterly-term
+      </label>
+      <div>
+        <input name="amount_expended_qt" type="number" size="8" tabindex="1" min="1" max="99999">
+     </div>
+   </div>
+
+    <div id="amount_expended_mid" class="hidden">
       <label for="amount_expended_mid">
       Amount Expended - Mid-term
       </label>
       <div>
-        <input id="amount_expended_mid" name="amount_expended_mid" type="number" class="field text fn" value="" size="8" tabindex="1" min="1" max="99999">
+        <input name="amount_expended_mid" type="number" size="8" tabindex="1" min="1" max="99999">
      </div>
    </div>
 
-  <div>
+  <div id="amount_expended_final" class="hidden">
     <label for="amount_expended_final">
     Amount Expended - Final
     </label>
     <div>
-      <input id="amount_expended_final" name="amount_expended_final" type="number" class="field text fn" value="" size="8" tabindex="1" min="1" max="99999">
+      <input name="amount_expended_final" type="number" size="8" tabindex="1" min="1" max="99999">
    </div>
   </div>
 
