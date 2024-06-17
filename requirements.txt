@@ -5,4 +5,3 @@ Gunicorn
 pytz
 pandas
 beautifulsoup4
-math
