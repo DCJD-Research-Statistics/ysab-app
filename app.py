@@ -247,7 +247,15 @@ def make_prog_form(form_data):
         # Handle textarea fields
         textarea_field = soup.find('textarea', {'id': key})
         if textarea_field:
+            # Calculate required rows for the textarea content
+            cols = int(textarea_field.get('cols', 50))
+            lines = value.split('\n')
+            rows = 0
+            for line in lines:
+                rows += math.ceil(len(line) / cols)
+
             textarea_field.string = value
+            textarea_field['rows'] = str(rows)
             
         # Handle table input fields
         table_input_field = soup.find('input', {'name': key})

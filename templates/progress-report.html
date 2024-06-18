@@ -128,6 +128,11 @@
                 allMidtermColumns.forEach(column => column.classList.remove('hidden-column'));
             }
             else if (value === 'F') {
+                document.getElementById('amount_expended_mid').classList.remove('hidden');
+                document.getElementById('midterm_full_amount').classList.remove('hidden');
+                document.getElementById('midterm_full_amount_no').classList.remove('hidden');
+                document.getElementById('midterm_full_amount_no2').classList.remove('hidden');
+                allMidtermColumns.forEach(column => column.classList.remove('hidden-column'));
                 document.getElementById('amount_expended_final').classList.remove('hidden');
                 document.getElementById('final_full_amount').classList.remove('hidden');
                 document.getElementById('final_full_amount_no').classList.remove('hidden');
@@ -207,7 +212,7 @@
     <br>
       <label for="name">Name</label>
       <div>
-        <input id="name" name="name" type="text" class="field text fn" value="" size="8" tabindex="1" required>
+        <input id="name" name="name" type="text" value="" size="8" tabindex="1" required>
       </div>
     </div>
 
@@ -216,7 +221,7 @@
           Applicant Title
         </label>
         <div>
-          <input id="app_title" name="app_title" type="text" class="field text fn" value="" size="8" tabindex="1">
+          <input id="app_title" name="app_title" type="text" value="" size="8" tabindex="1">
        </div>
     </div>
 
@@ -262,7 +267,7 @@
       <br>
         <label for="title">Project Title</label>
         <div>
-          <input id="title" name="title" type="text" class="field text fn" value="" size="8" tabindex="1" required>
+          <input id="title" name="title" type="text" value="" size="8" tabindex="1" required>
         </div>
       </div>
 
@@ -280,14 +285,14 @@
         Project Contact (Name)
         </label>
         <div>
-          <input id="project_contact" name="project_contact" type="text" class="field text fn" value="" size="8" tabindex="1">
+          <input id="project_contact" name="project_contact" type="text" value="" size="8" tabindex="1">
        </div>
     </div>
 
     <div>
       <label for="fiscal_year">Fiscal Year</label>
       <div>
-        <input id="fiscal_year" name="fiscal_year" type="number" class="field text fn" value="" size="8" tabindex="1" min="1" max="99999">
+        <input id="fiscal_year" name="fiscal_year" type="number" value="" size="8" tabindex="1" min="1" max="99999">
      </div>
     </div>
       
@@ -363,16 +368,16 @@
         <tr>
             <td>Number of youth directly benefited</td>
             <td>
-              <input id="target_a" name="target_a" type="text" class="field text fn" value="" size="8" tabindex="1">
+              <input id="target_a" name="target_a" type="text" value="" size="8" tabindex="1">
             </td>
             <td class="qt-column hidden-column">
-              <input id="qt_a" name="qt_a" type="text" class="field text fn" value="" size="8" tabindex="1">
+              <input id="qt_a" name="qt_a" type="text" value="" size="8" tabindex="1">
             </td>
             <td class="midterm-column hidden-column">
-              <input id="midterm_a" name="midterm_a" type="text" class="field text fn" value="" size="8" tabindex="1">
+              <input id="midterm_a" name="midterm_a" type="text" value="" size="8" tabindex="1">
             </td>
             <td class="final-column hidden-column">
-              <input id="final_a" name="final_a" type="text" class="field text fn" value="" size="8" tabindex="1">
+              <input id="final_a" name="final_a" type="text" value="" size="8" tabindex="1">
             </td>
             <td class="qt-column hidden-column">
               <select id="qt_target_a" name="qt_target_a" class="field select medium" tabindex="11"> 
@@ -399,16 +404,16 @@
         <tr>
             <td>Number of individuals not under the authority of DCJD benefited</td>
             <td>
-              <input id="target_b" name="target_b" type="text" class="field text fn" value="" size="8" tabindex="1">
+              <input id="target_b" name="target_b" type="text" value="" size="8" tabindex="1">
             </td>
             <td class="qt-column hidden-column">
-              <input id="qt_b" name="qt_b" type="text" class="field text fn" value="" size="8" tabindex="1">
+              <input id="qt_b" name="qt_b" type="text" value="" size="8" tabindex="1">
             </td>
             <td class="midterm-column hidden-column">
-              <input id="midterm_b" name="midterm_b" type="text" class="field text fn" value="" size="8" tabindex="1">
+              <input id="midterm_b" name="midterm_b" type="text" value="" size="8" tabindex="1">
             </td>
             <td class="final-column hidden-column">
-              <input id="final_b" name="final_b" type="text" class="field text fn" value="" size="8" tabindex="1">
+              <input id="final_b" name="final_b" type="text" value="" size="8" tabindex="1">
             </td>
             <td class="qt-column hidden-column">
               <select id="qt_target_b" name="qt_target_b" class="field select medium" tabindex="11"> 
@@ -437,16 +442,16 @@
               <input id="output1" name="output1" type="text">
             </td>
             <td>
-              <input id="target1" name="target1" type="text" class="field text fn" value="" size="8" tabindex="1">
+              <input id="target1" name="target1" type="text" value="" size="8" tabindex="1">
             </td>
             <td class="qt-column hidden-column">
-              <input id="qt1" name="qt1" type="text" class="field text fn" value="" size="8" tabindex="1">
+              <input id="qt1" name="qt1" type="text" value="" size="8" tabindex="1">
             </td>
             <td class="midterm-column hidden-column">
-              <input id="midterm1" name="midterm1" type="text" class="field text fn" value="" size="8" tabindex="1">
+              <input id="midterm1" name="midterm1" type="text" value="" size="8" tabindex="1">
             </td>
             <td class="final-column hidden-column">
-              <input id="final1" name="final1" type="text" class="field text fn" value="" size="8" tabindex="1">
+              <input id="final1" name="final1" type="text" value="" size="8" tabindex="1">
             </td>
             <td class="qt-column hidden-column">
               <select id="qt_target1" name="qt_target1" class="field select medium" tabindex="11"> 
@@ -475,16 +480,16 @@
             <input id="output2" name="output2" type="text">
           </td>
           <td>
-            <input id="target2" name="target2" type="text" class="field text fn" value="" size="8" tabindex="1">
+            <input id="target2" name="target2" type="text" value="" size="8" tabindex="1">
           </td>
           <td class="qt-column hidden-column">
-            <input id="qt2" name="qt2" type="text" class="field text fn" value="" size="8" tabindex="1">
+            <input id="qt2" name="qt2" type="text" value="" size="8" tabindex="1">
           </td>
           <td class="midterm-column hidden-column">
-            <input id="midterm2" name="midterm2" type="text" class="field text fn" value="" size="8" tabindex="1">
+            <input id="midterm2" name="midterm2" type="text" value="" size="8" tabindex="1">
           </td>
           <td class="final-column hidden-column">
-            <input id="final2" name="final2" type="text" class="field text fn" value="" size="8" tabindex="1">
+            <input id="final2" name="final2" type="text" value="" size="8" tabindex="1">
           </td>
           <td class="qt-column hidden-column">
             <select id="qt_target2" name="qt_target2" class="field select medium" tabindex="11"> 
@@ -513,16 +518,16 @@
           <input id="output3" name="output3" type="text">
         </td>
         <td>
-          <input id="target3" name="target3" type="text" class="field text fn" value="" size="8" tabindex="1">
+          <input id="target3" name="target3" type="text" value="" size="8" tabindex="1">
         </td>
         <td class="qt-column hidden-column">
-          <input id="qt3" name="qt3" type="text" class="field text fn" value="" size="8" tabindex="1">
+          <input id="qt3" name="qt3" type="text" value="" size="8" tabindex="1">
         </td>
         <td class="midterm-column hidden-column">
-          <input id="midterm3" name="midterm3" type="text" class="field text fn" value="" size="8" tabindex="1">
+          <input id="midterm3" name="midterm3" type="text" value="" size="8" tabindex="1">
         </td>
         <td class="final-column hidden-column">
-          <input id="final3" name="final3" type="text" class="field text fn" value="" size="8" tabindex="1">
+          <input id="final3" name="final3" type="text" value="" size="8" tabindex="1">
         </td>
         <td class="qt-column hidden-column">
           <select id="qt_target3" name="qt_target3" class="field select medium" tabindex="11"> 
@@ -551,16 +556,16 @@
         <input id="output4" name="output4" type="text">
       </td>
       <td>
-        <input id="target4" name="target4" type="text" class="field text fn" value="" size="8" tabindex="1">
+        <input id="target4" name="target4" type="text" value="" size="8" tabindex="1">
       </td>
       <td class="qt-column hidden-column">
-        <input id="qt4" name="qt4" type="text" class="field text fn" value="" size="8" tabindex="1">
+        <input id="qt4" name="qt4" type="text" value="" size="8" tabindex="1">
       </td>
       <td class="midterm-column hidden-column">
-        <input id="midterm4" name="midterm4" type="text" class="field text fn" value="" size="8" tabindex="1">
+        <input id="midterm4" name="midterm4" type="text" value="" size="8" tabindex="1">
       </td>
       <td class="final-column hidden-column">
-        <input id="final4" name="final4" type="text" class="field text fn" value="" size="8" tabindex="1">
+        <input id="final4" name="final4" type="text" value="" size="8" tabindex="1">
       </td>
       <td class="qt-column hidden-column">
         <select id="qt_target4" name="qt_target4" class="field select medium" tabindex="11"> 
@@ -589,16 +594,16 @@
       <input id="output5" name="output5" type="text">
     </td>
     <td>
-      <input id="target5" name="target5" type="text" class="field text fn" value="" size="8" tabindex="1">
+      <input id="target5" name="target5" type="text" value="" size="8" tabindex="1">
     </td>
     <td class="qt-column hidden-column">
-      <input id="qt5" name="qt5" type="text" class="field text fn" value="" size="8" tabindex="1">
+      <input id="qt5" name="qt5" type="text" value="" size="8" tabindex="1">
     </td>
     <td class="midterm-column hidden-column">
-      <input id="midterm5" name="midterm5" type="text" class="field text fn" value="" size="8" tabindex="1">
+      <input id="midterm5" name="midterm5" type="text" value="" size="8" tabindex="1">
     </td>
     <td class="final-column hidden-column">
-      <input id="final5" name="final5" type="text" class="field text fn" value="" size="8" tabindex="1">
+      <input id="final5" name="final5" type="text" value="" size="8" tabindex="1">
     </td>
     <td class="qt-column hidden-column">
       <select id="qt_target5" name="qt_target5" class="field select medium" tabindex="11"> 
@@ -627,16 +632,16 @@
       <input id="output6" name="output6" type="text">
     </td>
     <td>
-      <input id="target6" name="target6" type="text" class="field text fn" value="" size="8" tabindex="1">
+      <input id="target6" name="target6" type="text" value="" size="8" tabindex="1">
     </td>
     <td class="qt-column hidden-column">
-      <input id="qt6" name="qt6" type="text" class="field text fn" value="" size="8" tabindex="1">
+      <input id="qt6" name="qt6" type="text" value="" size="8" tabindex="1">
     </td>
     <td class="midterm-column hidden-column">
-      <input id="midterm6" name="midterm6" type="text" class="field text fn" value="" size="8" tabindex="1">
+      <input id="midterm6" name="midterm6" type="text" value="" size="8" tabindex="1">
     </td>
     <td class="final-column hidden-column">
-      <input id="final6" name="final6" type="text" class="field text fn" value="" size="8" tabindex="1">
+      <input id="final6" name="final6" type="text" value="" size="8" tabindex="1">
     </td>
     <td class="qt-column hidden-column">
       <select id="qt_target6" name="qt_target6" class="field select medium" tabindex="11"> 
@@ -683,19 +688,19 @@
     <tbody>
         <tr>
             <td>                    
-              <input id="outcome1" name="outcome1" type="text"> 
+              <input id="outcome1" name="outcome1" type="text" value=""> 
             </td>
             <td>
-              <input id="target1.1" name="target1.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+              <input id="target1.1" name="target1.1" type="text" value="" size="8" tabindex="1">
             </td>
             <td class="qt-column hidden-column">
-              <input id="qt1.1" name="qt1.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+              <input id="qt1.1" name="qt1.1" type="text" value="" size="8" tabindex="1">
             </td>
             <td class="midterm-column hidden-column">
-              <input id="midterm1.1" name="midterm1.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+              <input id="midterm1.1" name="midterm1.1" type="text" value="" size="8" tabindex="1">
             </td>
             <td class="final-column hidden-column">
-              <input id="final1.1" name="final1.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+              <input id="final1.1" name="final1.1" type="text" value="" size="8" tabindex="1">
             </td>
             <td class="qt-column hidden-column">
               <select id="qt_target1.1" name="qt_target1.1" class="field select medium" tabindex="11"> 
@@ -721,19 +726,19 @@
         </tr>
         <tr>
             <td>
-              <input id="outcome2" name="outcome2" type="text">
+              <input id="outcome2" name="outcome2" type="text" value="">
             </td>
             <td>
-              <input id="target2.1" name="target2.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+              <input id="target2.1" name="target2.1" type="text" value="" size="8" tabindex="1">
             </td>
             <td class="qt-column hidden-column">
-              <input id="qt2.1" name="qt2.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+              <input id="qt2.1" name="qt2.1" type="text" value="" size="8" tabindex="1">
             </td>
             <td class="midterm-column hidden-column">
-              <input id="midterm2.1" name="midterm2.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+              <input id="midterm2.1" name="midterm2.1" type="text" value="" size="8" tabindex="1">
             </td>
             <td class="final-column hidden-column">
-              <input id="final2.1" name="final2.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+              <input id="final2.1" name="final2.1" type="text" value="" size="8" tabindex="1">
             </td>
             <td class="qt-column hidden-column">
               <select id="qt_target2.1" name="qt_target2.1" class="field select medium" tabindex="11"> 
@@ -759,19 +764,19 @@
         </tr>
         <tr>
           <td>
-            <input id="outcome3" name="outcome3" type="text">
+            <input id="outcome3" name="outcome3" type="text" value="">
           </td>
           <td>
-            <input id="target3.1" name="target3.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+            <input id="target3.1" name="target3.1" type="text" value="" size="8" tabindex="1">
           </td>
           <td class="qt-column hidden-column">
-            <input id="qt3.1" name="qt3.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+            <input id="qt3.1" name="qt3.1" type="text" value="" size="8" tabindex="1">
           </td>
           <td class="midterm-column hidden-column">
-            <input id="midterm3.1" name="midterm3.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+            <input id="midterm3.1" name="midterm3.1" type="text" value="" size="8" tabindex="1">
           </td>
           <td class="final-column hidden-column">
-            <input id="final3.1" name="final3.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+            <input id="final3.1" name="final3.1" type="text" value="" size="8" tabindex="1">
           </td>
           <td class="qt-column hidden-column">
             <select id="qt_target3.1" name="qt_target3.1" class="field select medium" tabindex="11"> 
@@ -797,19 +802,19 @@
       </tr>      
       <tr>
         <td>
-          <input id="outcome4" name="outcome4" type="text">
+          <input id="outcome4" name="outcome4" type="text" value="">
         </td>
         <td>
-          <input id="target4.1" name="target4.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+          <input id="target4.1" name="target4.1" type="text" value="" size="8" tabindex="1">
         </td>
         <td class="qt-column hidden-column">
-          <input id="qt4.1" name="qt4.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+          <input id="qt4.1" name="qt4.1" type="text" value="" size="8" tabindex="1">
         </td>
         <td class="midterm-column hidden-column">
-          <input id="midterm4.1" name="midterm4.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+          <input id="midterm4.1" name="midterm4.1" type="text" value="" size="8" tabindex="1">
         </td>
         <td class="final-column hidden-column">
-          <input id="final4.1" name="final4.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+          <input id="final4.1" name="final4.1" type="text" value="" size="8" tabindex="1">
         </td>
         <td class="qt-column hidden-column">
           <select id="qt_target4.1" name="qt_target4.1" class="field select medium" tabindex="11"> 
@@ -835,19 +840,19 @@
     </tr> 
     <tr>
       <td>
-        <input id="outcome5" name="outcome5" type="text">
+        <input id="outcome5" name="outcome5" type="text" value="">
       </td>
       <td>
-        <input id="target5.1" name="target5.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+        <input id="target5.1" name="target5.1" type="text" value="" size="8" tabindex="1">
       </td>
       <td class="qt-column hidden-column">
-        <input id="qt5.1" name="qt5.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+        <input id="qt5.1" name="qt5.1" type="text" value="" size="8" tabindex="1">
       </td>
       <td class="midterm-column hidden-column">
-        <input id="midterm5.1" name="midterm5.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+        <input id="midterm5.1" name="midterm5.1" type="text" value="" size="8" tabindex="1">
       </td>
       <td class="final-column hidden-column">
-        <input id="final5.1" name="final5.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+        <input id="final5.1" name="final5.1" type="text" value="" size="8" tabindex="1">
       </td>
       <td class="qt-column hidden-column">
         <select id="qt_target5.1" name="qt_target5.1" class="field select medium" tabindex="11"> 
@@ -873,19 +878,19 @@
   </tr>    
     <tr>
       <td>
-        <input id="outcome6" name="outcome6" type="text">
+        <input id="outcome6" name="outcome6" type="text" value="">
       </td>
       <td>
-        <input id="target6.1" name="target6.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+        <input id="target6.1" name="target6.1" type="text" value="" size="8" tabindex="1">
       </td>
       <td class="qt-column hidden-column">
-        <input id="qt6.1" name="qt6.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+        <input id="qt6.1" name="qt6.1" type="text" value="" size="8" tabindex="1">
       </td>
       <td class="midterm-column hidden-column">
-        <input id="midterm6.1" name="midterm6.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+        <input id="midterm6.1" name="midterm6.1" type="text" value="" size="8" tabindex="1">
       </td>
       <td class="final-column hidden-column">
-        <input id="final6.1" name="final6.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+        <input id="final6.1" name="final6.1" type="text" value="" size="8" tabindex="1">
       </td>
       <td class="qt-column hidden-column">
         <select id="qt_target6.1" name="qt_target6.1" class="field select medium" tabindex="11"> 
