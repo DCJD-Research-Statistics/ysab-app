@@ -81,14 +81,17 @@ def get_app_num():
     cluster.close()
     return df.shape[0] + 1
 
-def app_id():
+def app_id(type='A'):
     year = datetime.datetime.now().year
     application_number = get_app_num()
     project_name = request.form.get('title')
     project_abbreviation = re.sub(r'[^a-zA-Z0-9\s]', '', project_name)
     project_abbreviation = "".join(word[0] for word in project_abbreviation.split())
     # form type - A: application M: progress report mid-term F: progress report final E: external
-    form_type = 'A'
+    if type=='A':
+        form_type = 'A'
+    if type=='E':
+        form_type = 'E'
     # Generate unique ID
     unique_id = f"{year}-{application_number:03d}-{project_abbreviation}-{form_type}"
     return unique_id
@@ -465,6 +468,49 @@ def submit_continuation_form():
             return render_template('confirmation_c.html', name=name, email=email)
         except Exception as e:
             # return jsonify({'success': False, 'error': str(e)})
+             return render_template('error.html', error=str(e))
+
+@app.route('/edit')
+def edit():
+    return render_template('edit.html')
+
+@app.route('/edit-application', methods=['POST'])
+def edit_application():
+    application_id = request.form.get('application_id')
+    cluster = MongoClient(mongo_uri)
+    db = cluster[db_name]
+    collection = db['ysab']
+    application = collection.find_one({'_id': application_id})
+    # update timestamp
+    application['timestamp'] = get_timestamp()
+
+    if application is None:
+        return render_template('error.html', error=str('Application not found'))
+    else:
+        return render_template('edit-application.html', application=application)
+    
+@app.route('/update-application', methods=['POST'])
+def update_application():
+    try:
+        # Get form data
+        updated_data = request.form.to_dict()
+        name = request.form.get('name')
+        email = request.form.get('email')
+        application_id = request.form.get('_id')
+
+        cluster = MongoClient(mongo_uri)
+        db = cluster[db_name]
+        collection = db['ysab']
+
+        # delete og record, insert new edited record
+        collection.delete_one({'_id': application_id})
+        collection.insert_one(updated_data)
+
+        # make html application w/ user responses
+        make_app_form(updated_data)
+
+        return render_template('confirmation_a.html', name=name, email=email)
+    except Exception as e:
              return render_template('error.html', error=str(e))
 
 @app.route('/download_application')

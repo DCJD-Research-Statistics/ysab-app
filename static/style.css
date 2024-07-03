@@ -1,165 +1,229 @@
 * {
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-  }
-  
-  body {
-    padding: 20px 15%;
-  }
-  form header {
-    margin: 0 0 20px 0; 
-  }
-  form header div {
-    font-size: 90%;
-    color: #999;
-  }
-  form header h2 {
-    margin: 0 0 5px 0;
-  }
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+body {
+  padding: 20px 15%;
+  font-family: 'Arial', sans-serif;
+  background-color: #f4f4f4;
+  color: #232323;
+}
+
+form header {
+  margin: 0 0 20px 0;
+  text-align: center;
+}
+
+form header div {
+  font-size: 90%;
+  color: #999;
+}
+
+form header h2 {
+  margin: 0 0 5px 0;
+  font-size: 24px;
+  color: #000000;
+}
+
+form > div {
+  clear: both;
+  overflow: hidden;
+  padding: 1px;
+  margin: 0 0 10px 0;
+}
+
+form > div > fieldset > div > div {
+  margin: 0 0 5px 0;
+}
+
+form > div > label,
+legend {
+  width: 25%;
+  float: left;
+  padding-right: 10px;
+  font-weight: bold;
+  color: #3a3a3a;
+}
+
+form > div > div,
+form > div > fieldset > div {
+  width: 75%;
+  float: right;
+}
+
+form > div > fieldset label {
+  font-size: 90%;
+}
+
+fieldset {
+  border: 0;
+  padding: 0;
+}
+
+input[type=text],
+input[type=email],
+input[type=url],
+input[type=password],
+textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: none;
+  overflow: none;
+  font-size: 14px;
+}
+
+input[type=text],
+input[type=email],
+input[type=url],
+input[type=password] {
+  width: 50%;
+}
+
+input[type=text]:focus,
+input[type=email]:focus,
+input[type=url]:focus,
+input[type=password]:focus,
+textarea:focus {
+  outline: 0;
+  border-color: #4697e4;
+}
+
+@media (max-width: 600px) {
   form > div {
-    clear: both;
-    overflow: hidden;
-    padding: 1px;
-    margin: 0 0 10px 0;
-  }
-  form > div > fieldset > div > div {
-    margin: 0 0 5px 0;
+    margin: 0 0 15px 0;
   }
   form > div > label,
   legend {
-      width: 25%;
-    float: left;
-    padding-right: 10px;
+    width: 100%;
+    float: none;
+    margin: 0 0 5px 0;
   }
   form > div > div,
   form > div > fieldset > div {
-    width: 75%;
-    float: right;
+    width: 100%;
+    float: none;
   }
-  form > div > fieldset label {
-      font-size: 90%;
-  }
-  fieldset {
-      border: 0;
-    padding: 0;
-  }
-  
   input[type=text],
   input[type=email],
   input[type=url],
   input[type=password],
-  textarea {
-      width: 100%;
-    border-top: 1px solid #ccc;
-    border-left: 1px solid #ccc;
-    border-right: 1px solid #eee;
-    border-bottom: 1px solid #eee;
-    resize: none;
-    overflow: none;
-  }
-  input[type=text],
-  input[type=email],
-  input[type=url],
-  input[type=password] {
-    width: 50%;
-  }
-  input[type=text]:focus,
-  input[type=email]:focus,
-  input[type=url]:focus,
-  input[type=password]:focus,
-  textarea:focus {
-    outline: 0;
-    border-color: #4697e4;
-  }
-  
-  @media (max-width: 600px) {
-    form > div {
-      margin: 0 0 15px 0; 
-    }
-    form > div > label,
-    legend {
-        width: 100%;
-      float: none;
-      margin: 0 0 5px 0;
-    }
-    form > div > div,
-    form > div > fieldset > div {
-      width: 100%;
-      float: none;
-    }
-    input[type=text],
-    input[type=email],
-    input[type=url],
-    input[type=password],
-    textarea,
-    select {
-      width: 100%; 
-    }
-  }
-  @media (min-width: 1200px) {
-    form > div > label,
-      legend {
-        text-align: right;
-    }
-  }
-  table {
+  textarea,
+  select {
     width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
   }
-  th, td {
-      border: 1px solid black;
-      padding: 8px;
-      text-align: left;
-  }
-  th {
-      background-color: #f2f2f2;
-  }
-
-  /* Adjust the width of the input text boxes */
-  input[type="text"] {
-    width: 100%;
-    box-sizing: border-box;
-  }
-
-  .grand-total-table {
-    width: 50%;
-    margin-top: 20px;
-  }
-
-  .center {
-    margin: 0;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    -ms-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
-  }
-
-  .container {
-    height: 110px;
-    position: relative;
-    text-align: center;
-  }
-
-  .submit-button {
-    position: absolute;
-    width: 150px;
-    height: 40px;
-    background-color: grey;
-    border: none;
-    color: white;
-    border-radius: 5px;
-    cursor:pointer
-  }
-  
-  .value{
-    text-align:left;
 }
 
-.hidden { display: none; }
+@media (min-width: 1200px) {
+  form > div > label,
+  legend {
+    text-align: right;
+  }
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+th, td {
+  border: 1px solid #989696;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #007BFF;
+  color: white;
+}
+
+input[type="text"] {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.grand-total-table {
+  width: 50%;
+  margin-top: 20px;
+}
+
+.center {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+.container {
+  height: 110px;
+  position: relative;
+  text-align: center;
+}
+
+.submit-button {
+  position: absolute;
+  width: 150px;
+  height: 40px;
+  background-color: grey;
+  border: none;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.submit-button:hover {
+  background-color: rgb(26, 104, 156);
+}
+
+.submit-button:active {
+  background-color: rgb(22, 89, 135);
+}
+
+.value {
+  text-align: left;
+}
+
+.hidden {
+  display: none;
+}
 
 .hidden-column {
   display: none;
+}
+
+.EditButton {
+  padding: 10px 20px;
+  display: inline-block;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #007BFF;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 5px;
+  font-size: 14px;
+  font-family: Arial, sans-serif;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.EditButton:hover {
+  background-color: rgb(26, 104, 156);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.EditButton:active {
+  background-color: rgb(22, 89, 135);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
 }

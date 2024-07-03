@@ -2,20 +2,18 @@
 <html>
 <head>
   <link rel="stylesheet" href="{{url_for('static', filename='/style.css')}}"> 
-  <title>YSAB Application</title>   
+  <title>Edit YSAB Application</title>   
   <link rel="icon" href="{{url_for('static', filename='images/fav-icon-blue.svg')}}">
 </head>
 
-<a href="/edit" class="EditButton">Edit Application</a>
-
-<form action="/submit_application_form" method="POST">
+<form action="/update-application" method="POST">
 <div class="container">
   <div class="center">
     <a href="{{ url_for('index') }}"><img src="{{url_for('static', filename='images/juvenile-logo.svg')}}" alt="Dallas Juvenile Logo" width="100" height="100" title="Home page"></a>
   </div>
 </div>
     <header>
-      <h2>Dallas County Juror Fund Application (YSAB Funds)</h2>
+      <h2>Dallas County Juror Fund Application (YSAB Funds) - EDIT</h2>
       <div>Dallas County jurors have the option of contributing their juror fund stipend to help at risk youth in the Dallas County Juvenile Department and the foster care system.  The Youth Services Advisory Board (YSAB) oversees the use of the Dallas County Juror Fund for special projects to address specific concerns related to juvenile crime prevention. In order to be eligible for YSAB recommendation, Dallas County Juvenile Department fund requestors must complete the following application. </div>
     </header>
 
@@ -27,12 +25,13 @@
           </ol>
 
     <p><b>Disclaimer:</b> For privacy and security reasons, please be advised not to include any confidential or sensitive information in your submission.</p>
-    
+    <input type="hidden" name="_id" id="_id" value="{{ application['_id'] }}">
+    <input type="hidden" name="timestamp" id="timestamp" value="{{ application['timestamp'] }}">
     <div>
     <br>
       <label for="name">Applicant Name</label>
       <div>
-        <input id="name" name="name" type="text" value="" size="8" tabindex="1" required>
+        <input id="name" name="name" type="text" size="8" tabindex="1" required value="{{ application['name'] }}">
       </div>
     </div>
 
@@ -41,7 +40,7 @@
         Applicant Title
         </label>
         <div>
-          <input id="app_title" name="app_title" type="text" value="" size="8" tabindex="1">
+          <input id="app_title" name="app_title" type="text" size="8" tabindex="1" value="{{ application['app_title'] }}">
        </div>
     </div>
 
@@ -50,7 +49,7 @@
           Applicant Contact Email
         </label>
         <div>
-          <input id="email" name="email" type="email" spellcheck="false" value="" maxlength="255" tabindex="3" required> 
+          <input id="email" name="email" type="email" spellcheck="false" maxlength="255" tabindex="3" required value="{{ application['email'] }}"> 
        </div>
     </div>
 
@@ -59,7 +58,7 @@
         Applicant Contact Phone Number
       </label>
       <div>
-        <input id="phone" name="phone" type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="123-456-7890" oninput="formatPhoneNumber(this)" maxlength="12" required>
+        <input id="phone" name="phone" type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="123-456-7890" oninput="formatPhoneNumber(this)" maxlength="12" required value="{{ application['phone'] }}">
       </div>
     </div>
   <script>
@@ -87,10 +86,10 @@
         </label>
         <div>
         <select id="application_renewal" name="application_renewal" tabindex="11" required> 
-          <option value="" disabled selected hidden>Choose an item</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No (New Project)</option>
-          <option value="Amendment to Original">Amendment to Original</option>
+          <option disabled selected hidden>Choose an item</option>
+          <option value="Yes" {% if application['application_renewal'] == 'Yes' %}selected{% endif %}>Yes</option>
+          <option value="No" {% if application['application_renewal'] == 'No' %}selected{% endif %}>No (New Project)</option>
+          <option value="Amendment to Original" {% if application['application_renewal'] == 'Amendment to Original' %}selected{% endif %}>Amendment to Original</option>
         </select>
         </div>
     </div>
@@ -101,7 +100,7 @@
           Project Title
         </label>
         <div>
-          <input id="title" name="title" type="text" value="" size="8" tabindex="1">
+          <input id="title" name="title" type="text" size="8" tabindex="1" value="{{ application['title'] }}">
        </div>
     </div>
 
@@ -110,14 +109,14 @@
             Service Area
         </label>
         <div>
-        <select id="service_area" name="service_area" tabindex="11"> 
-          <option value="" disabled selected hidden>Choose an item</option>
-          <option value="Clinical Services">Clinical Services</option>
-          <option value="Detention Services">Detention Services</option>
-          <option value="Educational Services">Educational Services</option>
-          <option value="Probation Services">Probation Services</option>
-          <option value="Residential Services">Residential Services</option>
-          <option value="Administration">Administration</option>
+        <select id="service_area" name="service_area" tabindex="11" required> 
+          <option disabled selected hidden>Choose an item</option>
+          <option value="Clinical Services" {% if application['service_area'] == 'Clinical Services' %}selected{% endif %}>Clinical Services</option>
+          <option value="Detention Services" {% if application['service_area'] == 'Detention Services' %}selected{% endif %}>Detention Services</option>
+          <option value="Educational Services"{% if application['service_area'] == 'Educational Services' %}selected{% endif %}>Educational Services</option>
+          <option value="Probation Services"{% if application['service_area'] == 'Probation Services' %}selected{% endif %}>Probation Services</option>
+          <option value="Residential Services"{% if application['service_area'] == 'Residential Services' %}selected{% endif %}>Residential Services</option>
+          <option value="Administration"{% if application['service_area'] == 'Administration' %}selected{% endif %}>Administration</option>
         </select>
         </div>
     </div>
@@ -127,7 +126,7 @@
         Facility/Program to Administer the Project
         </label>
         <div>
-          <input id="facility" name="facility" type="text" value="" size="8" tabindex="1">
+          <input id="facility" name="facility" type="text" size="8" tabindex="1" value="{{ application['facility'] }}">
        </div>
     </div>
 
@@ -136,7 +135,7 @@
         Address
         </label>
         <div>
-          <input id="address" name="address" type="text" value="" size="8" tabindex="1">
+          <input id="address" name="address" type="text" size="8" tabindex="1" value="{{ application['address'] }}">
        </div>
     </div>
 
@@ -145,7 +144,7 @@
         Amount Requested
         </label>
         <div>
-          <input id="amount" name="amount" type="number" value="" size="8" tabindex="1" min="1" max="99999">
+          <input id="amount" name="amount" type="number" size="8" tabindex="1" min="1" max="99999" value="{{ application['amount'] }}">
        </div>
     </div>
 
@@ -154,7 +153,7 @@
     <div>
       <label for="problem_statement">(Identify the main challenge your program faces that will be addressed through using YSAB funds and how will they improve the program's objectives)</label>
       <div>
-        <textarea id="problem_statement" name="problem_statement" spellcheck="true" rows="6" cols="50" tabindex="4" placeholder=""></textarea>
+        <textarea id="problem_statement" name="problem_statement" spellcheck="true" rows="6" cols="50" tabindex="4">{{ application['problem_statement'] }}</textarea>
       </div>
   </div>
 
@@ -163,14 +162,14 @@
     <div>
       <label for="target_group"><b>Target Group/Population</b><p>(Be <u><b>specific</b></u> about which youth from the program will benefit from expending these funds)</p></label>
       <div>
-        <textarea id="target_group" name="target_group" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder="Maximum 250 words"></textarea>
+        <textarea id="target_group" name="target_group" spellcheck="true" rows="10" cols="50" tabindex="4">{{ application['target_group'] }}</textarea>
       </div>
   </div>
 
     <div>
       <label for="project_approach"><b>Project Approach & Activities</b><p>(Provide a detailed justification for proposing this project, including specific items to be purchased with the funds)</p> <p>All items specified here must reflect the items in the section <i>Budget Estimate</i>.</p></label>
       <div>
-        <textarea id="project_approach" name="project_approach" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder="Maximum 500 words"></textarea>
+        <textarea id="project_approach" name="project_approach" spellcheck="true" rows="10" cols="50" tabindex="4">{{ application['project_approach'] }}</textarea>
       </div>
   </div>
       
@@ -179,7 +178,7 @@
   <div>
     <label for="capacity_capabilities"><b>Capacity & Capabilities</b><p>Provide the names and titles of staff who will be responsible for the administration, data collection/monitoring, and management of the project. Include a detailed data collection and analysis plan.</p></label>
     <div>
-      <textarea id="capacity_capabilities" name="capacity_capabilities" spellcheck="true" rows="10" cols="50" tabindex="4"></textarea>
+      <textarea id="capacity_capabilities" name="capacity_capabilities" spellcheck="true" rows="10" cols="50" tabindex="4">{{ application['capacity_capabilities'] }}</textarea>
     </div>
   </div>
 
@@ -191,10 +190,10 @@
       </label>
       <div>
         <select id="reporting_interval" name="reporting_interval" tabindex="11" required> 
-          <option value="" disabled selected hidden>Choose an item</option>
-          <option value="Quarterly">Quarterly</option>
-          <option value=">Bi-annually">Bi-annually</option>
-          <option value=">Annually">Annually</option>
+          <option disabled selected hidden>Choose an item</option>
+          <option value="Quarterly" {% if application['reporting_interval'] == 'Quarterly' %}selected{% endif %}>Quarterly</option>
+          <option value=">Bi-annually" {% if application['reporting_interval'] == '>Bi-annually' %}selected{% endif %}>Bi-annually</option>
+          <option value=">Annually" {% if application['reporting_interval'] == '>Annually' %}selected{% endif %}>Annually</option>
         </select>
       </div>
     </div>
@@ -213,24 +212,24 @@
           </thead>
           <tbody>
               <tr>
-                  <td><input type="text" name="output1"></td>
-                  <td><input type="text" name="target1"></td>
+                  <td><input type="text" name="output1" value="{{ application['output1'] }}"></td>
+                  <td><input type="text" name="target1" value="{{ application['target1'] }}"></td>
               </tr>
               <tr>
-                  <td><input type="text" name="output2"></td>
-                  <td><input type="text" name="target2"></td>
+                  <td><input type="text" name="output2" value="{{ application['output2'] }}"></td>
+                  <td><input type="text" name="target2" value="{{ application['target2'] }}"></td>
               </tr>
               <tr>
-                  <td><input type="text" name="output3"></td>
-                  <td><input type="text" name="target3"></td>
+                  <td><input type="text" name="output3" value="{{ application['output3'] }}"></td>
+                  <td><input type="text" name="target3" value="{{ application['target3'] }}"></td>
               </tr>
               <tr>
-                  <td><input type="text" name="output4"></td>
-                  <td><input type="text" name="target4"></td>
+                  <td><input type="text" name="output4" value="{{ application['output4'] }}"></td>
+                  <td><input type="text" name="target4" value="{{ application['target4'] }}"></td>
               </tr>
               <tr>
-                  <td><input type="text" name="output5"></td>
-                  <td><input type="text" name="target5"></td>
+                  <td><input type="text" name="output5" value="{{ application['output5'] }}"></td>
+                  <td><input type="text" name="target5" value="{{ application['target5'] }}"></td>
               </tr>
           </tbody>
         </table>
@@ -249,24 +248,24 @@
           </thead>
           <tbody>
               <tr>
-                  <td><input type="text" name="outcome1"></td>
-                  <td><input type="text" name="target1.1"></td>
+                  <td><input type="text" name="outcome1" value="{{ application['outcome1'] }}"></td>
+                  <td><input type="text" name="target1.1" value="{{ application['target1.1'] }}"></td>
               </tr>
               <tr>
-                  <td><input type="text" name="outcome2"></td>
-                  <td><input type="text" name="target2.1"></td>
+                  <td><input type="text" name="outcome2" value="{{ application['outcome2'] }}"></td>
+                  <td><input type="text" name="target2.1" value="{{ application['target2.1'] }}"></td>
               </tr>
               <tr>
-                  <td><input type="text" name="outcome3"></td>
-                  <td><input type="text" name="target3.1"></td>
+                  <td><input type="text" name="outcome3" value="{{ application['outcome3'] }}"></td>
+                  <td><input type="text" name="target3.1" value="{{ application['target3.1'] }}"></td>
               </tr>
               <tr>
-                  <td><input type="text" name="outcome4"></td>
-                  <td><input type="text" name="target4.1"></td>
+                  <td><input type="text" name="outcome4" value="{{ application['outcome4'] }}"></td>
+                  <td><input type="text" name="target4.1" value="{{ application['target4.1'] }}"></td>
               </tr>
               <tr>
-                  <td><input type="text" name="outcome5"></td>
-                  <td><input type="text" name="target5.1"></td>
+                  <td><input type="text" name="outcome5" value="{{ application['outcome5'] }}"></td>
+                  <td><input type="text" name="target5.1" value="{{ application['target5.1'] }}"></td>
               </tr>
           </tbody>
         </table>
@@ -276,7 +275,7 @@
     <div>
       <label for="project_goal_impact"><b>Goal Statement & Overall Impact</b><p>Provide a detailed explanation of how the award of YSAB funds will advance the program's goals and help to achieve its desired outcomes.</p></label>
       <div>
-        <textarea id="project_goal_impact" name="project_goal_impact" spellcheck="true" rows="10" cols="50" tabindex="4"></textarea>
+        <textarea id="project_goal_impact" name="project_goal_impact" spellcheck="true" rows="10" cols="50" tabindex="4">{{ application['project_goal_impact'] }}</textarea>
       </div>
     </div>
 
@@ -286,7 +285,7 @@
         Provide the name of any other source of funding that may be used for this project. <p>(Indicate NONE if there are no other sources of funding)</p>
       </label>
       <div>
-        <input id="other_funding" name="other_funding" type="text" value="" size="8" tabindex="1">
+        <input id="other_funding" name="other_funding" type="text" size="8" tabindex="1" value="{{ application['other_funding'] }}">
     </div>
     </div>
     <br>
@@ -319,68 +318,68 @@
               <tr>
                   <td>      
                     <select id="category1" name="category1" tabindex="11"> 
-                      <option value="Null"></option>
-                      <option value="Food">Food</option>
-                      <option value="Gifts">Gifts</option>
-                      <option value="SEM">SEM</option>
-                      <option value="Field Trips">Field Trips</option>
-                      <option value="Clothes">Clothes</option>
-                      <option value="Scholarships">Scholarships</option>
-                      <option value="Other">Other</option>
+                      <option value="Null" {% if application['category1'] == 'Null' %}selected{% endif %}></option>
+                      <option value="Food" {% if application['category1'] == 'Food' %}selected{% endif %}>Food</option>
+                      <option value="Gifts" {% if application['category1'] == 'Gifts' %}selected{% endif %}>Gifts</option>
+                      <option value="SEM" {% if application['category1'] == 'SEM' %}selected{% endif %}>SEM</option>
+                      <option value="Field Trips" {% if application['category1'] == 'Field Trips' %}selected{% endif %}>Field Trips</option>
+                      <option value="Clothes" {% if application['category1'] == 'Clothes' %}selected{% endif %}>Clothes</option>
+                      <option value="Scholarships" {% if application['category1'] == 'Scholarships' %}selected{% endif %}>Scholarships</option>
+                      <option value="Other" {% if application['category1'] == 'Other' %}selected{% endif %}>Other</option>
                     </select>
                   </td>
-                  <td><input type="text" name="description1"></td>
-                  <td><input type="number" name="cost1"></td>
-                  <td><input type="number" name="items1"></td>
-                  <td><input type="number" name="total1" readonly></td>
+                  <td><input type="text" name="description1" value="{{ application['description1'] }}"></td>
+                  <td><input type="number" name="cost1" value="{{ application['cost1'] }}"></td>
+                  <td><input type="number" name="items1" value="{{ application['items1'] }}"></td>
+                  <td><input type="number" name="total1" readonly value="{{ application['total1'] }}"></td>
               </tr>
               <tr>
                   <td>      
                     <select id="category2" name="category2" tabindex="11"> 
-                      <option value="Null"></option>
-                      <option value="Food">Food</option>
-                      <option value="Gifts">Gifts</option>
-                      <option value="SEM">SEM</option>
-                      <option value="Field Trips">Field Trips</option>
-                      <option value="Clothes">Clothes</option>
-                      <option value="Scholarships">Scholarships</option>
-                      <option value="Other">Other</option>
+                      <option value="Null" {% if application['category2'] == 'Null' %}selected{% endif %}></option>
+                      <option value="Food" {% if application['category2'] == 'Food' %}selected{% endif %}>Food</option>
+                      <option value="Gifts" {% if application['category2'] == 'Gifts' %}selected{% endif %}>Gifts</option>
+                      <option value="SEM" {% if application['category2'] == 'SEM' %}selected{% endif %}>SEM</option>
+                      <option value="Field Trips" {% if application['category2'] == 'Field Trips' %}selected{% endif %}>Field Trips</option>
+                      <option value="Clothes" {% if application['category2'] == 'Clothes' %}selected{% endif %}>Clothes</option>
+                      <option value="Scholarships" {% if application['category2'] == 'Scholarships' %}selected{% endif %}>Scholarships</option>
+                      <option value="Other" {% if application['category2'] == 'Other' %}selected{% endif %}>Other</option>
                     </select>
                   </td>
-                  <td><input type="text" name="description2"></td>
-                  <td><input type="number" name="cost2"></td>
-                  <td><input type="number" name="items2"></td>
-                  <td><input type="number" name="total2" readonly></td>
+                  <td><input type="text" name="description2" value="{{ application['description2'] }}"></td>
+                  <td><input type="number" name="cost2" value="{{ application['cost2'] }}"></td>
+                  <td><input type="number" name="items2" value="{{ application['items2'] }}"></td>
+                  <td><input type="number" name="total2" readonly value="{{ application['total2'] }}"></td>
               </tr>
               <tr>
                   <td>      
                     <select id="category3" name="category3" tabindex="11"> 
-                      <option value="Null"></option>
-                      <option value="Food">Food</option>
-                      <option value="Gifts">Gifts</option>
-                      <option value="SEM">SEM</option>
-                      <option value="Field Trips">Field Trips</option>
-                      <option value="Clothes">Clothes</option>
-                      <option value="Scholarships">Scholarships</option>
-                      <option value="Other">Other</option>
+                      <option value="Null" {% if application['category3'] == 'Null' %}selected{% endif %}></option>
+                      <option value="Food" {% if application['category3'] == 'Food' %}selected{% endif %}>Food</option>
+                      <option value="Gifts" {% if application['category3'] == 'Gifts' %}selected{% endif %}>Gifts</option>
+                      <option value="SEM" {% if application['category3'] == 'SEM' %}selected{% endif %}>SEM</option>
+                      <option value="Field Trips" {% if application['category3'] == 'Field Trips' %}selected{% endif %}>Field Trips</option>
+                      <option value="Clothes" {% if application['category3'] == 'Clothes' %}selected{% endif %}>Clothes</option>
+                      <option value="Scholarships" {% if application['category3'] == 'Scholarships' %}selected{% endif %}>Scholarships</option>
+                      <option value="Other" {% if application['category3'] == 'Other' %}selected{% endif %}>Other</option>
                     </select>
                   </td>
-                  <td><input type="text" name="description3"></td>
-                  <td><input type="number" name="cost3"></td>
-                  <td><input type="number" name="items3"></td>
-                  <td><input type="number" name="total3" readonly></td>
+                  <td><input type="text" name="description3" value="{{ application['description3'] }}"></td>
+                  <td><input type="number" name="cost3" value="{{ application['cost3'] }}"></td>
+                  <td><input type="number" name="items3" value="{{ application['items3'] }}"></td>
+                  <td><input type="number" name="total3" readonly value="{{ application['total3'] }}"></td>
               </tr>
               <tr>
                 <td>      
                   <select id="category4" name="category4" tabindex="11"> 
-                    <option value="Null"></option>
-                    <option value="Food">Food</option>
-                    <option value="Gifts">Gifts</option>
-                    <option value="SEM">SEM</option>
-                    <option value="Field Trips">Field Trips</option>
-                    <option value="Clothes">Clothes</option>
-                    <option value="Scholarships">Scholarships</option>
-                    <option value="Other">Other</option>
+                    <option value="Null" {% if application['category4'] == 'Null' %}selected{% endif %}></option>
+                    <option value="Food" {% if application['category4'] == 'Food' %}selected{% endif %}>Food</option>
+                    <option value="Gifts" {% if application['category4'] == 'Gifts' %}selected{% endif %}>Gifts</option>
+                    <option value="SEM" {% if application['category4'] == 'SEM' %}selected{% endif %}>SEM</option>
+                    <option value="Field Trips" {% if application['category4'] == 'Field Trips' %}selected{% endif %}>Field Trips</option>
+                    <option value="Clothes" {% if application['category4'] == 'Clothes' %}selected{% endif %}>Clothes</option>
+                    <option value="Scholarships" {% if application['category4'] == 'Scholarships' %}selected{% endif %}>Scholarships</option>
+                    <option value="Other" {% if application['category4'] == 'Other' %}selected{% endif %}>Other</option>
                   </select>
                 </td>
                   <td><input type="text" name="description4"></td>
@@ -391,38 +390,38 @@
               <tr>
                   <td>      
                     <select id="category5" name="category5" tabindex="11"> 
-                      <option value="Null"></option>
-                      <option value="Food">Food</option>
-                      <option value="Gifts">Gifts</option>
-                      <option value="SEM">SEM</option>
-                      <option value="Field Trips">Field Trips</option>
-                      <option value="Clothes">Clothes</option>
-                      <option value="Scholarships">Scholarships</option>
-                      <option value="Other">Other</option>
+                      <option value="Null" {% if application['category5'] == 'Null' %}selected{% endif %}></option>
+                      <option value="Food" {% if application['category5'] == 'Food' %}selected{% endif %}>Food</option>
+                      <option value="Gifts" {% if application['category5'] == 'Gifts' %}selected{% endif %}>Gifts</option>
+                      <option value="SEM" {% if application['category5'] == 'SEM' %}selected{% endif %}>SEM</option>
+                      <option value="Field Trips" {% if application['category5'] == 'Field Trips' %}selected{% endif %}>Field Trips</option>
+                      <option value="Clothes" {% if application['category5'] == 'Clothes' %}selected{% endif %}>Clothes</option>
+                      <option value="Scholarships" {% if application['category5'] == 'Scholarships' %}selected{% endif %}>Scholarships</option>
+                      <option value="Other" {% if application['category5'] == 'Other' %}selected{% endif %}>Other</option>
                     </select>
                   </td>
-                  <td><input type="text" name="description5"></td>
-                  <td><input type="number" name="cost5"></td>
-                  <td><input type="number" name="items5"></td>
-                  <td><input type="number" name="total5" readonly></td>
+                  <td><input type="text" name="description5" value="{{ application['description5'] }}"></td>
+                  <td><input type="number" name="cost5" value="{{ application['cost5'] }}"></td>
+                  <td><input type="number" name="items5" value="{{ application['items5'] }}"></td>
+                  <td><input type="number" name="total5" readonly value="{{ application['total5'] }}"></td>
               </tr>
               <tr>
                   <td>      
                     <select id="category6" name="category6" tabindex="11"> 
-                      <option value="Null"></option>
-                      <option value="Food">Food</option>
-                      <option value="Gifts">Gifts</option>
-                      <option value="SEM">SEM</option>
-                      <option value="Field Trips">Field Trips</option>
-                      <option value="Clothes">Clothes</option>
-                      <option value="Scholarships">Scholarships</option>
-                      <option value="Other">Other</option>
+                      <option value="Null" {% if application['category6'] == 'Null' %}selected{% endif %}></option>
+                      <option value="Food" {% if application['category6'] == 'Food' %}selected{% endif %}>Food</option>
+                      <option value="Gifts" {% if application['category6'] == 'Gifts' %}selected{% endif %}>Gifts</option>
+                      <option value="SEM" {% if application['category6'] == 'SEM' %}selected{% endif %}>SEM</option>
+                      <option value="Field Trips" {% if application['category6'] == 'Field Trips' %}selected{% endif %}>Field Trips</option>
+                      <option value="Clothes" {% if application['category6'] == 'Clothes' %}selected{% endif %}>Clothes</option>
+                      <option value="Scholarships" {% if application['category6'] == 'Scholarships' %}selected{% endif %}>Scholarships</option>
+                      <option value="Other" {% if application['category6'] == 'Other' %}selected{% endif %}>Other</option>
                     </select>
                   </td>
-                  <td><input type="text" name="description6"></td>
-                  <td><input type="number" name="cost6"></td>
-                  <td><input type="number" name="items6"></td>
-                  <td><input type="number" name="total6" readonly></td>
+                  <td><input type="text" name="description6" value="{{ application['description6'] }}"></td>
+                  <td><input type="number" name="cost6" value="{{ application['cost6'] }}"></td>
+                  <td><input type="number" name="items6" value="{{ application['items6'] }}"></td>
+                  <td><input type="number" name="total6" readonly value="{{ application['total6'] }}"></td>
               </tr>
               <tr>
                   <td>      
@@ -437,10 +436,10 @@
                       <option value="Other">Other</option>
                     </select>
                   </td>
-                  <td><input type="text" name="description7"></td>
-                  <td><input type="number" name="cost7"></td>
-                  <td><input type="number" name="items7"></td>
-                  <td><input type="number" name="total7" readonly></td>
+                  <td><input type="text" name="description7" value="{{ application['description7'] }}"></td>
+                  <td><input type="number" name="cost7" value="{{ application['cost7'] }}"></td>
+                  <td><input type="number" name="items7" value="{{ application['items7'] }}"></td>
+                  <td><input type="number" name="total7" readonly value="{{ application['total7'] }}"></td>
               </tr>
           </tbody>
       </table>
@@ -450,7 +449,7 @@
           <thead>
               <tr>
                   <th>Overall Project Cost</th>
-                  <td><input type="text" name="grandTotal" id="grandTotal" readonly></td>
+                  <td><input type="text" name="grandTotal" id="grandTotal" readonly value="{{ application['grandTotal'] }}"></td>
               </tr>
           </thead>
         </table>
@@ -461,7 +460,7 @@
           <thead>
             <tr>
               <th>Number of Youth Who Will Benefit</th>
-              <td><input type="number" name="youth_total" id="youth_total_input" required></td>
+              <td><input type="number" name="youth_total" id="youth_total" required value="{{ application['youth_total'] }}"></td>
             </tr>
           </thead>
         </table>
@@ -472,7 +471,7 @@
           <thead>
             <tr>
               <th>Individual Youth Benefit ($)</th>
-              <td><input type="text" name="benefit_per_youth" id="benefit_per_youth" readonly></td>
+              <td><input type="text" name="benefit_per_youth" id="benefit_per_youth" readonly value="{{ application['benefit_per_youth'] }}"></td>
             </tr>
           </thead>
         </table>
@@ -538,7 +537,7 @@
 
     <div class="container">
       <div class="center">
-        <input id="saveForm" name="saveForm" type="submit" value="Submit" class="submit-button" disabled>
+        <input id="saveForm" name="saveForm" type="submit" value="Update" class="submit-button" disabled>
       </div>
     </div>
 
@@ -565,7 +564,4 @@
       });
     </script>
   </form>
-  <footer>
-    <p>Date Updated: July 3, 2024<br>
-  </footer>
 </html>
