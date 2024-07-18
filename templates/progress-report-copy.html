@@ -163,11 +163,11 @@
       text-align:left;
     }
     
-    .hidden { display: none; }
+    /* .hidden { display: none; }
 
     .hidden-column {
       display: none;
-    }
+    } */
   </style>
 </head>
 
@@ -346,7 +346,7 @@
     <br>
       <label for="name">Name</label>
       <div>
-        <input id="name" name="name" type="text" class="field text fn" value="" size="8" tabindex="1" required>
+        <input id="name" name="name" type="text" size="8" tabindex="1" required disabled>
       </div>
     </div>
 
@@ -355,7 +355,7 @@
           Applicant Title
         </label>
         <div>
-          <input id="app_title" name="app_title" type="text" class="field text fn" value="" size="8" tabindex="1">
+          <input id="app_title" name="app_title" type="text" size="8" tabindex="1" disabled>
        </div>
     </div>
 
@@ -364,7 +364,7 @@
           Contact Email
         </label>
         <div>
-          <input id="email" name="email" type="email" spellcheck="false" value="" maxlength="255" tabindex="3" required> 
+          <input id="email" name="email" type="email" spellcheck="false" value="" maxlength="255" tabindex="3" required disabled> 
        </div>
     </div>
 
@@ -373,7 +373,7 @@
         Contact Phone Number
       </label>
       <div>
-        <input id="phone" name="phone" type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="123-456-7890" oninput="formatPhoneNumber(this)" maxlength="12" required>
+        <input id="phone" name="phone" type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="123-456-7890" oninput="formatPhoneNumber(this)" maxlength="12" required disabled>
       </div>
     </div>
   <script>
@@ -401,7 +401,7 @@
       <br>
         <label for="title">Project Title</label>
         <div>
-          <input id="title" name="title" type="text" class="field text fn" value="" size="8" tabindex="1" required>
+          <input id="title" name="title" type="text" size="8" tabindex="1" required disabled>
         </div>
       </div>
 
@@ -410,7 +410,7 @@
         Describe specifically how the use of your YSAB award advanced the goals and objectives of your program. Link the use of your YSAB award with the impact it has made on your outcomes.
       </label>
       <div>
-        <textarea id="how_funds_advanced_goals_of_program" name="how_funds_advanced_goals_of_program" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder=""></textarea>
+        <textarea id="how_funds_advanced_goals_of_program" name="how_funds_advanced_goals_of_program" spellcheck="true" rows="10" cols="50" tabindex="4" disabled></textarea>
       </div>
     </div>
 
@@ -419,28 +419,28 @@
         Project Contact (Name)
         </label>
         <div>
-          <input id="project_contact" name="project_contact" type="text" class="field text fn" value="" size="8" tabindex="1">
+          <input id="project_contact" name="project_contact" type="text" size="8" tabindex="1" disabled>
        </div>
     </div>
 
     <div>
       <label for="fiscal_year">Fiscal Year</label>
       <div>
-        <input id="fiscal_year" name="fiscal_year" type="number" class="field text fn" value="" size="8" tabindex="1" min="1" max="99999">
+        <input id="fiscal_year" name="fiscal_year" type="number" size="8" tabindex="1" min="1" max="99999" disabled>
      </div>
     </div>
       
     <div>
       <label for="start_date">Start Date:</label>
       <div>
-        <input type="date" id="start_date" name="start_date" value="2024-01-01" min="2018-01-01" max="2099-12-31" />
+        <input type="date" id="start_date" name="start_date" value="2024-01-01" min="2018-01-01" max="2099-12-31" disabled/>
       </div>
     </div>
 
     <div>
       <label for="end_date">End Date:</label>
       <div>
-        <input type="date" id="end_date" name="end_date" value="2024-01-01" min="2018-01-01" max="2099-12-31" />
+        <input type="date" id="end_date" name="end_date" value="2024-01-01" min="2018-01-01" max="2099-12-31" disabled/>
       </div>
     </div>
 
@@ -449,7 +449,7 @@
         Amount Awarded
         </label>
         <div>
-          <input id="amount_awarded" name="amount_awarded" type="number" size="8" tabindex="1" min="1" max="99999">
+          <input id="amount_awarded" name="amount_awarded" type="number" size="8" tabindex="1" min="1" max="99999" disabled>
        </div>
     </div>
 
@@ -458,7 +458,7 @@
       Amount Expended - Quarterly-term
       </label>
       <div>
-        <input name="amount_expended_qt" type="number" size="8" tabindex="1" min="1" max="99999">
+        <input name="amount_expended_qt" type="number" size="8" tabindex="1" min="1" max="99999" disabled>
      </div>
    </div>
 
@@ -467,7 +467,7 @@
       Amount Expended - Mid-term
       </label>
       <div>
-        <input name="amount_expended_mid" type="number" size="8" tabindex="1" min="1" max="99999">
+        <input name="amount_expended_mid" type="number" size="8" tabindex="1" min="1" max="99999" disabled>
      </div>
    </div>
 
@@ -476,7 +476,7 @@
     Amount Expended - Final
     </label>
     <div>
-      <input name="amount_expended_final" type="number" size="8" tabindex="1" min="1" max="99999">
+      <input name="amount_expended_final" type="number" size="8" tabindex="1" min="1" max="99999" disabled>
    </div>
   </div>
 
@@ -502,33 +502,33 @@
         <tr>
             <td>Number of youth directly benefited</td>
             <td>
-              <input id="target_a" name="target_a" type="text" class="field text fn" value="" size="8" tabindex="1">
+              <input id="target_a" name="target_a" type="text" size="8" tabindex="1" disabled>
             </td>
             <td class="qt-column hidden-column">
-              <input id="qt_a" name="qt_a" type="text" class="field text fn" value="" size="8" tabindex="1">
+              <input id="qt_a" name="qt_a" type="text" size="8" tabindex="1" disabled>
             </td>
             <td class="midterm-column hidden-column">
-              <input id="midterm_a" name="midterm_a" type="text" class="field text fn" value="" size="8" tabindex="1">
+              <input id="midterm_a" name="midterm_a" type="text" size="8" tabindex="1" disabled>
             </td>
             <td class="final-column hidden-column">
-              <input id="final_a" name="final_a" type="text" class="field text fn" value="" size="8" tabindex="1">
+              <input id="final_a" name="final_a" type="text" size="8" tabindex="1" disabled>
             </td>
             <td class="qt-column hidden-column">
-              <select id="qt_target_a" name="qt_target_a" class="field select medium" tabindex="11"> 
+              <select id="qt_target_a" name="qt_target_a" class="field select medium" tabindex="11" disabled> 
                   <option value="Choose an item">Choose an item</option>
                   <option value="Yes">Yes</option>
                   <option value="No">No</option>
                 </select>                
             </td>
             <td class="midterm-column hidden-column">
-              <select id="midterm_target_a" name="midterm_target_a" class="field select medium" tabindex="11"> 
+              <select id="midterm_target_a" name="midterm_target_a" class="field select medium" tabindex="11" disabled> 
                   <option value="Choose an item">Choose an item</option>
                   <option value="Yes">Yes</option>
                   <option value="No">No</option>
                 </select>                
             </td>
             <td class="final-column hidden-column">
-              <select id="final_target_a" name="final_target_a" class="field select medium" tabindex="11"> 
+              <select id="final_target_a" name="final_target_a" class="field select medium" tabindex="11" disabled> 
                   <option value="Choose an item">Choose an item</option>
                   <option value="Yes">Yes</option>
                   <option value="No">No</option>
@@ -538,33 +538,33 @@
         <tr>
             <td>Number of individuals not under the authority of DCJD benefited</td>
             <td>
-              <input id="target_b" name="target_b" type="text" class="field text fn" value="" size="8" tabindex="1">
+              <input id="target_b" name="target_b" type="text" size="8" tabindex="1" disabled>
             </td>
             <td class="qt-column hidden-column">
-              <input id="qt_b" name="qt_b" type="text" class="field text fn" value="" size="8" tabindex="1">
+              <input id="qt_b" name="qt_b" type="text" size="8" tabindex="1" disabled>
             </td>
             <td class="midterm-column hidden-column">
-              <input id="midterm_b" name="midterm_b" type="text" class="field text fn" value="" size="8" tabindex="1">
+              <input id="midterm_b" name="midterm_b" type="text" size="8" tabindex="1" disabled>
             </td>
             <td class="final-column hidden-column">
-              <input id="final_b" name="final_b" type="text" class="field text fn" value="" size="8" tabindex="1">
+              <input id="final_b" name="final_b" type="text" size="8" tabindex="1" disabled>
             </td>
             <td class="qt-column hidden-column">
-              <select id="qt_target_b" name="qt_target_b" class="field select medium" tabindex="11"> 
+              <select id="qt_target_b" name="qt_target_b" class="field select medium" tabindex="11" disabled> 
                   <option value="Choose an item">Choose an item</option>
                   <option value="Yes">Yes</option>
                   <option value="No">No</option>
                 </select>                
             </td>
             <td class="midterm-column hidden-column">
-              <select id="midterm_target_b" name="midterm_target_b" class="field select medium" tabindex="11"> 
+              <select id="midterm_target_b" name="midterm_target_b" class="field select medium" tabindex="11" disabled> 
                   <option value="Choose an item">Choose an item</option>
                   <option value="Yes">Yes</option>
                   <option value="No">No</option>
                 </select>                
             </td>
             <td class="final-column hidden-column">
-              <select id="final_target_b" name="final_target_b" class="field select medium" tabindex="11"> 
+              <select id="final_target_b" name="final_target_b" class="field select medium" tabindex="11" disabled> 
                   <option value="Choose an item">Choose an item</option>
                   <option value="Yes">Yes</option>
                   <option value="No">No</option>
@@ -573,36 +573,36 @@
         </tr>
         <tr>
             <td>
-              <input id="output1" name="output1" type="text">
+              <input id="output1" name="output1" type="text" disabled>
             </td>
             <td>
-              <input id="target1" name="target1" type="text" class="field text fn" value="" size="8" tabindex="1">
+              <input id="target1" name="target1" type="text" size="8" tabindex="1" disabled>
             </td>
             <td class="qt-column hidden-column">
-              <input id="qt1" name="qt1" type="text" class="field text fn" value="" size="8" tabindex="1">
+              <input id="qt1" name="qt1" type="text" size="8" tabindex="1" disabled>
             </td>
             <td class="midterm-column hidden-column">
-              <input id="midterm1" name="midterm1" type="text" class="field text fn" value="" size="8" tabindex="1">
+              <input id="midterm1" name="midterm1" type="text" size="8" tabindex="1" disabled>
             </td>
             <td class="final-column hidden-column">
-              <input id="final1" name="final1" type="text" class="field text fn" value="" size="8" tabindex="1">
+              <input id="final1" name="final1" type="text" size="8" tabindex="1" disabled>
             </td>
             <td class="qt-column hidden-column">
-              <select id="qt_target1" name="qt_target1" class="field select medium" tabindex="11"> 
+              <select id="qt_target1" name="qt_target1" class="field select medium" tabindex="11" disabled> 
                   <option value="Choose an item">Choose an item</option>
                   <option value="Yes">Yes</option>
                   <option value="No">No</option>
                 </select>                
             </td>
             <td class="midterm-column hidden-column">
-              <select id="midterm_target1" name="midterm_target1" class="field select medium" tabindex="11"> 
+              <select id="midterm_target1" name="midterm_target1" class="field select medium" tabindex="11" disabled> 
                   <option value="Choose an item">Choose an item</option>
                   <option value="Yes">Yes</option>
                   <option value="No">No</option>
                 </select>                
             </td>
             <td class="final-column hidden-column">
-              <select id="final_target1" name="final_target1" class="field select medium" tabindex="11"> 
+              <select id="final_target1" name="final_target1" class="field select medium" tabindex="11" disabled> 
                   <option value="Choose an item">Choose an item</option>
                   <option value="Yes">Yes</option>
                   <option value="No">No</option>
@@ -611,36 +611,36 @@
         </tr>
         <tr>
           <td>
-            <input id="output2" name="output2" type="text">
+            <input id="output2" name="output2" type="text" disabled>
           </td>
           <td>
-            <input id="target2" name="target2" type="text" class="field text fn" value="" size="8" tabindex="1">
+            <input id="target2" name="target2" type="text" size="8" tabindex="1" disabled>
           </td>
           <td class="qt-column hidden-column">
-            <input id="qt2" name="qt2" type="text" class="field text fn" value="" size="8" tabindex="1">
+            <input id="qt2" name="qt2" type="text" size="8" tabindex="1" disabled>
           </td>
           <td class="midterm-column hidden-column">
-            <input id="midterm2" name="midterm2" type="text" class="field text fn" value="" size="8" tabindex="1">
+            <input id="midterm2" name="midterm2" type="text" size="8" tabindex="1" disabled>
           </td>
           <td class="final-column hidden-column">
-            <input id="final2" name="final2" type="text" class="field text fn" value="" size="8" tabindex="1">
+            <input id="final2" name="final2" type="text" size="8" tabindex="1" disabled>
           </td>
           <td class="qt-column hidden-column">
-            <select id="qt_target2" name="qt_target2" class="field select medium" tabindex="11"> 
+            <select id="qt_target2" name="qt_target2" class="field select medium" tabindex="11" disabled> 
                 <option value="Choose an item">Choose an item</option>
                 <option value="Yes">Yes</option>
                 <option value="No">No</option>
               </select>                
           </td>
           <td class="midterm-column hidden-column">
-            <select id="midterm_target2" name="midterm_target2" class="field select medium" tabindex="11"> 
+            <select id="midterm_target2" name="midterm_target2" class="field select medium" tabindex="11" disabled> 
                 <option value="Choose an item">Choose an item</option>
                 <option value="Yes">Yes</option>
                 <option value="No">No</option>
               </select>                
           </td>
           <td class="final-column hidden-column">
-            <select id="final_target2" name="final_target2" class="field select medium" tabindex="11"> 
+            <select id="final_target2" name="final_target2" class="field select medium" tabindex="11" disabled> 
                 <option value="Choose an item">Choose an item</option>
                 <option value="Yes">Yes</option>
                 <option value="No">No</option>
@@ -649,36 +649,36 @@
       </tr>      
       <tr>
         <td>
-          <input id="output3" name="output3" type="text">
+          <input id="output3" name="output3" type="text" disabled>
         </td>
         <td>
-          <input id="target3" name="target3" type="text" class="field text fn" value="" size="8" tabindex="1">
+          <input id="target3" name="target3" type="text" size="8" tabindex="1" disabled>
         </td>
         <td class="qt-column hidden-column">
-          <input id="qt3" name="qt3" type="text" class="field text fn" value="" size="8" tabindex="1">
+          <input id="qt3" name="qt3" type="text" size="8" tabindex="1" disabled>
         </td>
         <td class="midterm-column hidden-column">
-          <input id="midterm3" name="midterm3" type="text" class="field text fn" value="" size="8" tabindex="1">
+          <input id="midterm3" name="midterm3" type="text" size="8" tabindex="1" disabled>
         </td>
         <td class="final-column hidden-column">
-          <input id="final3" name="final3" type="text" class="field text fn" value="" size="8" tabindex="1">
+          <input id="final3" name="final3" type="text" size="8" tabindex="1" disabled>
         </td>
         <td class="qt-column hidden-column">
-          <select id="qt_target3" name="qt_target3" class="field select medium" tabindex="11"> 
+          <select id="qt_target3" name="qt_target3" class="field select medium" tabindex="11" disabled> 
               <option value="Choose an item">Choose an item</option>
               <option value="Yes">Yes</option>
               <option value="No">No</option>
             </select>                
         </td>
         <td class="midterm-column hidden-column">
-          <select id="midterm_target3" name="midterm_target3" class="field select medium" tabindex="11"> 
+          <select id="midterm_target3" name="midterm_target3" class="field select medium" tabindex="11" disabled> 
               <option value="Choose an item">Choose an item</option>
               <option value="Yes">Yes</option>
               <option value="No">No</option>
             </select>                
         </td>
         <td class="final-column hidden-column">
-          <select id="final_target3" name="final_target3" class="field select medium" tabindex="11"> 
+          <select id="final_target3" name="final_target3" class="field select medium" tabindex="11" disabled> 
               <option value="Choose an item">Choose an item</option>
               <option value="Yes">Yes</option>
               <option value="No">No</option>
@@ -687,36 +687,36 @@
     </tr> 
     <tr>
       <td>
-        <input id="output4" name="output4" type="text">
+        <input id="output4" name="output4" type="text" disabled>
       </td>
       <td>
-        <input id="target4" name="target4" type="text" class="field text fn" value="" size="8" tabindex="1">
+        <input id="target4" name="target4" type="text" size="8" tabindex="1" disabled>
       </td>
       <td class="qt-column hidden-column">
-        <input id="qt4" name="qt4" type="text" class="field text fn" value="" size="8" tabindex="1">
+        <input id="qt4" name="qt4" type="text" size="8" tabindex="1" disabled>
       </td>
       <td class="midterm-column hidden-column">
-        <input id="midterm4" name="midterm4" type="text" class="field text fn" value="" size="8" tabindex="1">
+        <input id="midterm4" name="midterm4" type="text" size="8" tabindex="1" disabled>
       </td>
       <td class="final-column hidden-column">
-        <input id="final4" name="final4" type="text" class="field text fn" value="" size="8" tabindex="1">
+        <input id="final4" name="final4" type="text" size="8" tabindex="1" disabled>
       </td>
       <td class="qt-column hidden-column">
-        <select id="qt_target4" name="qt_target4" class="field select medium" tabindex="11"> 
+        <select id="qt_target4" name="qt_target4" class="field select medium" tabindex="11" disabled> 
             <option value="Choose an item">Choose an item</option>
             <option value="Yes">Yes</option>
             <option value="No">No</option>
           </select>                
       </td>
       <td class="midterm-column hidden-column">
-        <select id="midterm_target4" name="midterm_target4" class="field select medium" tabindex="11"> 
+        <select id="midterm_target4" name="midterm_target4" class="field select medium" tabindex="11" disabled> 
             <option value="Choose an item">Choose an item</option>
             <option value="Yes">Yes</option>
             <option value="No">No</option>
           </select>                
       </td>
       <td class="final-column hidden-column">
-        <select id="final_target4" name="final_target4" class="field select medium" tabindex="11"> 
+        <select id="final_target4" name="final_target4" class="field select medium" tabindex="11" disabled> 
             <option value="Choose an item">Choose an item</option>
             <option value="Yes">Yes</option>
             <option value="No">No</option>
@@ -725,36 +725,36 @@
   </tr>    
   <tr>
     <td>
-      <input id="output5" name="output5" type="text">
+      <input id="output5" name="output5" type="text" disabled>
     </td>
     <td>
-      <input id="target5" name="target5" type="text" class="field text fn" value="" size="8" tabindex="1">
+      <input id="target5" name="target5" type="text" size="8" tabindex="1" disabled>
     </td>
     <td class="qt-column hidden-column">
-      <input id="qt5" name="qt5" type="text" class="field text fn" value="" size="8" tabindex="1">
+      <input id="qt5" name="qt5" type="text" size="8" tabindex="1" disabled>
     </td>
     <td class="midterm-column hidden-column">
-      <input id="midterm5" name="midterm5" type="text" class="field text fn" value="" size="8" tabindex="1">
+      <input id="midterm5" name="midterm5" type="text" size="8" tabindex="1" disabled>
     </td>
     <td class="final-column hidden-column">
-      <input id="final5" name="final5" type="text" class="field text fn" value="" size="8" tabindex="1">
+      <input id="final5" name="final5" type="text" size="8" tabindex="1" disabled>
     </td>
     <td class="qt-column hidden-column">
-      <select id="qt_target5" name="qt_target5" class="field select medium" tabindex="11"> 
+      <select id="qt_target5" name="qt_target5" class="field select medium" tabindex="11" disabled> 
           <option value="Choose an item">Choose an item</option>
           <option value="Yes">Yes</option>
           <option value="No">No</option>
         </select>                
     </td>
     <td class="midterm-column hidden-column">
-      <select id="midterm_target5" name="midterm_target5" class="field select medium" tabindex="11"> 
+      <select id="midterm_target5" name="midterm_target5" class="field select medium" tabindex="11" disabled> 
           <option value="Choose an item">Choose an item</option>
           <option value="Yes">Yes</option>
           <option value="No">No</option>
         </select>                
     </td>
     <td class="final-column hidden-column">
-      <select id="final_target5" name="final_target5" class="field select medium" tabindex="11"> 
+      <select id="final_target5" name="final_target5" class="field select medium" tabindex="11" disabled> 
           <option value="Choose an item">Choose an item</option>
           <option value="Yes">Yes</option>
           <option value="No">No</option>
@@ -763,36 +763,36 @@
   </tr>  
   <tr>
     <td>
-      <input id="output6" name="output6" type="text">
+      <input id="output6" name="output6" type="text" disabled>
     </td>
     <td>
-      <input id="target6" name="target6" type="text" class="field text fn" value="" size="8" tabindex="1">
+      <input id="target6" name="target6" type="text" size="8" tabindex="1" disabled>
     </td>
     <td class="qt-column hidden-column">
-      <input id="qt6" name="qt6" type="text" class="field text fn" value="" size="8" tabindex="1">
+      <input id="qt6" name="qt6" type="text" size="8" tabindex="1" disabled>
     </td>
     <td class="midterm-column hidden-column">
-      <input id="midterm6" name="midterm6" type="text" class="field text fn" value="" size="8" tabindex="1">
+      <input id="midterm6" name="midterm6" type="text" size="8" tabindex="1" disabled>
     </td>
     <td class="final-column hidden-column">
-      <input id="final6" name="final6" type="text" class="field text fn" value="" size="8" tabindex="1">
+      <input id="final6" name="final6" type="text" size="8" tabindex="1" disabled>
     </td>
     <td class="qt-column hidden-column">
-      <select id="qt_target6" name="qt_target6" class="field select medium" tabindex="11"> 
+      <select id="qt_target6" name="qt_target6" class="field select medium" tabindex="11" disabled> 
           <option value="Choose an item">Choose an item</option>
           <option value="Yes">Yes</option>
           <option value="No">No</option>
         </select>                
     </td>
     <td class="midterm-column hidden-column">
-      <select id="midterm_target6" name="midterm_target6" class="field select medium" tabindex="11"> 
+      <select id="midterm_target6" name="midterm_target6" class="field select medium" tabindex="11" disabled> 
           <option value="Choose an item">Choose an item</option>
           <option value="Yes">Yes</option>
           <option value="No">No</option>
         </select>                
     </td>
     <td class="final-column hidden-column">
-      <select id="final_target6" name="final_target6" class="field select medium" tabindex="11"> 
+      <select id="final_target6" name="final_target6" class="field select medium" tabindex="11" disabled> 
           <option value="Choose an item">Choose an item</option>
           <option value="Yes">Yes</option>
           <option value="No">No</option>
@@ -822,36 +822,36 @@
     <tbody>
         <tr>
             <td>                    
-              <input id="outcome1" name="outcome1" type="text"> 
+              <input id="outcome1" name="outcome1" type="text" disabled> 
             </td>
             <td>
-              <input id="target1.1" name="target1.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+              <input id="target1.1" name="target1.1" type="text" size="8" tabindex="1" disabled>
             </td>
             <td class="qt-column hidden-column">
-              <input id="qt1.1" name="qt1.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+              <input id="qt1.1" name="qt1.1" type="text" size="8" tabindex="1" disabled>
             </td>
             <td class="midterm-column hidden-column">
-              <input id="midterm1.1" name="midterm1.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+              <input id="midterm1.1" name="midterm1.1" type="text" size="8" tabindex="1" disabled>
             </td>
             <td class="final-column hidden-column">
-              <input id="final1.1" name="final1.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+              <input id="final1.1" name="final1.1" type="text" size="8" tabindex="1" disabled>
             </td>
             <td class="qt-column hidden-column">
-              <select id="qt_target1.1" name="qt_target1.1" class="field select medium" tabindex="11"> 
+              <select id="qt_target1.1" name="qt_target1.1" class="field select medium" tabindex="11" disabled> 
                   <option value="Choose an item">Choose an item</option>
                   <option value="Yes">Yes</option>
                   <option value="No">No</option>
                 </select>                
             </td>
             <td class="midterm-column hidden-column">
-              <select id="midterm_target1.1" name="midterm_target1.1" class="field select medium" tabindex="11"> 
+              <select id="midterm_target1.1" name="midterm_target1.1" class="field select medium" tabindex="11" disabled> 
                   <option value="Choose an item">Choose an item</option>
                   <option value="Yes">Yes</option>
                   <option value="No">No</option>
                 </select>                
             </td>
             <td class="final-column hidden-column">
-              <select id="final_target1.1" name="final_target1.1" class="field select medium" tabindex="11"> 
+              <select id="final_target1.1" name="final_target1.1" class="field select medium" tabindex="11" disabled> 
                   <option value="Choose an item">Choose an item</option>
                   <option value="Yes">Yes</option>
                   <option value="No">No</option>
@@ -860,36 +860,36 @@
         </tr>
         <tr>
             <td>
-              <input id="outcome2" name="outcome2" type="text">
+              <input id="outcome2" name="outcome2" type="text" disabled>
             </td>
             <td>
-              <input id="target2.1" name="target2.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+              <input id="target2.1" name="target2.1" type="text" size="8" tabindex="1" disabled>
             </td>
             <td class="qt-column hidden-column">
-              <input id="qt2.1" name="qt2.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+              <input id="qt2.1" name="qt2.1" type="text" size="8" tabindex="1" disabled>
             </td>
             <td class="midterm-column hidden-column">
-              <input id="midterm2.1" name="midterm2.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+              <input id="midterm2.1" name="midterm2.1" type="text" size="8" tabindex="1" disabled>
             </td>
             <td class="final-column hidden-column">
-              <input id="final2.1" name="final2.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+              <input id="final2.1" name="final2.1" type="text" size="8" tabindex="1" disabled>
             </td>
             <td class="qt-column hidden-column">
-              <select id="qt_target2.1" name="qt_target2.1" class="field select medium" tabindex="11"> 
+              <select id="qt_target2.1" name="qt_target2.1" class="field select medium" tabindex="11" disabled> 
                   <option value="Choose an item">Choose an item</option>
                   <option value="Yes">Yes</option>
                   <option value="No">No</option>
                 </select>                
             </td>
             <td class="midterm-column hidden-column">
-              <select id="midterm_target2.1" name="midterm_target2.1" class="field select medium" tabindex="11"> 
+              <select id="midterm_target2.1" name="midterm_target2.1" class="field select medium" tabindex="11" disabled> 
                   <option value="Choose an item">Choose an item</option>
                   <option value="Yes">Yes</option>
                   <option value="No">No</option>
                 </select>                
             </td>
             <td class="final-column hidden-column">
-              <select id="final_target2.1" name="final_target2.1" class="field select medium" tabindex="11"> 
+              <select id="final_target2.1" name="final_target2.1" class="field select medium" tabindex="11" disabled> 
                   <option value="Choose an item">Choose an item</option>
                   <option value="Yes">Yes</option>
                   <option value="No">No</option>
@@ -898,36 +898,36 @@
         </tr>
         <tr>
           <td>
-            <input id="outcome3" name="outcome3" type="text">
+            <input id="outcome3" name="outcome3" type="text" disabled>
           </td>
           <td>
-            <input id="target3.1" name="target3.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+            <input id="target3.1" name="target3.1" type="text" size="8" tabindex="1" disabled>
           </td>
           <td class="qt-column hidden-column">
-            <input id="qt3.1" name="qt3.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+            <input id="qt3.1" name="qt3.1" type="text" size="8" tabindex="1" disabled>
           </td>
           <td class="midterm-column hidden-column">
-            <input id="midterm3.1" name="midterm3.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+            <input id="midterm3.1" name="midterm3.1" type="text" size="8" tabindex="1" disabled>
           </td>
           <td class="final-column hidden-column">
-            <input id="final3.1" name="final3.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+            <input id="final3.1" name="final3.1" type="text" size="8" tabindex="1" disabled>
           </td>
           <td class="qt-column hidden-column">
-            <select id="qt_target3.1" name="qt_target3.1" class="field select medium" tabindex="11"> 
+            <select id="qt_target3.1" name="qt_target3.1" class="field select medium" tabindex="11" disabled> 
                 <option value="Choose an item">Choose an item</option>
                 <option value="Yes">Yes</option>
                 <option value="No">No</option>
               </select>                
           </td>
           <td class="midterm-column hidden-column">
-            <select id="midterm_target3.1" name="midterm_target3.1" class="field select medium" tabindex="11"> 
+            <select id="midterm_target3.1" name="midterm_target3.1" class="field select medium" tabindex="11" disabled> 
                 <option value="Choose an item">Choose an item</option>
                 <option value="Yes">Yes</option>
                 <option value="No">No</option>
               </select>                
           </td>
           <td class="final-column hidden-column">
-            <select id="final_target3.1" name="final_target3.1" class="field select medium" tabindex="11"> 
+            <select id="final_target3.1" name="final_target3.1" class="field select medium" tabindex="11" disabled> 
                 <option value="Choose an item">Choose an item</option>
                 <option value="Yes">Yes</option>
                 <option value="No">No</option>
@@ -936,36 +936,36 @@
       </tr>      
       <tr>
         <td>
-          <input id="outcome4" name="outcome4" type="text">
+          <input id="outcome4" name="outcome4" type="text" disabled>
         </td>
         <td>
-          <input id="target4.1" name="target4.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+          <input id="target4.1" name="target4.1" type="text" size="8" tabindex="1" disabled>
         </td>
         <td class="qt-column hidden-column">
-          <input id="qt4.1" name="qt4.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+          <input id="qt4.1" name="qt4.1" type="text" size="8" tabindex="1" disabled>
         </td>
         <td class="midterm-column hidden-column">
-          <input id="midterm4.1" name="midterm4.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+          <input id="midterm4.1" name="midterm4.1" type="text" size="8" tabindex="1" disabled>
         </td>
         <td class="final-column hidden-column">
-          <input id="final4.1" name="final4.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+          <input id="final4.1" name="final4.1" type="text" size="8" tabindex="1" disabled>
         </td>
         <td class="qt-column hidden-column">
-          <select id="qt_target4.1" name="qt_target4.1" class="field select medium" tabindex="11"> 
+          <select id="qt_target4.1" name="qt_target4.1" class="field select medium" tabindex="11" disabled> 
               <option value="Choose an item">Choose an item</option>
               <option value="Yes">Yes</option>
               <option value="No">No</option>
             </select>                
         </td>
         <td class="midterm-column hidden-column">
-          <select id="midterm_target4.1" name="midterm_target4.1" class="field select medium" tabindex="11"> 
+          <select id="midterm_target4.1" name="midterm_target4.1" class="field select medium" tabindex="11" disabled> 
               <option value="Choose an item">Choose an item</option>
               <option value="Yes">Yes</option>
               <option value="No">No</option>
             </select>                
         </td>
         <td class="final-column hidden-column">
-          <select id="final_target4.1" name="final_target4.1" class="field select medium" tabindex="11"> 
+          <select id="final_target4.1" name="final_target4.1" class="field select medium" tabindex="11" disabled> 
               <option value="Choose an item">Choose an item</option>
               <option value="Yes">Yes</option>
               <option value="No">No</option>
@@ -974,36 +974,36 @@
     </tr> 
     <tr>
       <td>
-        <input id="outcome5" name="outcome5" type="text">
+        <input id="outcome5" name="outcome5" type="text" disabled>
       </td>
       <td>
-        <input id="target5.1" name="target5.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+        <input id="target5.1" name="target5.1" type="text" size="8" tabindex="1" disabled>
       </td>
       <td class="qt-column hidden-column">
-        <input id="qt5.1" name="qt5.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+        <input id="qt5.1" name="qt5.1" type="text" size="8" tabindex="1" disabled>
       </td>
       <td class="midterm-column hidden-column">
-        <input id="midterm5.1" name="midterm5.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+        <input id="midterm5.1" name="midterm5.1" type="text" size="8" tabindex="1" disabled>
       </td>
       <td class="final-column hidden-column">
-        <input id="final5.1" name="final5.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+        <input id="final5.1" name="final5.1" type="text" size="8" tabindex="1" disabled>
       </td>
       <td class="qt-column hidden-column">
-        <select id="qt_target5.1" name="qt_target5.1" class="field select medium" tabindex="11"> 
+        <select id="qt_target5.1" name="qt_target5.1" class="field select medium" tabindex="11" disabled> 
             <option value="Choose an item">Choose an item</option>
             <option value="Yes">Yes</option>
             <option value="No">No</option>
           </select>                
       </td>
       <td class="midterm-column hidden-column">
-        <select id="midterm_target5.1" name="midterm_target5.1" class="field select medium" tabindex="11"> 
+        <select id="midterm_target5.1" name="midterm_target5.1" class="field select medium" tabindex="11" disabled> 
             <option value="Choose an item">Choose an item</option>
             <option value="Yes">Yes</option>
             <option value="No">No</option>
           </select>                
       </td>
       <td class="final-column hidden-column">
-        <select id="final_target5.1" name="final_target5.1" class="field select medium" tabindex="11"> 
+        <select id="final_target5.1" name="final_target5.1" class="field select medium" tabindex="11" disabled> 
             <option value="Choose an item">Choose an item</option>
             <option value="Yes">Yes</option>
             <option value="No">No</option>
@@ -1012,36 +1012,36 @@
   </tr>    
     <tr>
       <td>
-        <input id="outcome6" name="outcome6" type="text">
+        <input id="outcome6" name="outcome6" type="text" disabled>
       </td>
       <td>
-        <input id="target6.1" name="target6.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+        <input id="target6.1" name="target6.1" type="text" size="8" tabindex="1" disabled>
       </td>
       <td class="qt-column hidden-column">
-        <input id="qt6.1" name="qt6.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+        <input id="qt6.1" name="qt6.1" type="text" size="8" tabindex="1" disabled>
       </td>
       <td class="midterm-column hidden-column">
-        <input id="midterm6.1" name="midterm6.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+        <input id="midterm6.1" name="midterm6.1" type="text" size="8" tabindex="1" disabled>
       </td>
       <td class="final-column hidden-column">
-        <input id="final6.1" name="final6.1" type="text" class="field text fn" value="" size="8" tabindex="1">
+        <input id="final6.1" name="final6.1" type="text" size="8" tabindex="1" disabled>
       </td>
       <td class="qt-column hidden-column">
-        <select id="qt_target6.1" name="qt_target6.1" class="field select medium" tabindex="11"> 
+        <select id="qt_target6.1" name="qt_target6.1" class="field select medium" tabindex="11" disabled> 
             <option value="Choose an item">Choose an item</option>
             <option value="Yes">Yes</option>
             <option value="No">No</option>
         </select>                
       </td>
       <td class="midterm-column hidden-column">
-        <select id="midterm_target6.1" name="midterm_target6.1" class="field select medium" tabindex="11"> 
+        <select id="midterm_target6.1" name="midterm_target6.1" class="field select medium" tabindex="11" disabled> 
             <option value="Choose an item">Choose an item</option>
             <option value="Yes">Yes</option>
             <option value="No">No</option>
         </select>                
       </td>
       <td class="final-column hidden-column">
-        <select id="final_target6.1" name="final_target6.1" class="field select medium" tabindex="11"> 
+        <select id="final_target6.1" name="final_target6.1" class="field select medium" tabindex="11" disabled> 
             <option value="Choose an item">Choose an item</option>
             <option value="Yes">Yes</option>
             <option value="No">No</option>
@@ -1057,7 +1057,7 @@
     <div>
       <label for="funds_explain"><b>Award Amendment</b> <p>If the YSAB award needs to be increased for this project before the end of the period, make the request and provide a justification for the increase and the amount of the increase.</p></label>
       <div>
-        <textarea id="funds_explain" name="funds_explain" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder="Maximum 250 words"></textarea>
+        <textarea id="funds_explain" name="funds_explain" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder="Maximum 250 words" disabled></textarea>
       </div>
   </div>
 
@@ -1065,7 +1065,7 @@
     <p style="color:red;">Quarterly-term Report Only</p>
     <label for="qt_full_amount">Are you on track to spend the full amount awarded in your application?</label>
     <div>
-      <select name="qt_full_amount" tabindex="11"> 
+      <select name="qt_full_amount" tabindex="11" disabled> 
         <option value="Choose an item">Choose an item</option>
         <option value="Yes">Yes</option>
         <option value="No">No</option>
@@ -1078,7 +1078,7 @@
       If no, describe any problems or obstacles that have affected your ability to spend your grant funds.
     </label>
     <div>
-     <textarea name="qt_full_amount_no" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder=""></textarea>
+     <textarea name="qt_full_amount_no" spellcheck="true" rows="10" cols="50" tabindex="4" disabled></textarea>
    </div>
  </div>
 
@@ -1087,7 +1087,7 @@
       If you are <b>not</b> on track to meet output and/or outcome target levels, describe any problems or obstacles that have affected your ability to achieve them.
     </label>
     <div>
-      <textarea name="qt_full_amount_no2" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder=""></textarea>
+      <textarea name="qt_full_amount_no2" spellcheck="true" rows="10" cols="50" tabindex="4" disabled></textarea>
     </div>
   </div>
 
@@ -1095,7 +1095,7 @@
       <p style="color:red;">Mid-term Report Only</p>
       <label for="midterm_full_amount">Are you on track to spend the full amount awarded in your application?</label>
       <div>
-        <select name="midterm_full_amount" tabindex="11"> 
+        <select name="midterm_full_amount" tabindex="11" disabled> 
           <option value="Choose an item">Choose an item</option>
           <option value="Yes">Yes</option>
           <option value="No">No</option>
@@ -1108,7 +1108,7 @@
         If no, describe any problems or obstacles that have affected your ability to spend your grant funds.
       </label>
       <div>
-       <textarea name="midterm_full_amount_no" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder=""></textarea>
+       <textarea name="midterm_full_amount_no" spellcheck="true" rows="10" cols="50" tabindex="4" disabled></textarea>
      </div>
    </div>
 
@@ -1117,7 +1117,7 @@
         If you are <b>not</b> on track to meet output and/or outcome target levels, describe any problems or obstacles that have affected your ability to achieve them.
       </label>
       <div>
-        <textarea name="midterm_full_amount_no2" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder=""></textarea>
+        <textarea name="midterm_full_amount_no2" spellcheck="true" rows="10" cols="50" tabindex="4" disabled></textarea>
       </div>
     </div>
     
@@ -1125,7 +1125,7 @@
       <p style="color:red;">Final Report Only</p>
       <label for="final_full_amount">Did you spend the full amount awarded in your application?</label>
       <div>
-        <select name="final_full_amount" class="field select medium" tabindex="11"> 
+        <select name="final_full_amount" class="field select medium" tabindex="11" disabled> 
           <option value="Choose an item">Choose an item</option>
           <option value="Yes">Yes</option>
           <option value="No">No</option>
@@ -1138,7 +1138,7 @@
       If no, describe any problems or obstacles that have affected your ability to spend your grant funds and <u>indicate the percentage spent</u>.
       </label>
       <div>
-       <textarea name="final_full_amount_no" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder=""></textarea>
+       <textarea name="final_full_amount_no" spellcheck="true" rows="10" cols="50" tabindex="4" disabled></textarea>
       </div>
    </div>
 
@@ -1147,7 +1147,7 @@
         If your output and/or outcome target levels were <b>not</b> met, describe any problems or obstacles that affected your ability to achieve them. 
       </label>
       <div>
-        <textarea name="final_full_amount_no2" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder=""></textarea>
+        <textarea name="final_full_amount_no2" spellcheck="true" rows="10" cols="50" tabindex="4" disabled></textarea>
       </div>
     </div>
 
@@ -1156,7 +1156,7 @@
     <div>
       <label for="challenges_discrepances">Provide any overlooked challenges or discrepancies encountered while managing the grant funds, such as discrepancies between the intended and actual use of funds or unanticipated issues not addressed elsewhere.</label>
       <div>
-        <textarea id="challenges_discrepances" name="challenges_discrepances" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder=""></textarea>
+        <textarea id="challenges_discrepances" name="challenges_discrepances" spellcheck="true" rows="10" cols="50" tabindex="4" disabled></textarea>
       </div>
     </div>
 

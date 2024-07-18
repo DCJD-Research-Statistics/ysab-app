@@ -2,7 +2,7 @@ from flask import Flask, request, render_template, jsonify, send_file
 import pymongo
 from pymongo import MongoClient
 from dotenv import load_dotenv
-import datetime
+from datetime import datetime as dt
 import os
 import pytz
 import pandas as pd
@@ -20,7 +20,7 @@ app = Flask(__name__)
 
 def get_timestamp():
     central_timezone = pytz.timezone('America/Chicago')
-    current_time = datetime.datetime.now(central_timezone)
+    current_time = dt.now(central_timezone)
     timestamp = current_time.strftime("%m-%d-%Y %H:%M")
     return timestamp
 
@@ -52,6 +52,62 @@ def get_app_list():
     cluster.close()
     return df.app_record.to_list()
 
+prog_report_items = ['name', 
+                     'title', 
+                     'email', 
+                     'phone', 
+                     'title', 
+                     'how_funds_advanced_goals_of_program', 
+                     'project_contact',
+                     'fiscal_year',
+                     'start_date',
+                     'end_date',
+                     'amount_awarded',
+                     'amount_expended_mid',
+                     'target_a',
+                     'midterm_a', 
+                     'target_b',
+                     'midterm_b', 
+                     'output1',
+                     'output2',
+                     'output3',
+                     'output4',
+                     'output5',
+                     'output6',
+                     'target1',
+                     'target2',
+                     'target3',
+                     'target4',
+                     'target5',
+                     'target6',
+                     'midterm1', 
+                     'midterm2', 
+                     'midterm3', 
+                     'midterm4', 
+                     'midterm5', 
+                     'midterm6', 
+                     'outcome1',
+                     'outcome2',
+                     'outcome3',
+                     'outcome4',
+                     'outcome5',
+                     'outcome6',
+                     'target1.1',
+                     'target2.1',
+                     'target3.1',
+                     'target4.1',
+                     'target5.1',
+                     'target6.1',
+                     'midterm1.1', 
+                     'midterm2.1', 
+                     'midterm3.1', 
+                     'midterm4.1', 
+                     'midterm5.1', 
+                     'midterm6.1',
+                    'funds_explain',
+                    'midterm_full_amount_no',
+                    'midterm_full_amount_no2']
+
 # pre-populate fields auto - progress report 
 def get_prog_list():
     cluster = MongoClient(mongo_uri)
@@ -63,8 +119,7 @@ def get_prog_list():
     records = list(cursor)
     # Create a Pandas DataFrame
     df = pd.DataFrame(records)
-    df['app_record'] = pd.concat([df.timestamp.str[:10], df[['name', 'title', 'midterm_a', 'midterm_b', 'midterm1', 'midterm2', 'midterm3', 'midterm4', 'midterm5', 'midterm6', 
-                                                                'midterm1.1', 'midterm2.1', 'midterm3.1', 'midterm4.1', 'midterm5.1', 'midterm6.1']].astype(str)], axis=1).apply(lambda row: ' : '.join(row), axis=1)
+    df['app_record'] = pd.concat([df.timestamp.str[:10], df[prog_report_items].astype(str)], axis=1).apply(lambda row: ' : '.join(row), axis=1)
     cluster.close()
     return df.app_record.to_list()
 
@@ -82,7 +137,7 @@ def get_app_num():
     return df.shape[0] + 1
 
 def app_id(type='A'):
-    year = datetime.datetime.now().year
+    year = dt.now().year
     application_number = get_app_num()
     project_name = request.form.get('title')
     project_abbreviation = re.sub(r'[^a-zA-Z0-9\s]', '', project_name)
@@ -110,7 +165,7 @@ def get_prog_report_num():
     return df.shape[0] + 1
 
 def progress_report_id(report_period):
-    year = datetime.datetime.now().year
+    year = dt.now().year
     application_number = get_prog_report_num()
     project_name = str(request.form.get('title'))
     project_abbreviation = re.sub(r'[^a-zA-Z0-9\s]', '', project_name)
@@ -135,7 +190,7 @@ def get_ext_num():
     return df.shape[0] + 1
 
 def ext_id():
-    year = datetime.datetime.now().year
+    year = dt.now().year
     application_number = get_ext_num()
     project_name = request.form.get('title')
     project_abbreviation = re.sub(r'[^a-zA-Z0-9\s]', '', project_name)
@@ -160,7 +215,7 @@ def get_cont_num():
     return df.shape[0] + 1
 
 def cont_id():
-    year = datetime.datetime.now().year
+    year = dt.now().year
     application_number = get_cont_num()
     project_name = request.form.get('title')
     project_abbreviation = re.sub(r'[^a-zA-Z0-9\s]', '', project_name)
@@ -363,9 +418,9 @@ def application():
 def progress_report():
     return render_template('progress-report.html', dropdown_items = get_program_list(), app_list = get_app_list(), prog_list = get_prog_list())
 
-@app.route('/continuation')
-def continuation():
-    return render_template('continuation.html', app_list = get_app_list())
+# @app.route('/continuation')
+# def continuation():
+#     return render_template('continuation.html', app_list = get_app_list())
 
 @app.route('/external')
 def external():
@@ -481,13 +536,23 @@ def edit_application():
     db = cluster[db_name]
     collection = db['ysab']
     application = collection.find_one({'_id': application_id})
-    # update timestamp
-    application['timestamp'] = get_timestamp()
 
-    if application is None:
+    if application == None:
         return render_template('error.html', error=str('Application not found'))
     else:
         return render_template('edit-application.html', application=application)
+
+'''    # validate edit timeframe
+    application_time = dt.strptime(application['timestamp'], '%m-%d-%Y %H:%M')
+    current_time = dt.strptime(get_timestamp(), '%m-%d-%Y %H:%M')
+    if (current_time - application_time).days > 7:
+        return render_template('error.html', error=str('The application cannot be edited as it has surpassed the 7-day modification period.'))
+
+    else:
+        # update timestamp
+        application['timestamp'] = get_timestamp()
+        return render_template('edit-application.html', application=application)'''
+
     
 @app.route('/update-application', methods=['POST'])
 def update_application():

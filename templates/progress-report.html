@@ -52,12 +52,12 @@
       </div>
     </div>
 
-    <div>
+    <div id="app_record" class="hidden">
       <label for="app_record" style="color: #001aff">
         <b>Select Application Record</b>
       </label>
       <div>
-        <select id="app_record" name="app_record">
+        <select name="app_record">
           <option disabled selected>Choose an item</option>
           {% for item in app_list %}
             {% set split_item = item.split(' : ') %}
@@ -68,12 +68,12 @@
       </div>
     </div>
 
-    <div>
-      <label for="prog_record" style="color: #001aff">
+    <div id="prog_record" class="hidden">
+      <label style="color: #001aff" >
         <b>Select Progress Report Record</b>
       </label>
       <div>
-        <select id="prog_record" name="prog_record">
+        <select id="prog_record_list">
           <option disabled selected>Choose an item</option>
           {% for item in prog_list %}
             {% set split_item = item.split(' : ') %}
@@ -98,8 +98,10 @@
             document.getElementById('qt_full_amount_no').classList.add('hidden');
             document.getElementById('qt_full_amount_no2').classList.add('hidden');
             document.getElementById('amount_expended_qt').classList.add('hidden');
-            document.getElementById('amount_expended_mid').classList.add('hidden');
+            document.getElementById('amount_expended_mid_field').classList.add('hidden');
             document.getElementById('amount_expended_final').classList.add('hidden');
+            document.getElementById('prog_record').classList.add('hidden');
+            document.getElementById('app_record').classList.add('hidden');
 
             // hide output table columns
             const allQtColumns = document.querySelectorAll('.qt-column');
@@ -118,17 +120,19 @@
                 document.getElementById('qt_full_amount').classList.remove('hidden');
                 document.getElementById('qt_full_amount_no').classList.remove('hidden');
                 document.getElementById('qt_full_amount_no2').classList.remove('hidden');
+                document.getElementById('app_record').classList.remove('hidden');
                 allQtColumns.forEach(column => column.classList.remove('hidden-column'));
             }
             else if (value === 'M') {
-                document.getElementById('amount_expended_mid').classList.remove('hidden');
+                document.getElementById('amount_expended_mid_field').classList.remove('hidden');
                 document.getElementById('midterm_full_amount').classList.remove('hidden');
                 document.getElementById('midterm_full_amount_no').classList.remove('hidden');
                 document.getElementById('midterm_full_amount_no2').classList.remove('hidden');
+                document.getElementById('app_record').classList.remove('hidden');
                 allMidtermColumns.forEach(column => column.classList.remove('hidden-column'));
             }
             else if (value === 'F') {
-                document.getElementById('amount_expended_mid').classList.remove('hidden');
+                document.getElementById('amount_expended_mid_field').classList.remove('hidden');
                 document.getElementById('midterm_full_amount').classList.remove('hidden');
                 document.getElementById('midterm_full_amount_no').classList.remove('hidden');
                 document.getElementById('midterm_full_amount_no2').classList.remove('hidden');
@@ -137,6 +141,7 @@
                 document.getElementById('final_full_amount').classList.remove('hidden');
                 document.getElementById('final_full_amount_no').classList.remove('hidden');
                 document.getElementById('final_full_amount_no2').classList.remove('hidden');
+                document.getElementById('prog_record').classList.remove('hidden');
                 allFinalColumns.forEach(column => column.classList.remove('hidden-column'));
             }
         });
@@ -173,7 +178,7 @@
         document.getElementById("target4.1").value = values[25];
         document.getElementById("target5.1").value = values[26];
         });
-      document.getElementById("prog_record").addEventListener("change", function() {
+      document.getElementById("prog_record_list").addEventListener("change", function() {
         // Get the selected option
         var selectedOption = this.options[this.selectedIndex];
         // Split the value of selected option to get name, email, and project title
@@ -184,28 +189,57 @@
         document.getElementById("email").value = values[3];
         document.getElementById("phone").value = values[4];
         document.getElementById("title").value = values[5];
-        document.getElementById("amount_awarded").value = parseInt(values[6]);
-        document.getElementById("output1").value = values[7];
-        document.getElementById("output2").value = values[8];
-        document.getElementById("output3").value = values[9];
-        document.getElementById("output4").value = values[10];
-        document.getElementById("output5").value = values[11];
-        document.getElementById("target1").value = values[12];
-        document.getElementById("target2").value = values[13];
-        document.getElementById("target3").value = values[14];
-        document.getElementById("target4").value = values[15];
-        document.getElementById("target5").value = values[16];
-        document.getElementById("outcome1").value = values[17];
-        document.getElementById("outcome2").value = values[18];
-        document.getElementById("outcome3").value = values[19];
-        document.getElementById("outcome4").value = values[20];
-        document.getElementById("outcome5").value = values[21];
-        document.getElementById("target1.1").value = values[22];
-        document.getElementById("target2.1").value = values[23];
-        document.getElementById("target3.1").value = values[24];
-        document.getElementById("target4.1").value = values[25];
-        document.getElementById("target5.1").value = values[26];
-        });
+        document.getElementById("how_funds_advanced_goals_of_program").value = values[6];
+        document.getElementById("project_contact").value = values[7];
+        document.getElementById("fiscal_year").value = values[8];
+        document.getElementById("start_date").value = values[9];
+        document.getElementById("end_date").value = values[10];
+        document.getElementById("amount_awarded").value = parseInt(values[11]);
+        document.getElementById("amount_expended_mid").value = parseInt(values[12]);
+        document.getElementById("target_a").value = values[13];
+        document.getElementById("midterm_a").value = values[14];
+        document.getElementById("target_b").value = values[15];
+        document.getElementById("midterm_b").value = values[16];
+        document.getElementById("output1").value = values[17];
+        document.getElementById("output2").value = values[18];
+        document.getElementById("output3").value = values[19];
+        document.getElementById("output4").value = values[20];
+        document.getElementById("output5").value = values[21];
+        document.getElementById("output6").value = values[22];
+        document.getElementById("target1").value = values[23];
+        document.getElementById("target2").value = values[24];
+        document.getElementById("target3").value = values[25];
+        document.getElementById("target4").value = values[26];
+        document.getElementById("target5").value = values[27];
+        document.getElementById("target6").value = values[28];
+        document.getElementById("midterm1").value = values[29];
+        document.getElementById("midterm2").value = values[30];
+        document.getElementById("midterm3").value = values[31];
+        document.getElementById("midterm4").value = values[32];
+        document.getElementById("midterm5").value = values[33];
+        document.getElementById("midterm6").value = values[34];
+        document.getElementById("outcome1").value = values[35];
+        document.getElementById("outcome2").value = values[36];
+        document.getElementById("outcome3").value = values[37];
+        document.getElementById("outcome4").value = values[38];
+        document.getElementById("outcome5").value = values[39];
+        document.getElementById("outcome6").value = values[40];
+        document.getElementById("target1.1").value = values[41];
+        document.getElementById("target2.1").value = values[42];
+        document.getElementById("target3.1").value = values[43];
+        document.getElementById("target4.1").value = values[44];
+        document.getElementById("target5.1").value = values[45];
+        document.getElementById("target6.1").value = values[46];
+        document.getElementById("midterm1.1").value = values[47];
+        document.getElementById("midterm2.1").value = values[48];
+        document.getElementById("midterm3.1").value = values[49];
+        document.getElementById("midterm4.1").value = values[50];
+        document.getElementById("midterm5.1").value = values[51];
+        document.getElementById("midterm6.1").value = values[52];        
+        document.getElementById("funds_explain").value = values[53]; 
+        document.getElementById("funds_explain_no").value = values[54];
+        document.getElementById("funds_explain_no2").value = values[55];
+      });
     </script>
 
     <div>
@@ -328,12 +362,12 @@
      </div>
    </div>
 
-    <div id="amount_expended_mid" class="hidden">
-      <label for="amount_expended_mid">
+    <div id="amount_expended_mid_field" class="hidden">
+      <label>
       Amount Expended - Mid-term
       </label>
       <div>
-        <input name="amount_expended_mid" type="number" size="8" tabindex="1" min="1" max="99999">
+        <input id="amount_expended_mid" type="number" size="8" tabindex="1" min="1" max="99999">
      </div>
    </div>
 
