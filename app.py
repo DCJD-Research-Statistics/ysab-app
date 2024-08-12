@@ -563,6 +563,10 @@ def update_application():
         email = request.form.get('email')
         application_id = request.form.get('_id')
 
+        # make new id, timestamp
+        updated_data['timestamp'] = get_timestamp()
+        updated_data['_id'] = app_id()
+
         cluster = MongoClient(mongo_uri)
         db = cluster[db_name]
         collection = db['ysab']
