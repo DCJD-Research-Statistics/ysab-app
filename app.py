@@ -124,17 +124,27 @@ def get_prog_list():
     return df.app_record.to_list()
 
 def get_app_num():
-    cluster = MongoClient(mongo_uri)
-    db = cluster[db_name]
-    collection = db['ysab']
-    # Retrieve all records from the collection
-    cursor = collection.find()
-    # Convert the cursor to a list of dictionaries
-    records = list(cursor)
-    # Create a Pandas DataFrame
-    df = pd.DataFrame(records)
-    cluster.close()
-    return df.shape[0] + 1
+    with MongoClient(mongo_uri) as client:
+        db = client[db_name]
+        collection = db["ysab"]
+        # Count all records in the collection
+        count = collection.count_documents({})
+        app_number = count + 1
+        app_number = f"{app_number:03d}"
+
+        # Check if app_number exists in db['metadata_applications']
+        with MongoClient(mongo_uri) as client:
+            db = client[db_name]
+            metadata_collection = db['metadata_applications']
+            existing_app = metadata_collection.find_one({'app_number': app_number})
+
+            if existing_app:
+                # If yes, set app_number to max(app_metadata.app_number) + 1
+                max_app_number = metadata_collection.find_one(sort=[('app_number', -1)])['app_number'] 
+                app_number = int(max_app_number) + 1
+                app_number = f"{app_number:03d}" # change back to '000' format
+            
+    return app_number
 
 def app_id(type='A'):
     year = dt.now().year
@@ -148,7 +158,7 @@ def app_id(type='A'):
     if type=='E':
         form_type = 'E'
     # Generate unique ID
-    unique_id = f"{year}-{application_number:03d}-{project_abbreviation}-{form_type}"
+    unique_id = f"{year}-{application_number}-{project_abbreviation}-{form_type}"
     return unique_id
 
 def get_prog_report_num():
@@ -436,11 +446,28 @@ def submit_application_form():
             
             form_data = {'_id': app_id(), 'timestamp': get_timestamp(), **form_data}
 
-            # Insert data into MongoDB
-            cluster = MongoClient(mongo_uri)
-            db = cluster[db_name]
-            collection = db['ysab']
-            collection.insert_one(form_data)
+            # Create metadata_app_data variable
+            metadata_app_data = {
+                '_id': form_data['_id'],
+                'app_number': get_app_num(),  # Get app_number from get_app_num() function
+                'title': form_data['title'],
+                'name': form_data['name'],
+                'email': form_data['email'],
+                'timestamp': form_data['timestamp']
+            }
+
+            # Insert data into MongoDB - application
+            with MongoClient(mongo_uri) as client:
+                db = client[db_name]
+                collection = db['ysab']
+                collection.insert_one(form_data)
+
+            # insert data into metadata collection
+            with MongoClient(mongo_uri) as client:
+                db = client[db_name]
+                collection = db['metadata_applications']
+                collection.insert_one(metadata_app_data)
+
            # make html application w/ user responses
             make_app_form(form_data)
 
