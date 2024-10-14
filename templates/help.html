@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YSAB Help & FAQ</title>
+    <link rel="icon" href="{{url_for('static', filename='images/juvenile-logo.svg')}}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{url_for('static', filename='/style.css')}}">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+            color: #333;
+        }
+        .main-content {
+            max-width: 800px;
+            margin: 80px auto 0;
+            padding: 40px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1a73e8;
+            margin-bottom: 30px;
+        }
+        .faq-section {
+            margin-bottom: 40px;
+        }
+        .faq-question {
+            font-weight: bold;
+            color: #1a73e8;
+            margin-bottom: 10px;
+        }
+        .faq-answer {
+            margin-bottom: 20px;
+        }
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="header-bar">
+      <div class="header-content">
+        <div class="header-logo">
+          <img src="{{url_for('static', filename='images/juvenile-logo.svg')}}" alt="DCJD Logo">
+          <span>DCJD YSAB Funds</span>
+        </div>
+        <div class="header-links">
+          <a href="{{ url_for('home') }}">Home</a>
+          <a href="{{ url_for('help') }}">Help</a>
+          <a href="{{ url_for('my_applications') }}">Applications</a>
+          {% if 'user' in session %}
+            <a href="{{ url_for('logout') }}">Logout</a>
+          {% else %}
+            <a href="{{ url_for('login') }}">Login</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="main-content">
+        <h1>Help & FAQ</h1>
+
+        <div class="faq-section">
+            <div class="faq-question">How do I reset my password?</div>
+            <div class="faq-answer">
+                If you forgot your password, then email the DCJD Juvenile Research Team, and we'll send you instructions to reset your password.
+            </div>
+
+            <div class="faq-question">Can I edit my submitted application?</div>
+            <div class="faq-answer">
+                Yes, you can edit your application. Go to the "Applications" page, find the application you want to edit, and click on the "Edit" button.
+            </div>
+
+            <div class="faq-question">What should I do if I encounter an error while submitting my application?</div>
+            <div class="faq-answer">
+                If you encounter an error, first try refreshing the page and submitting again. If the problem persists, please contact our support team at daniel.pacheco@dallascounty.org with details about the error and a screenshot if possible.
+            </div>
+        </div>
+
+        <h2>Application Walkthrough Tutorial</h2>
+        <div class="video-container">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/v_TF5bCfaOw" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+
+        <div class="faq-section">
+            <div class="faq-question">Still have questions?</div>
+            <div class="faq-answer">
+                If you couldn't find the answer to your question, please don't hesitate to contact our support team at ResearchTeam-Juvenile@dallascountytx.onmicrosoft.com.
+            </div>
+        </div>
+    </div>
+</body>
+</html>

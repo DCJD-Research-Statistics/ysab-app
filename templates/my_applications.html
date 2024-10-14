@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YSAB My Applications</title>
+    <link rel="icon" href="{{url_for('static', filename='images/juvenile-logo.svg')}}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{url_for('static', filename='/style.css')}}">
+    <style>
+        body {
+          margin: 0;
+          padding: 0;
+        }
+        .main-content {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .table {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .table th {
+            background-color: #000000;
+            border-top: none;
+        }
+        .table td, .table th {
+            vertical-align: middle;
+        }
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+        .status-under-review {
+            background-color: #e9ecef;
+            color: #495057;
+        }
+        .status-approved {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .status-rejected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .action-link {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .action-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="header-bar">
+      <div class="header-content">
+        <div class="header-logo">
+          <img src="{{url_for('static', filename='images/juvenile-logo.svg')}}" alt="DCJD Logo">
+          <span>DCJD YSAB Funds</span>
+        </div>
+        <div class="header-links">
+          <a href="{{ url_for('home') }}">Home</a>
+          <a href="{{ url_for('help') }}">Help</a>
+          <a href="#">Applications</a>
+          {% if 'user' in session %}
+            <a href="{{ url_for('logout') }}">Logout</a>
+          {% else %}
+            <a href="{{ url_for('login') }}">Login</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="main-content">
+        <h1 class="mb-4">Your applications</h1>
+        <p class="text-muted mb-4">View, edit, and download your previous applications</p>
+        
+        {% if message %}
+        <div class="alert alert-warning" role="alert">
+            {{ message }}
+            </div>
+        {% endif %}
+        
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Submission Date</th>
+                    <th>Application</th>
+                    <th>Type</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for application in applications %}
+                <tr>
+                    <td>{{ application.submission_date }}</td>
+                    <td>{{ application.title }}</td>
+                    <td>{{ application.type }}</td>
+                    <td>
+                        {% if application.type == 'Internal Application' %}
+                            <a href="{{ url_for('download_file_a_fromtable', application_id=application.id) }}" class="action-link btn btn-primary text-white">Download</a>
+                        {% elif application.type == 'External Application' %}
+                            <a href="{{ url_for('download_file_e_fromtable', application_id=application.id) }}" class="action-link btn btn-primary text-white">Download</a>
+                        {% endif %}
+                        <a href="{{ url_for('edit_application', application_id=application.id, application_type=application.type) }}" class="action-link btn btn-secondary text-white ml-2">Edit</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

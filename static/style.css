@@ -6,9 +6,10 @@
 
 body {
   padding: 20px 15%;
-  font-family: 'Arial', sans-serif;
-  background-color: #f4f4f4;
-  color: #232323;
+  font-family: 'Roboto', sans-serif;
+  background-color: #ffffff;
+  color: #000000;
+  margin: 0; /* Add this line to remove default body margin */
 }
 
 form header {
@@ -43,8 +44,8 @@ legend {
   width: 25%;
   float: left;
   padding-right: 10px;
-  font-weight: bold;
-  color: #3a3a3a;
+  /* font-weight: bold; */
+  color: #000000;
 }
 
 form > div > div,
@@ -227,3 +228,131 @@ input[type="text"] {
   background-color: rgb(22, 89, 135);
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
 }
+
+/* New styles from application.html */
+.header-bar {
+  background-color: #f8f9fa;
+  padding: 10px 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,.1);
+  width: 100%;
+  margin: 0;
+  position: absolute; /* Add this line */
+  left: 0; /* Add this line */
+  top: 0; /* Add this line */
+  position: relative;
+  z-index: 1000;
+  background-color: rgba(248, 249, 250, 0.9); /* Semi-transparent background */
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+}
+
+.header-logo img {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+}
+
+.header-links {
+  display: flex;
+  align-items: center;
+  position: relative;
+  z-index: 1001;
+}
+
+.header-links a {
+  margin-left: 20px;
+  text-decoration: none;
+  color: #333;
+  position: relative;
+  z-index: 1002;
+  cursor: pointer;
+}
+
+.header-links a:hover {
+  text-decoration: underline;
+}
+
+.EditButton {
+  background-color: #007bff;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  text-decoration: none;
+}
+
+.main-content {
+  margin-top: 70px; /* Adjust this value based on your header height */
+}
+
+.flash-messages {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    width: 80%;
+    max-width: 600px;
+}
+
+.alert {
+    padding: 15px;
+    margin-bottom: 10px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.alert-error {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.alert .close {
+    float: right;
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 1;
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    opacity: .5;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.alert .close:hover {
+    opacity: .75;
+}
+
+.header-bar {
+    z-index: 1000 !important;
+}
+
+.header-links {
+    z-index: 1001 !important;
+}
+
+.header-links a {
+    z-index: 1002 !important;
+}
+

@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="{{url_for('static', filename='/style.css')}}"> 
+  <title>YSAB External Application</title>   
+  <link rel="icon" href="{{url_for('static', filename='images/fav-icon-orange.svg')}}">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+    .header-bar {
+      width: 100%;
+      background-color: #f8f9fa;
+      padding: 10px 0;
+      box-shadow: 0 2px 4px rgba(0,0,0,.1);
+    }
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .main-content {
+      padding: 20px 15%;
+    }
+    .edit-mode-message {
+      background-color: #ffc107;
+      color: #000;
+      text-align: center;
+      padding: 10px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="edit-mode-message">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+          {{ message }}
+        {% endfor %}
+      {% else %}
+        You are currently in edit mode.
+      {% endif %}
+    {% endwith %}
+  </div>
+
+  <div class="header-bar">
+    <div class="header-content">
+      <div class="header-logo">
+        <img src="{{url_for('static', filename='images/juvenile-logo.svg')}}" alt="DCJD Logo">
+        <span>DCJD YSAB Funds</span>
+      </div>
+      <div class="header-links">
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('help') }}">Help</a>
+        <a href="{{ url_for('my_applications') }}">Applications</a>
+        {% if 'user' in session %}
+        <a href="{{ url_for('logout') }}">Logout</a>
+        {% else %}
+          <a href="{{ url_for('login') }}">Login</a>
+        {% endif %}
+        </div>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <form action="/update-application" method="POST">
+    
+    <header>
+      <h2>Dallas County Juror Fund Application for Community-Based Organizations</h2>
+      <div>Dallas County jurors have the option of contributing their juror fund stipend to help at risk youth in the Dallas County Juvenile Department and the foster care system.  The Youth Services Advisory Board (YSAB) oversees the use of the Dallas County Juror Fund for special projects to address specific concerns related to juvenile crime prevention. In order to be eligible for YSAB recommendation, Dallas County Juvenile Department fund requestors must complete the following application. </div>
+    </header>
+
+    <p><b>Disclaimer:</b> For privacy and security reasons, please be advised not to include any confidential or sensitive information in your submission.</p>
+    <input type="hidden" name="application_type" value="External Application">
+    <input type="hidden" name="_id" id="_id" value="{{ application['_id'] }}">
+    <input type="hidden" name="timestamp" id="timestamp" value="{{ application['timestamp'] }}">
+
+    <div>
+      <label for="name">Applicant Name</label>
+      <div>
+        <input id="name" name="name" type="text" value="{{ application['name'] }}" size="8" tabindex="1" required>
+      </div>
+    </div>
+
+    <div>
+        <label for="app_title">
+        Applicant Title
+        </label>
+        <div>
+          <input id="app_title" name="app_title" type="text" class="field text fn" value="{{ application['app_title'] }}" size="8" tabindex="1">
+       </div>
+    </div>
+
+    <div>
+        <label for="email">
+          Applicant Contact Email
+        </label>
+        <div>
+          <input id="email" name="email" type="email" spellcheck="false" value="{{ application['email'] }}" maxlength="255" tabindex="3" required> 
+       </div>
+    </div>
+
+    <div>
+      <label for="phone">
+        Applicant Contact Phone Number
+      </label>
+      <div>
+        <input id="phone" name="phone" type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="123-456-7890" oninput="formatPhoneNumber(this)" maxlength="12" required value="{{ application['phone'] }}">
+      </div>
+    </div>
+  <script>
+    function formatPhoneNumber(input) {
+      // Remove any non-numeric characters
+      var phoneNumber = input.value.replace(/\D/g, '');
+
+      // Check if the length is greater than 10, trim it
+      if (phoneNumber.length > 10) {
+        phoneNumber = phoneNumber.substr(0, 10);
+      }
+
+      // Add dashes in the required format
+      var formattedPhoneNumber =
+        phoneNumber.slice(0, 3) + '-' + phoneNumber.slice(3, 6) + '-' + phoneNumber.slice(6, 10);
+
+      // Update the input field value
+      input.value = formattedPhoneNumber;
+    }
+  </script>
+
+    <div>
+        <label for="application_type">
+            Application Type
+        </label>
+        <div>
+        <select id="application_type" name="application_type" class="field select medium" tabindex="11"> 
+          <option disabled selected>Choose an item</option>
+          <option value="new" {{ 'selected' if application['application_type'] == 'new' else '' }}>New</option>
+          <option value="renewal" {{ 'selected' if application['application_type'] == 'renewal' else '' }}>Renewal</option>
+        </select>
+        </div>
+    </div>
+
+  <h3>Profile</h3>
+
+    <div>
+      <label for="org_name">Organization Name</label>
+      <div>
+        <input id="org_name" name="org_name" type="text" value="{{ application['org_name'] }}" size="8" tabindex="1" required>
+      </div>
+    </div>
+
+    <div>
+      <label for="org_website">Organization Website</label>
+      <div>
+        <input id="org_website" name="org_website" type="text" value="{{ application['org_website'] }}" size="8" tabindex="1" required>
+      </div>
+    </div>
+
+    <div>
+        <label for="title">
+          Project Title
+        </label>
+        <div>
+          <input id="title" name="title" type="text" class="field text fn" value="{{ application['title'] }}" size="8" tabindex="1">
+       </div>
+    </div>
+
+    <div>
+        <label class="desc" id="service_area" for="service_area">
+            Service Area
+        </label>
+        <div>
+        <select id="service_area" name="service_area" class="field select medium" tabindex="11"> 
+          <option disabled selected>Choose an item</option>
+          <option value="Clinical Services" {{ 'selected' if application['service_area'] == 'Clinical Services' else '' }}>Clinical Services</option>
+          <option value="Detention Services" {{ 'selected' if application['service_area'] == 'Detention Services' else '' }}>Detention Services</option>
+          <option value="Educational Services" {{ 'selected' if application['service_area'] == 'Educational Services' else '' }}>Educational Services</option>
+          <option value="Probation Services" {{ 'selected' if application['service_area'] == 'Probation Services' else '' }}>Probation Services</option>
+          <option value="Residential Services" {{ 'selected' if application['service_area'] == 'Residential Services' else '' }}>Residential Services</option>
+          <option value="Administration" {{ 'selected' if application['service_area'] == 'Administration' else '' }}>Administration</option>
+        </select>
+        </div>
+    </div>
+
+    <div>
+        <label for="address">
+        Address
+        </label>
+        <div>
+          <input id="address" name="address" type="text" class="field text fn" value="{{ application['address'] }}" size="8" tabindex="1">
+       </div>
+    </div>
+
+    <div>
+        <label for="amount">
+        Amount Requested
+        </label>
+        <div>
+          <input id="amount" name="amount" type="number" class="field text fn" value="{{ application['amount'] }}" size="8" tabindex="1" min="1" max="99999">
+       </div>
+     </div>
+
+    <div>
+      <label for="mission_statement"><b>Organization Mission Statement</b></label>
+      <div>
+        <textarea id="mission_statement" name="mission_statement" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder="Maximum 250 words">{{ application['mission_statement'] }}</textarea>
+      </div>
+   </div>
+
+    <div>
+      <label for="org_history"><b>Organization History</b><p>(Including the year it was founded, and list current programs)</p></label>
+      <div>
+        <textarea id="org_history" name="org_history" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder="Maximum 250 words">{{ application['org_history'] }}</textarea>
+      </div>
+   </div>
+
+   <div>
+    <label for="org_worked_with_other_juv_dept">
+      Has your organization worked with any juvenile departments within the state of Texas?
+    </label>
+    <div>
+    <select id="org_worked_with_other_juv_dept" name="org_worked_with_other_juv_dept" tabindex="11"> 
+      <option disabled selected>Choose an item</option>
+      <option value="Yes" {{ 'selected' if application['org_worked_with_other_juv_dept'] == 'Yes' else '' }}>Yes</option>
+      <option value="No" {{ 'selected' if application['org_worked_with_other_juv_dept'] == 'No' else '' }}>No</option>
+    </select>
+    </div>
+   </div>
+
+   <div>
+     <label for="org_worked_with_other_juv_dept2">If yes, please indicate when, where, and how long the project was held. Include details of services provided by your project for those juvenile departments.</label>
+      <div>
+        <textarea id="org_worked_with_other_juv_dept2" name="org_worked_with_other_juv_dept2" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder="Maximum 250 words">{{ application['org_worked_with_other_juv_dept2'] }}</textarea>
+      </div>
+   </div>
+
+   <div>
+    <label for="hear_about_funding_source">
+      How did you hear about this funding source?
+    </label>
+    <div>
+      <input id="hear_about_funding_source" name="hear_about_funding_source" type="text" class="field text fn" value="{{ application['hear_about_funding_source'] }}" size="8" tabindex="1">
+   </div>
+  </div>
+
+  <h3>Proposed Project</h3>
+
+  <div>
+    <label for="problem_statement"><b>Problem Statement</b><p>(Identify the main challenge your program faces that will be addressed through using YSAB funds and how will they improve the program's objectives)</p></label>
+    <div>
+      <textarea id="problem_statement" name="problem_statement" spellcheck="true" rows="8" cols="50" tabindex="4" placeholder="">{{ application['problem_statement'] }}</textarea>
+    </div>
+  </div>
+
+    <div>
+      <label for="target_group"><b>Target Group/Population</b><p>(Be <u><b>specific</b></u> about which youth from the program will benefit from expending these funds)</p></label>
+      <div>
+        <textarea id="target_group" name="target_group" spellcheck="true" rows="8" cols="50" tabindex="4" placeholder="Maximum 250 words">{{ application['target_group'] }}</textarea>
+      </div>
+   </div>
+
+    <div>
+      <label for="project_appoarch"><b>Project Approach & Activities</b><p>(Provide a detailed justification for proposing this project, including specific items to be purchased with the funds)</p> <p>All items specified here must reflect the items in the section <i>Budget Estimate</i>.</p></label>
+      <div>
+        <textarea id="project_appoarch" name="project_appoarch" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder="Maximum 500 words">{{ application['project_appoarch'] }}</textarea>
+      </div>
+  </div>
+      
+  <h3>Performance Management </h3>
+
+  <div>
+    <label for="capacity_capabilities"><b>Capacity & Capabilities</b><p>Provide the names and titles of staff who will be responsible for the administration, data collection/monitoring, and management of the project.</p></label>
+    <div>
+      <textarea id="capacity_capabilities" name="capacity_capabilities" spellcheck="true" rows="10" cols="50" tabindex="4">{{ application['capacity_capabilities'] }}</textarea>
+    </div>
+  </div>
+
+  
+  <div>
+    <label for="goals">
+      What are the project's goals?
+    </label>
+    <div>
+      <textarea id="goals" name="goals" spellcheck="true" rows="8" cols="50" tabindex="4" placeholder="">{{ application['goals'] }}</textarea>
+    </div>
+  </div> 
+
+  <br>
+
+    <div>
+      <label for="reporting_interval">
+          Select the suggested reporting interval for the expenditure of these funds.
+      </label>
+      <div>
+        <select id="reporting_interval" name="reporting_interval" class="field select medium" tabindex="11"> 
+          <option disabled selected>Choose an item</option>
+          <option value="Quarterly" {{ 'selected' if application['reporting_interval'] == 'Quarterly' else '' }}>Quarterly</option>
+          <option value="Bi-annually" {{ 'selected' if application['reporting_interval'] == 'Bi-annually' else '' }}>Bi-annually</option>
+          <option value="Annually" {{ 'selected' if application['reporting_interval'] == 'Annually' else '' }}>Annually</option>
+        </select>
+      </div>
+    </div>
+
+    <br>
+
+    <div>
+      <label class="desc" id="output_measures" for="output_measures"><b>List Project Output Measures</b><p>(Output measures represent the immediate and tangible products generated by program activities. Target values should indicate number of youth, number of individuals, number of units, etc.)</p></label>
+      <div>
+        <table id="output_measures">
+          <thead>
+              <tr>
+                  <th>Output Measures</th>
+                  <th>Target</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr>
+                  <td><input type="text" name="output1" value="{{ application['output1'] }}"></td>
+                  <td><input type="text" name="target1" value="{{ application['target1'] }}"></td>
+              </tr>
+              <tr>
+                  <td><input type="text" name="output2" value="{{ application['output2'] }}"></td>
+                  <td><input type="text" name="target2" value="{{ application['target2'] }}"></td>
+              </tr>
+              <tr>
+                  <td><input type="text" name="output3" value="{{ application['output3'] }}"></td>
+                  <td><input type="text" name="target3" value="{{ application['target3'] }}"></td>
+              </tr>
+              <tr>
+                  <td><input type="text" name="output4" value="{{ application['output4'] }}"></td>
+                  <td><input type="text" name="target4" value="{{ application['target4'] }}"></td>
+              </tr>
+              <tr>
+                  <td><input type="text" name="output5" value="{{ application['output5'] }}"></td>
+                  <td><input type="text" name="target5" value="{{ application['target5'] }}"></td>
+              </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>  
+
+    <div>
+      <label for="outcome_measures"><b>List Project Outcome Measures</b><p>(Outcome measures help determine whether the program is achieving its stated goals. For example, increasing the number of youth who make  the “honor roll,” or reduces the recidivism rate, or increasing the number and rate of youth who apply to a post-secondary institution)</p></label>
+      <div>
+        <table id="outcome_measures">
+          <thead>
+              <tr>
+                  <th>Outcome Measures</th>
+                  <th>Target</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr>
+                  <td><input type="text" name="outcome1" value="{{ application['outcome1'] }}"></td>
+                  <td><input type="text" name="target1.1" value="{{ application['target1.1'] }}"></td>
+              </tr>
+              <tr>
+                  <td><input type="text" name="outcome2" value="{{ application['outcome2'] }}"></td>
+                  <td><input type="text" name="target2.1" value="{{ application['target2.1'] }}"></td>
+              </tr>
+              <tr>
+                  <td><input type="text" name="outcome3" value="{{ application['outcome3'] }}"></td>
+                  <td><input type="text" name="target3.1" value="{{ application['target3.1'] }}"></td>
+              </tr>
+              <tr>
+                  <td><input type="text" name="outcome4" value="{{ application['outcome4'] }}"></td>
+                  <td><input type="text" name="target4.1" value="{{ application['target4.1'] }}"></td>
+              </tr>
+              <tr>
+                  <td><input type="text" name="outcome5" value="{{ application['outcome5'] }}"></td>
+                  <td><input type="text" name="target5.1"></td>
+              </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>  
+
+    <div>
+      <label for="data_management"><b>Data Management </b><p>What data will be collected, how, and by whom to determine if the project is achieving the established output and outcome measures throughout the grant period? Include a detailed data collection and analysis plan.</p></label>
+      <div>
+        <textarea id="data_management" name="data_management" spellcheck="true" rows="10" cols="50" tabindex="4">{{ application['data_management'] }}</textarea>
+      </div>
+    </div>
+
+  <h3>Budget Summary</h3>
+    <div>
+      <label for="other_funding">
+        Provide the name of any other source of funding that may be used for this project. <p>(Indicate NONE if there are no other sources of funding)</p>
+      </label>
+      <div>
+        <input id="other_funding" name="other_funding" type="text" class="field text fn" value="{{ application['other_funding'] }}" size="8" tabindex="1">
+    </div>
+    </div>
+    <br>
+    <div>
+      <label class="desc" id="budget_estimate" for="budget_estimate"><b>Budget Estimate</b>: Indicate the different categories of expenses proposed in the project. Provide, in the "Description" column, an explanation of each expense associated with the category.  Expenses listed in the budget must be justified in the Project Approach & Activities section.</label>
+      <div>
+        <p>Category definitions: Use the follow category definitions as guidelines for selecting the appropriate label.</p>
+        <ul>
+          <li><b>Food</b>: Expenses related to food for various occasions. Items could include but not limited to: lunch, dinners, snacks, refreshments, pantry items.</li>
+          <li><b>Gifts</b>: Expenditures made as a gesture of goodwill, appreciation, or celebration. They are not tied to incentives or rewards for specific achievements or behaviors. Items could include but not limited to: gift bags, small electronics, notebooks, makeup.</li>
+          <li><b>SEM (Supplies, Equipment, Materials)</b>: Expenditures related to supplies, equipment, or materials for enhancing the program's activities and enriching the experience for participants. Items could include but not limited to: school/art supplies, games (table games, board games, gym games, etc.), books, decorations.</li>
+          <li><b>Field Trips</b>: Expenditures related to organizing and facilitating educational or recreational outings outside of the program's usual location.</li>
+          <li><b>Clothing</b>: Expenditures related to the purchase of clothing items such as uniforms, or other attire, as needed.</li>
+          <li><b>Scholarships</b>: Expenditures related to providing financial assistance to individuals to support their education. Scholarships may take various forms, including monetary awards, educational materials such as textbooks or laptops, or direct payment for tuition and/or fees to educational institutions.</li>
+          <li><b>Other</b>: For expenditures that do not fit into any of the predefined budget categories.</li>
+        </ul>
+      </div>
+      <div>
+    
+        <table id="budget_estimate">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Cost per Item</th>
+                    <th>Number of Items</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>      
+                      <select id="category1" name="category1" class="field select medium" tabindex="11"> 
+                        <option value="Null"></option>
+                        <option value="Food" {{ 'selected' if application['category1'] == 'Food' else '' }}>Food</option>
+                        <option value="Gifts" {{ 'selected' if application['category1'] == 'Gifts' else '' }}>Gifts</option>
+                        <option value="SEM" {{ 'selected' if application['category1'] == 'SEM' else '' }}>SEM</option>
+                        <option value="Field Trips" {{ 'selected' if application['category1'] == 'Field Trips' else '' }}>Field Trips</option>
+                        <option value="Clothes" {{ 'selected' if application['category1'] == 'Clothes' else '' }}>Clothes</option>
+                        <option value="Scholarships" {{ 'selected' if application['category1'] == 'Scholarships' else '' }}>Scholarships</option>
+                        <option value="Other" {{ 'selected' if application['category1'] == 'Other' else '' }}>Other</option>
+                      </select>
+                    </td>
+                    <td><input type="text" name="description1" value="{{ application['description1'] }}"></td>
+                    <td><input type="text" name="cost1" value="{{ application['cost1'] }}"></td>
+                    <td><input type="text" name="items1" value="{{ application['items1'] }}"></td>
+                    <td><input type="text" name="total1" readonly value="{{ application['total1'] }}"></td>
+                </tr>
+                <tr>
+                    <td>      
+                      <select id="category2" name="category2" class="field select medium" tabindex="11"> 
+                        <option value="Null"></option>
+                        <option value="Food" {{ 'selected' if application['category2'] == 'Food' else '' }}>Food</option>
+                        <option value="Gifts" {{ 'selected' if application['category2'] == 'Gifts' else '' }}>Gifts</option>
+                        <option value="SEM" {{ 'selected' if application['category2'] == 'SEM' else '' }}>SEM</option>
+                        <option value="Field Trips" {{ 'selected' if application['category2'] == 'Field Trips' else '' }}>Field Trips</option>
+                        <option value="Clothes" {{ 'selected' if application['category2'] == 'Clothes' else '' }}>Clothes</option>
+                        <option value="Scholarships" {{ 'selected' if application['category2'] == 'Scholarships' else '' }}>Scholarships</option>
+                        <option value="Other" {{ 'selected' if application['category2'] == 'Other' else '' }}>Other</option>
+                      </select>
+                    </td>
+                    <td><input type="text" name="description2" value="{{ application['description2'] }}"></td>
+                    <td><input type="text" name="cost2" value="{{ application['cost2'] }}"></td>
+                    <td><input type="text" name="items2" value="{{ application['items2'] }}"></td>
+                    <td><input type="text" name="total2" readonly value="{{ application['total2'] }}"></td>
+                </tr>
+                <tr>
+                    <td>      
+                      <select id="category3" name="category3" class="field select medium" tabindex="11"> 
+                        <option value="Null"></option>
+                        <option value="Food" {{ 'selected' if application['category3'] == 'Food' else '' }}>Food</option>
+                        <option value="Gifts" {{ 'selected' if application['category3'] == 'Gifts' else '' }}>Gifts</option>
+                        <option value="SEM" {{ 'selected' if application['category3'] == 'SEM' else '' }}>SEM</option>
+                        <option value="Field Trips" {{ 'selected' if application['category3'] == 'Field Trips' else '' }}>Field Trips</option>
+                        <option value="Clothes" {{ 'selected' if application['category3'] == 'Clothes' else '' }}>Clothes</option>
+                        <option value="Scholarships" {{ 'selected' if application['category3'] == 'Scholarships' else '' }}>Scholarships</option>
+                        <option value="Other" {{ 'selected' if application['category3'] == 'Other' else '' }}>Other</option>
+                      </select>
+                    </td>
+                    <td><input type="text" name="description3"></td>
+                    <td><input type="text" name="cost3" value="{{ application['cost3'] }}"></td>
+                    <td><input type="text" name="items3" value="{{ application['items3'] }}"></td>
+                    <td><input type="text" name="total3" readonly value="{{ application['total3'] }}"></td>
+                </tr>
+                <tr>
+                  <td>      
+                    <select id="category4" name="category4" class="field select medium" tabindex="11"> 
+                      <option value="Null"></option>
+                      <option value="Food" {{ 'selected' if application['category4'] == 'Food' else '' }}>Food</option>
+                      <option value="Gifts" {{ 'selected' if application['category4'] == 'Gifts' else '' }}>Gifts</option>
+                      <option value="SEM" {{ 'selected' if application['category4'] == 'SEM' else '' }}>SEM</option>
+                      <option value="Field Trips" {{ 'selected' if application['category4'] == 'Field Trips' else '' }}>Field Trips</option>
+                      <option value="Clothes" {{ 'selected' if application['category4'] == 'Clothes' else '' }}>Clothes</option>
+                      <option value="Scholarships" {{ 'selected' if application['category4'] == 'Scholarships' else '' }}>Scholarships</option>
+                      <option value="Other" {{ 'selected' if application['category4'] == 'Other' else '' }}>Other</option>
+                    </select>
+                  </td>
+                    <td><input type="text" name="description4" value="{{ application['description4'] }}"></td>
+                    <td><input type="text" name="cost4" value="{{ application['cost4'] }}"></td>
+                    <td><input type="text" name="items4" value="{{ application['items4'] }}"></td>
+                    <td><input type="text" name="total4" readonly value="{{ application['total4'] }}"></td>
+                </tr>
+                <tr>
+                    <td>      
+                      <select id="category5" name="category5" class="field select medium" tabindex="11"> 
+                        <option value="Null"></option>
+                        <option value="Food" {{ 'selected' if application['category5'] == 'Food' else '' }}>Food</option>
+                        <option value="Gifts" {{ 'selected' if application['category5'] == 'Gifts' else '' }}>Gifts</option>
+                        <option value="SEM" {{ 'selected' if application['category5'] == 'SEM' else '' }}>SEM</option>
+                        <option value="Field Trips" {{ 'selected' if application['category5'] == 'Field Trips' else '' }}>Field Trips</option>
+                        <option value="Clothes" {{ 'selected' if application['category5'] == 'Clothes' else '' }}>Clothes</option>
+                        <option value="Scholarships" {{ 'selected' if application['category5'] == 'Scholarships' else '' }}>Scholarships</option>
+                        <option value="Other" {{ 'selected' if application['category5'] == 'Other' else '' }}>Other</option>
+                      </select>
+                    </td>
+                    <td><input type="text" name="description5" value="{{ application['description5'] }}"></td>
+                    <td><input type="text" name="cost5" value="{{ application['cost5'] }}"></td>
+                    <td><input type="text" name="items5" value="{{ application['items5'] }}"></td>
+                    <td><input type="text" name="total5" readonly value="{{ application['total5'] }}"></td>
+                </tr>
+                <tr>
+                    <td>      
+                      <select id="category6" name="category6" class="field select medium" tabindex="11"> 
+                        <option value="Null"></option>
+                        <option value="Food" {{ 'selected' if application['category6'] == 'Food' else '' }}>Food</option>
+                        <option value="Gifts" {{ 'selected' if application['category6'] == 'Gifts' else '' }}>Gifts</option>
+                        <option value="SEM" {{ 'selected' if application['category6'] == 'SEM' else '' }}>SEM</option>
+                        <option value="Field Trips" {{ 'selected' if application['category6'] == 'Field Trips' else '' }}>Field Trips</option>
+                        <option value="Clothes" {{ 'selected' if application['category6'] == 'Clothes' else '' }}>Clothes</option>
+                        <option value="Scholarships" {{ 'selected' if application['category6'] == 'Scholarships' else '' }}>Scholarships</option>
+                        <option value="Other" {{ 'selected' if application['category6'] == 'Other' else '' }}>Other</option>
+                      </select>
+                    </td>
+                    <td><input type="text" name="description6" value="{{ application['description6'] }}"></td>
+                    <td><input type="text" name="cost6" value="{{ application['cost6'] }}"></td>
+                    <td><input type="text" name="items6" value="{{ application['items6'] }}"></td>  
+                    <td><input type="text" name="total6" readonly value="{{ application['total6'] }}"></td>
+                </tr>
+                <tr>
+                    <td>      
+                      <select id="category7" name="category7" class="field select medium" tabindex="11"> 
+                        <option value="Null"></option>
+                        <option value="Food" {{ 'selected' if application['category7'] == 'Food' else '' }}>Food</option>
+                        <option value="Gifts" {{ 'selected' if application['category7'] == 'Gifts' else '' }}>Gifts</option>
+                        <option value="SEM" {{ 'selected' if application['category7'] == 'SEM' else '' }}>SEM</option>
+                        <option value="Field Trips" {{ 'selected' if application['category7'] == 'Field Trips' else '' }}>Field Trips</option>
+                        <option value="Clothes" {{ 'selected' if application['category7'] == 'Clothes' else '' }}>Clothes</option>
+                        <option value="Scholarships" {{ 'selected' if application['category7'] == 'Scholarships' else '' }}>Scholarships</option>
+                        <option value="Other" {{ 'selected' if application['category7'] == 'Other' else '' }}>Other</option>
+                      </select>
+                    </td>
+                    <td><input type="text" name="description7" value="{{ application['description7'] }}"></td>
+                    <td><input type="text" name="cost7" value="{{ application['cost7'] }}"></td>
+                    <td><input type="text" name="items7" value="{{ application['items7'] }}"></td>
+                    <td><input type="text" name="total7" readonly value="{{ application['total7'] }}"></td>
+                </tr>
+            </tbody>
+        </table>
+      </div>
+    
+      <div>
+        <table class="grand-total-table" id="budget_estimate">
+          <thead>
+              <tr>
+                  <th>Overall Project Cost</th>
+                  <td><input type="text" name="grandTotal" id="grandTotal" readonly></td>
+              </tr>
+          </thead>
+        </table>
+      </div>
+
+      <div>
+        <table class="grand-total-table" id="youth_total">
+          <thead>
+            <tr>
+              <th>Number of Youth Who Will Benefit</th>
+              <td><input type="text" name="youth_total" id="youth_total_input" value="{{ application['youth_total'] }}" required></td>
+            </tr>
+          </thead>
+        </table>
+      </div>
+      
+      <div>
+        <table class="grand-total-table" id="benefit_per_youth">
+          <thead>
+            <tr>
+              <th>Individual Youth Benefit ($)</th>
+              <td><input type="text" name="benefit_per_youth" id="benefit_per_youth" readonly></td>
+            </tr>
+          </thead>
+        </table>
+      </div>
+      
+      <script>
+        // JavaScript to calculate the total based on cost per item and number of items
+        document.addEventListener("input", function(e) {
+          if (e.target.name.startsWith("cost") || e.target.name.startsWith("items")) {
+            const index = e.target.name.slice(-1);
+            const cost = parseFloat(document.getElementsByName("cost" + index)[0].value) || 0;
+            const items = parseInt(document.getElementsByName("items" + index)[0].value) || 0;
+            const total = cost * items;
+            document.getElementsByName("total" + index)[0].value = total.toFixed(2);
+      
+            // Calculate and update the Grand Total
+            calculateGrandTotal();
+          }
+        });
+      
+        function calculateGrandTotal() {
+          const totalInputs = document.querySelectorAll('[name^="total"]');
+          let grandTotal = 0;
+          totalInputs.forEach(input => {
+            grandTotal += parseFloat(input.value) || 0;
+          });
+          document.getElementById("grandTotal").value = grandTotal.toFixed(2);
+        }
+      
+        document.addEventListener("input", function(e) {
+          if (e.target.id === "grandTotal" || e.target.id === "youth_total_input") {
+            calculateBenefitPerYouth();
+          }
+        });
+
+        function calculateBenefitPerYouth() {
+          // console.log("Calculating benefit per youth...");
+          const budgetEstimate = parseFloat(document.getElementById('grandTotal').value);
+          const youthTotal = parseInt(document.getElementById('youth_total_input').value);
+          const benefitPerYouthInput = document.querySelector('[name="benefit_per_youth"]');
+
+          if (!isNaN(budgetEstimate) && !isNaN(youthTotal) && youthTotal !== 0) {
+            const benefitPerYouth = budgetEstimate / youthTotal;
+            // console.log("Benefit per youth:", benefitPerYouth.toFixed(2));
+            benefitPerYouthInput.value = benefitPerYouth.toFixed(2);
+          } else {
+            benefitPerYouthInput.value = '';
+          }
+        }
+      </script>
+    </div> 
+
+  </div> 
+
+  <br><br>
+
+  <div style="text-align: justify; padding: 0 300px;"> 
+    <div style="display: inline-flex; align-items: center; border: 1px solid red; padding: 15px;">
+      <input type="checkbox" id="disclaimer_check" name="disclaimer_check" value="agree" required style="width: 15px; height: 15px;" required>
+      <label for="disclaimer_check" style="margin-left: 10px;">All of the information contained within this application is true and accurate as of the date the application is submitted. As the applicant, you affirm that all due diligence has been completed, this request for Dallas County Juror funds administered and managed by the Youth Services Advisory Board does not duplicate any other fund source or service within the Dallas County Juvenile Department, and is made in good faith and with respect for the purpose of the Youth Services Advisory Board grant program for the express direct benefit of the youth under the authority of the Dallas County Juvenile Department.</label>
+    </div>
+  </div>  
+   
+    <br><br>
+
+    <div class="container">
+      <div class="center">
+        <input id="saveForm" name="saveForm" type="submit" value="Update" class="submit-button" disabled>
+      </div>
+    </div>
+
+    <script>
+      const disclaimerCheckbox = document.getElementById('disclaimer_check');
+      const submitButton = document.getElementById('saveForm');
+    
+      disclaimerCheckbox.addEventListener('change', function() {
+        if (this.checked) {
+          submitButton.style.backgroundColor = 'blue';
+          submitButton.disabled = false;
+        } else {
+          submitButton.style.backgroundColor = 'grey';
+          submitButton.disabled = true;
+        }
+      });
+    </script>
+  </form>
+  <footer>
+    <p>Date Updated: October 11, 2024<br>
+  </footer>
+</body>
+</html>

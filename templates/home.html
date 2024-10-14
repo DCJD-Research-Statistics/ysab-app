@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YSAB Application Home Page</title>
+    <link rel="icon" href="{{url_for('static', filename='images/juvenile-logo.svg')}}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{url_for('static', filename='/style.css')}}">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+            color: #333;
+        }
+        .main-content {
+            max-width: 1200px;
+            margin: 80px auto 0;
+            padding: 0 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #1a73e8;
+            margin-bottom: 30px;
+        }
+        .lead {
+            text-align: center;
+            font-size: 1.2em;
+            margin-bottom: 50px;
+        }
+        .card-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        .card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 300px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        .card h2 {
+            color: #1a73e8;
+            margin-bottom: 15px;
+        }
+        .card p {
+            margin-bottom: 20px;
+            color: #666;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #1a73e8;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #155db1;
+        }
+        /* Add these styles for flash messages */
+        .flash-messages {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            width: 80%;
+            max-width: 400px;
+        }
+        .alert {
+            padding: 20px; /* Increased padding for better spacing */
+            margin-bottom: 10px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            font-size: 16px; /* Increased font size for better readability */
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Added shadow for visibility */
+        }
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
+        }
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+        .alert-success {
+            color: #ffffff;
+            background-color: #5bb16f;
+            border-color: #459450;
+        }
+    </style>
+</head>
+<body>
+    <!-- Move flash messages here, right after the body tag -->
+    {% include 'flash_messages.html' %}
+
+    <div class="header-bar">
+      <div class="header-content">
+        <div class="header-logo">
+          <img src="{{url_for('static', filename='images/juvenile-logo.svg')}}" alt="DCJD Logo">
+          <span>DCJD YSAB Funds</span>
+        </div>
+        <div class="header-links">
+          <a href="{{ url_for('home') }}">Home</a>
+          <a href="{{ url_for('help') }}">Help</a>
+          <a href="{{ url_for('my_applications') }}">Applications</a>
+          {% if 'user' in session %}
+            <a href="{{ url_for('logout') }}">Logout</a>
+          {% else %}
+            <a href="{{ url_for('login') }}">Login</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="main-content">
+        <h1>Welcome to the Dallas County Juvenile Department YSAB Documents Site</h1>
+        <p class="lead">Please choose one of the forms below to fill out:</p>
+        
+        <div class="card-container">
+            <div class="card">
+                <h2>YSAB DCJD (Internal) Application</h2>
+                <p>Apply for internal YSAB funding for your project.</p>
+                <a href="/application" class="btn">Start Application</a>
+            </div>
+            
+            <div class="card">
+                <h2>YSAB Project Progress Report</h2>
+                <p>Submit a progress report for your ongoing YSAB project.</p>
+                <a href="/progress-report" class="btn">Submit Report</a>
+            </div>
+            
+            <div class="card">
+                <h2>YSAB External Project Application</h2>
+                <p>Apply for YSAB funding for external projects.</p>
+                <a href="/external" class="btn">Start Application</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Auto-hide flash messages after 5 seconds
+            setTimeout(function() {
+                $('.alert').fadeOut('slow', function() {
+                    $(this).remove();
+                });
+            }, 5000);
+        });
+    </script>
+</body>
+</html>

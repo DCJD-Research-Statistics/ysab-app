@@ -182,7 +182,7 @@
     <div>
       <label for="name">Applicant Name</label>
       <div>
-        <input id="name" name="name" type="text" value="" size="8" tabindex="1" required>
+        <input id="name" name="name" type="text" value="" size="8" tabindex="1" required disabled>
       </div>
     </div>
 
@@ -191,7 +191,7 @@
         Applicant Title
         </label>
         <div>
-          <input id="app_title" name="app_title" type="text" class="field text fn" value="" size="8" tabindex="1">
+          <input id="app_title" name="app_title" type="text" class="field text fn" value="" size="8" tabindex="1" disabled>
        </div>
     </div>
 
@@ -200,7 +200,7 @@
           Applicant Contact Email
         </label>
         <div>
-          <input id="email" name="email" type="email" spellcheck="false" value="" maxlength="255" tabindex="3" required> 
+          <input id="email" name="email" type="email" spellcheck="false" value="" maxlength="255" tabindex="3" required disabled> 
        </div>
     </div>
 
@@ -209,7 +209,7 @@
         Applicant Contact Phone Number
       </label>
       <div>
-        <input id="phone" name="phone" type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="123-456-7890" oninput="formatPhoneNumber(this)" maxlength="12" required>
+        <input id="phone" name="phone" type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="123-456-7890" oninput="formatPhoneNumber(this)" maxlength="12" required disabled>
       </div>
     </div>
   <script>
@@ -236,7 +236,7 @@
             Application Type
         </label>
         <div>
-        <select id="application_type" name="application_type" class="field select medium" tabindex="11"> 
+        <select id="application_type" name="application_type" class="field select medium" tabindex="11" disabled> 
           <option disabled selected>Choose an item</option>
           <option value="new">New</option>
           <option value="renewal">Renewal</option>
@@ -249,14 +249,14 @@
     <div>
       <label for="org_name">Organization Name</label>
       <div>
-        <input id="org_name" name="org_name" type="text" value="" size="8" tabindex="1" required>
+        <input id="org_name" name="org_name" type="text" value="" size="8" tabindex="1" required disabled>
       </div>
     </div>
 
     <div>
       <label for="org_website">Organization Website</label>
       <div>
-        <input id="org_website" name="org_website" type="text" value="" size="8" tabindex="1" required>
+        <input id="org_website" name="org_website" type="text" value="" size="8" tabindex="1" required disabled>
       </div>
     </div>
 
@@ -265,7 +265,7 @@
           Project Title
         </label>
         <div>
-          <input id="title" name="title" type="text" class="field text fn" value="" size="8" tabindex="1">
+          <input id="title" name="title" type="text" class="field text fn" value="" size="8" tabindex="1" disabled>
        </div>
     </div>
 
@@ -274,7 +274,7 @@
             Service Area
         </label>
         <div>
-        <select id="service_area" name="service_area" class="field select medium" tabindex="11"> 
+        <select id="service_area" name="service_area" class="field select medium" tabindex="11" disabled> 
           <option disabled selected>Choose an item</option>
           <option value="Clinical Services">Clinical Services</option>
           <option value="Detention Services">Detention Services</option>
@@ -291,7 +291,7 @@
         Address
         </label>
         <div>
-          <input id="address" name="address" type="text" class="field text fn" value="" size="8" tabindex="1">
+          <input id="address" name="address" type="text" class="field text fn" value="" size="8" tabindex="1" disabled>
        </div>
     </div>
 
@@ -300,21 +300,21 @@
         Amount Requested
         </label>
         <div>
-          <input id="amount" name="amount" type="number" class="field text fn" value="" size="8" tabindex="1" min="1" max="99999">
+          <input id="amount" name="amount" type="number" class="field text fn" value="" size="8" tabindex="1" min="1" max="99999" disabled>
        </div>
      </div>
 
     <div>
       <label for="mission_statement"><b>Organization Mission Statement</b></label>
       <div>
-        <textarea id="mission_statement" name="mission_statement" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder="Maximum 250 words"></textarea>
+        <textarea id="mission_statement" name="mission_statement" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder="Maximum 250 words" disabled></textarea>
       </div>
    </div>
 
     <div>
       <label for="org_history"><b>Organization History</b><p>(Including the year it was founded, and list current programs)</p></label>
       <div>
-        <textarea id="org_history" name="org_history" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder="Maximum 250 words"></textarea>
+        <textarea id="org_history" name="org_history" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder="Maximum 250 words" disabled></textarea>
       </div>
    </div>
 
@@ -323,7 +323,7 @@
       Has your organization worked with any juvenile departments within the state of Texas?
     </label>
     <div>
-    <select id="org_worked_with_other_juv_dept" name="org_worked_with_other_juv_dept" tabindex="11"> 
+    <select id="org_worked_with_other_juv_dept" name="org_worked_with_other_juv_dept" tabindex="11" disabled> 
       <option disabled selected>Choose an item</option>
       <option value="Yes">Yes</option>
       <option value="No">No</option>
@@ -335,7 +335,7 @@
    <div>
      <label for="org_worked_with_other_juv_dept2">If yes, please indicate when, where, and how long the project was held. Include details of services provided by your project for those juvenile departments.</label>
       <div>
-        <textarea id="org_worked_with_other_juv_dept2" name="org_worked_with_other_juv_dept2" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder="Maximum 250 words"></textarea>
+        <textarea id="org_worked_with_other_juv_dept2" name="org_worked_with_other_juv_dept2" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder="Maximum 250 words" disabled></textarea>
       </div>
    </div>
 
@@ -344,7 +344,7 @@
       How did you hear about this funding source?
     </label>
     <div>
-      <input id="hear_about_funding_source" name="hear_about_funding_source" type="text" class="field text fn" value="" size="8" tabindex="1">
+      <input id="hear_about_funding_source" name="hear_about_funding_source" type="text" class="field text fn" value="" size="8" tabindex="1" disabled>
    </div>
   </div>
 
@@ -353,21 +353,21 @@
   <div>
     <label for="problem_statement"><b>Problem Statement</b><p>(Identify the main challenge your program faces that will be addressed through using YSAB funds and how will they improve the program's objectives)</p></label>
     <div>
-      <textarea id="problem_statement" name="problem_statement" spellcheck="true" rows="8" cols="50" tabindex="4" placeholder=""></textarea>
+      <textarea id="problem_statement" name="problem_statement" spellcheck="true" rows="8" cols="50" tabindex="4" placeholder="" disabled></textarea>
     </div>
   </div>
 
     <div>
       <label for="target_group"><b>Target Group/Population</b><p>(Be <u><b>specific</b></u> about which youth from the program will benefit from expending these funds)</p></label>
       <div>
-        <textarea id="target_group" name="target_group" spellcheck="true" rows="8" cols="50" tabindex="4" placeholder="Maximum 250 words"></textarea>
+        <textarea id="target_group" name="target_group" spellcheck="true" rows="8" cols="50" tabindex="4" placeholder="Maximum 250 words" disabled></textarea>
       </div>
    </div>
 
     <div>
       <label for="project_appoarch"><b>Project Approach & Activities</b><p>(Provide a detailed justification for proposing this project, including specific items to be purchased with the funds)</p> <p>All items specified here must reflect the items in the section <i>Budget Estimate</i>.</p></label>
       <div>
-        <textarea id="project_appoarch" name="project_appoarch" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder="Maximum 500 words"></textarea>
+        <textarea id="project_appoarch" name="project_appoarch" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder="Maximum 500 words" disabled></textarea>
       </div>
   </div>
       
@@ -376,7 +376,7 @@
   <div>
     <label for="capacity_capabilities"><b>Capacity & Capabilities</b><p>Provide the names and titles of staff who will be responsible for the administration, data collection/monitoring, and management of the project.</p></label>
     <div>
-      <textarea id="capacity_capabilities" name="capacity_capabilities" spellcheck="true" rows="10" cols="50" tabindex="4"></textarea>
+      <textarea id="capacity_capabilities" name="capacity_capabilities" spellcheck="true" rows="10" cols="50" tabindex="4" disabled></textarea>
     </div>
   </div>
 
@@ -386,7 +386,7 @@
       What are the project's goals?
     </label>
     <div>
-      <textarea id="goals" name="goals" spellcheck="true" rows="8" cols="50" tabindex="4" placeholder=""></textarea>
+      <textarea id="goals" name="goals" spellcheck="true" rows="8" cols="50" tabindex="4" placeholder="" disabled></textarea>
     </div>
   </div> 
 
@@ -397,7 +397,7 @@
           Select the suggested reporting interval for the expenditure of these funds.
       </label>
       <div>
-        <select id="reporting_interval" name="reporting_interval" class="field select medium" tabindex="11"> 
+        <select id="reporting_interval" name="reporting_interval" class="field select medium" tabindex="11" disabled> 
           <option disabled selected>Choose an item</option>
           <option value="Quarterly">Quarterly</option>
           <option value=">Bi-annually">Bi-annually</option>
@@ -420,24 +420,24 @@
           </thead>
           <tbody>
               <tr>
-                  <td><input type="text" name="output1"></td>
-                  <td><input type="text" name="target1"></td>
+                  <td><input type="text" name="output1" disabled></td>
+                  <td><input type="text" name="target1" disabled></td>
               </tr>
               <tr>
-                  <td><input type="text" name="output2"></td>
-                  <td><input type="text" name="target2"></td>
+                  <td><input type="text" name="output2" disabled></td>
+                  <td><input type="text" name="target2" disabled></td>
               </tr>
               <tr>
-                  <td><input type="text" name="output3"></td>
-                  <td><input type="text" name="target3"></td>
+                  <td><input type="text" name="output3" disabled></td>
+                  <td><input type="text" name="target3" disabled></td>
               </tr>
               <tr>
-                  <td><input type="text" name="output4"></td>
-                  <td><input type="text" name="target4"></td>
+                  <td><input type="text" name="output4" disabled></td>
+                  <td><input type="text" name="target4" disabled></td>
               </tr>
               <tr>
-                  <td><input type="text" name="output5"></td>
-                  <td><input type="text" name="target5"></td>
+                  <td><input type="text" name="output5" disabled></td>
+                  <td><input type="text" name="target5" disabled></td>
               </tr>
           </tbody>
         </table>
@@ -456,24 +456,24 @@
           </thead>
           <tbody>
               <tr>
-                  <td><input type="text" name="outcome1"></td>
-                  <td><input type="text" name="target1.1"></td>
+                  <td><input type="text" name="outcome1" disabled></td>
+                  <td><input type="text" name="target1.1" disabled></td>
               </tr>
               <tr>
-                  <td><input type="text" name="outcome2"></td>
-                  <td><input type="text" name="target2.1"></td>
+                  <td><input type="text" name="outcome2" disabled></td>
+                  <td><input type="text" name="target2.1" disabled></td>
               </tr>
               <tr>
-                  <td><input type="text" name="outcome3"></td>
-                  <td><input type="text" name="target3.1"></td>
+                  <td><input type="text" name="outcome3" disabled></td>
+                  <td><input type="text" name="target3.1" disabled></td>
               </tr>
               <tr>
-                  <td><input type="text" name="outcome4"></td>
-                  <td><input type="text" name="target4.1"></td>
+                  <td><input type="text" name="outcome4" disabled></td>
+                  <td><input type="text" name="target4.1" disabled></td>
               </tr>
               <tr>
-                  <td><input type="text" name="outcome5"></td>
-                  <td><input type="text" name="target5.1"></td>
+                  <td><input type="text" name="outcome5" disabled></td>
+                  <td><input type="text" name="target5.1" disabled></td>
               </tr>
           </tbody>
         </table>
@@ -483,7 +483,7 @@
     <div>
       <label for="data_management"><b>Data Management </b><p>What data will be collected, how, and by whom to determine if the project is achieving the established output and outcome measures throughout the grant period? Include a detailed data collection and analysis plan.</p></label>
       <div>
-        <textarea id="data_management" name="data_management" spellcheck="true" rows="10" cols="50" tabindex="4"></textarea>
+        <textarea id="data_management" name="data_management" spellcheck="true" rows="10" cols="50" tabindex="4" disabled></textarea>
       </div>
     </div>
 
@@ -493,7 +493,7 @@
         Provide the name of any other source of funding that may be used for this project. <p>(Indicate NONE if there are no other sources of funding)</p>
       </label>
       <div>
-        <input id="other_funding" name="other_funding" type="text" class="field text fn" value="" size="8" tabindex="1">
+        <input id="other_funding" name="other_funding" type="text" class="field text fn" value="" size="8" tabindex="1" disabled>
     </div>
     </div>
     <br>
@@ -512,7 +512,6 @@
         </ul>
       </div>
       <div>
-    
         <table id="budget_estimate">
             <thead>
                 <tr>
@@ -526,7 +525,7 @@
             <tbody>
                 <tr>
                     <td>      
-                      <select id="category1" name="category1" class="field select medium" tabindex="11"> 
+                      <select id="category1" name="category1" class="field select medium" tabindex="11" disabled> 
                         <option value="Null"></option>
                         <option value="Food">Food</option>
                         <option value="Gifts">Gifts</option>
@@ -537,14 +536,14 @@
                         <option value="Other">Other</option>
                       </select>
                     </td>
-                    <td><input type="text" name="description1"></td>
-                    <td><input type="text" name="cost1"></td>
-                    <td><input type="text" name="items1"></td>
-                    <td><input type="text" name="total1" readonly></td>
+                    <td><input type="text" name="description1" disabled></td>
+                    <td><input type="text" name="cost1" disabled></td>
+                    <td><input type="text" name="items1" disabled></td>
+                    <td><input type="text" name="total1" readonly disabled></td>
                 </tr>
                 <tr>
                     <td>      
-                      <select id="category2" name="category2" class="field select medium" tabindex="11"> 
+                      <select id="category2" name="category2" class="field select medium" tabindex="11" disabled> 
                         <option value="Null"></option>
                         <option value="Food">Food</option>
                         <option value="Gifts">Gifts</option>
@@ -555,14 +554,14 @@
                         <option value="Other">Other</option>
                       </select>
                     </td>
-                    <td><input type="text" name="description2"></td>
-                    <td><input type="text" name="cost2"></td>
-                    <td><input type="text" name="items2"></td>
-                    <td><input type="text" name="total2" readonly></td>
+                    <td><input type="text" name="description2" disabled></td>
+                    <td><input type="text" name="cost2" disabled></td>
+                    <td><input type="text" name="items2" disabled></td>
+                    <td><input type="text" name="total2" readonly disabled></td>
                 </tr>
                 <tr>
                     <td>      
-                      <select id="category3" name="category3" class="field select medium" tabindex="11"> 
+                      <select id="category3" name="category3" class="field select medium" tabindex="11" disabled> 
                         <option value="Null"></option>
                         <option value="Food">Food</option>
                         <option value="Gifts">Gifts</option>
@@ -573,14 +572,14 @@
                         <option value="Other">Other</option>
                       </select>
                     </td>
-                    <td><input type="text" name="description3"></td>
-                    <td><input type="text" name="cost3"></td>
-                    <td><input type="text" name="items3"></td>
-                    <td><input type="text" name="total3" readonly></td>
+                    <td><input type="text" name="description3" disabled></td>
+                    <td><input type="text" name="cost3" disabled></td>
+                    <td><input type="text" name="items3" disabled></td>
+                    <td><input type="text" name="total3" readonly disabled></td>
                 </tr>
                 <tr>
                   <td>      
-                    <select id="category4" name="category4" class="field select medium" tabindex="11"> 
+                    <select id="category4" name="category4" class="field select medium" tabindex="11" disabled> 
                       <option value="Null"></option>
                       <option value="Food">Food</option>
                       <option value="Gifts">Gifts</option>
@@ -591,14 +590,14 @@
                       <option value="Other">Other</option>
                     </select>
                   </td>
-                    <td><input type="text" name="description4"></td>
-                    <td><input type="text" name="cost4"></td>
-                    <td><input type="text" name="items4"></td>
-                    <td><input type="text" name="total4" readonly></td>
+                    <td><input type="text" name="description4" disabled></td>
+                    <td><input type="text" name="cost4" disabled></td>
+                    <td><input type="text" name="items4" disabled></td>
+                    <td><input type="text" name="total4" readonly disabled></td>
                 </tr>
                 <tr>
                     <td>      
-                      <select id="category5" name="category5" class="field select medium" tabindex="11"> 
+                      <select id="category5" name="category5" class="field select medium" tabindex="11" disabled> 
                         <option value="Null"></option>
                         <option value="Food">Food</option>
                         <option value="Gifts">Gifts</option>
@@ -609,14 +608,14 @@
                         <option value="Other">Other</option>
                       </select>
                     </td>
-                    <td><input type="text" name="description5"></td>
-                    <td><input type="text" name="cost5"></td>
-                    <td><input type="text" name="items5"></td>
-                    <td><input type="text" name="total5" readonly></td>
+                    <td><input type="text" name="description5" disabled></td>
+                    <td><input type="text" name="cost5" disabled></td>
+                    <td><input type="text" name="items5" disabled></td>
+                    <td><input type="text" name="total5" readonly disabled></td>
                 </tr>
                 <tr>
                     <td>      
-                      <select id="category6" name="category6" class="field select medium" tabindex="11"> 
+                      <select id="category6" name="category6" class="field select medium" tabindex="11" disabled> 
                         <option value="Null"></option>
                         <option value="Food">Food</option>
                         <option value="Gifts">Gifts</option>
@@ -627,14 +626,14 @@
                         <option value="Other">Other</option>
                       </select>
                     </td>
-                    <td><input type="text" name="description6"></td>
-                    <td><input type="text" name="cost6"></td>
-                    <td><input type="text" name="items6"></td>
-                    <td><input type="text" name="total6" readonly></td>
+                    <td><input type="text" name="description6" disabled></td>
+                    <td><input type="text" name="cost6" disabled></td>
+                    <td><input type="text" name="items6" disabled></td>
+                    <td><input type="text" name="total6" readonly disabled></td>
                 </tr>
                 <tr>
                     <td>      
-                      <select id="category7" name="category7" class="field select medium" tabindex="11"> 
+                      <select id="category7" name="category7" class="field select medium" tabindex="11" disabled> 
                         <option value="Null"></option>
                         <option value="Food">Food</option>
                         <option value="Gifts">Gifts</option>
@@ -645,10 +644,10 @@
                         <option value="Other">Other</option>
                       </select>
                     </td>
-                    <td><input type="text" name="description7"></td>
-                    <td><input type="text" name="cost7"></td>
-                    <td><input type="text" name="items7"></td>
-                    <td><input type="text" name="total7" readonly></td>
+                    <td><input type="text" name="description7" disabled></td>
+                    <td><input type="text" name="cost7" disabled></td>
+                    <td><input type="text" name="items7" disabled></td>
+                    <td><input type="text" name="total7" readonly disabled></td>
                 </tr>
             </tbody>
         </table>
@@ -659,7 +658,7 @@
           <thead>
               <tr>
                   <th>Overall Project Cost</th>
-                  <td><input type="text" name="grandTotal" id="grandTotal" readonly></td>
+                  <td><input type="text" name="grandTotal" id="grandTotal" readonly disabled></td>
               </tr>
           </thead>
         </table>
@@ -670,7 +669,7 @@
           <thead>
             <tr>
               <th>Number of Youth Who Will Benefit</th>
-              <td><input type="text" name="youth_total" id="youth_total_input" required></td>
+              <td><input type="text" name="youth_total" id="youth_total_input" required disabled></td>
             </tr>
           </thead>
         </table>
@@ -681,7 +680,7 @@
           <thead>
             <tr>
               <th>Individual Youth Benefit ($)</th>
-              <td><input type="text" name="benefit_per_youth" id="benefit_per_youth" readonly></td>
+              <td><input type="text" name="benefit_per_youth" id="benefit_per_youth" readonly disabled></td>
             </tr>
           </thead>
         </table>

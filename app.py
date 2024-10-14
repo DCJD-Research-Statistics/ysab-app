@@ -1,5 +1,4 @@
-from flask import Flask, request, render_template, jsonify, send_file
-import pymongo
+from flask import Flask, request, render_template, jsonify, send_file, redirect, url_for, session, flash
 from pymongo import MongoClient
 from dotenv import load_dotenv
 from datetime import datetime as dt
@@ -9,6 +8,11 @@ import pandas as pd
 import re
 from bs4 import BeautifulSoup
 import math
+from werkzeug.security import generate_password_hash, check_password_hash
+import secrets
+from functools import wraps  # Add this line
+from bson import ObjectId
+import requests
 
 load_dotenv() 
 
@@ -16,6 +20,7 @@ mongo_uri = os.getenv("MONGO_URI")
 db_name = os.getenv("DB_NAME")
 
 app = Flask(__name__)
+app.secret_key = os.getenv("SECRET_KEY", secrets.token_hex(16))
 
 
 def get_timestamp():
@@ -38,16 +43,19 @@ def get_program_list():
     return df.title.to_list()
 
 # pre-populate fields auto
-def get_app_list():
+def get_app_list(user_email):
     cluster = MongoClient(mongo_uri)
     db = cluster[db_name]
     collection = db['ysab']
-    # Retrieve all records from the collection
-    cursor = collection.find()
+    # Retrieve records from the collection for the specific user
+    cursor = collection.find({'email': user_email})
     # Convert the cursor to a list of dictionaries
     records = list(cursor)
     # Create a Pandas DataFrame
     df = pd.DataFrame(records)
+    if df.empty:
+        cluster.close()
+        return []
     df['app_record'] = pd.concat([df.timestamp.str[:10], df[['name', 'app_title', 'email', 'phone', 'title', 'amount', 'output1', 'output2', 'output3', 'output4', 'output5', 'target1', 'target2', 'target3', 'target4', 'target5', 'outcome1', 'outcome2', 'outcome3', 'outcome4', 'outcome5', 'target1.1', 'target2.1', 'target3.1', 'target4.1', 'target5.1']].astype(str)], axis=1).apply(lambda row: ' : '.join(row), axis=1)
     cluster.close()
     return df.app_record.to_list()
@@ -85,7 +93,7 @@ prog_report_items = ['name',
                      'midterm3', 
                      'midterm4', 
                      'midterm5', 
-                     'midterm6', 
+                     'midterm6',
                      'outcome1',
                      'outcome2',
                      'outcome3',
@@ -113,12 +121,18 @@ def get_prog_list():
     cluster = MongoClient(mongo_uri)
     db = cluster[db_name]
     collection = db['progress_reports']
-    # Retrieve all records from the collection
     cursor = collection.find()
-    # Convert the cursor to a list of dictionaries
     records = list(cursor)
-    # Create a Pandas DataFrame
+
+    if len(records) == 0:
+        return []
+
     df = pd.DataFrame(records)
+    # Check if the DataFrame is empty after conversion
+    if df.empty:
+        cluster.close()
+        return []
+    
     df['app_record'] = pd.concat([df.timestamp.str[:10], df[prog_report_items].astype(str)], axis=1).apply(lambda row: ' : '.join(row), axis=1)
     cluster.close()
     return df.app_record.to_list()
@@ -236,7 +250,11 @@ def cont_id():
     unique_id = f"{year}-{application_number:03d}-{project_abbreviation}-{form_type}"
     return unique_id
 
-def make_app_form(form_data):
+def make_app_form(form_data, download_source='submission'):
+    # Convert ObjectId to string if present
+    if '_id' in form_data and isinstance(form_data['_id'], ObjectId):
+        form_data['_id'] = str(form_data['_id'])
+
     # Read the HTML file
     with open(r'templates/ysab-application.html', 'r', encoding="utf8") as file:
         html_content = file.read()
@@ -244,9 +262,14 @@ def make_app_form(form_data):
     soup = BeautifulSoup(html_content, 'html.parser')
 
     # Find the existing h4 tag and update it with the timestamp
-    h4_tag = soup.find('h4')
-    if h4_tag:
-        h4_tag.string = f"{get_timestamp()}"
+    if download_source == 'submission':
+        h4_tag = soup.find('h4')
+        if h4_tag:
+            h4_tag.string = f"{get_timestamp()}"
+    elif download_source == 'table':
+        h4_tag = soup.find('h4')
+        if h4_tag:
+            h4_tag.string = f"{form_data['timestamp']}"
 
     # Update the value attribute of input fields based on dictionary keys
     for key, value in form_data.items():
@@ -334,7 +357,7 @@ def make_prog_form(form_data):
         with open(r'templates/progress-report-copy-record.html', 'w') as file:
             file.write(str(soup))
 
-def make_ext_form(form_data):
+def make_ext_form(form_data, download_source='submission'):
     # Read the HTML file
     with open(r'templates/ysab-external.html', 'r', encoding="utf8") as file:
         html_content = file.read()
@@ -342,9 +365,14 @@ def make_ext_form(form_data):
     soup = BeautifulSoup(html_content, 'html.parser')
 
     # Find the existing h3 tag and update it with the timestamp
-    h4_tag = soup.find('h4')
-    if h4_tag:
-        h4_tag.string = f"{get_timestamp()}"
+    if download_source == 'submission':
+        h4_tag = soup.find('h4')
+        if h4_tag:
+            h4_tag.string = f"{get_timestamp()}"
+    elif download_source == 'table':
+        h4_tag = soup.find('h4')
+        if h4_tag:
+            h4_tag.string = f"{form_data['timestamp']}"
 
     # Update the value attribute of input fields based on dictionary keys
     for key, value in form_data.items():
@@ -418,21 +446,166 @@ def make_cont_form(form_data):
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
-    return render_template('index.html')
+    if 'user' in session:
+        return render_template('landing.html', user=session['user'])
+    return render_template('landing.html')
+
+@app.route("/home", methods=['GET', 'POST'])
+def home():
+    if 'user' in session:
+        return render_template('home.html', user=session['user'])
+    return render_template('home.html')
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        email = request.form.get('email')
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+
+        if password != confirm_password:
+            flash('Passwords do not match', 'error')
+            return render_template('signup.html')
+        
+        # MongoDB connection
+        client = MongoClient(mongo_uri)
+        db = client[db_name]
+        users_collection = db['users']
+
+        existing_user = users_collection.find_one({'email': email})
+        if existing_user:
+            flash('Email already exists', 'error')
+            return render_template('signup.html')
+
+        hashed_password = generate_password_hash(password)
+        new_user = {
+            'name': name,
+            'email': email,
+            'password': hashed_password
+        }
+        users_collection.insert_one(new_user)
+        flash('Account created successfully', 'success')
+        return redirect(url_for('login'))
+
+    return render_template('signup.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+
+        # MongoDB connection
+        client = MongoClient(mongo_uri)
+        db = client[db_name]
+        users_collection = db['users']
+
+        user = users_collection.find_one({'email': email})
+        if user and check_password_hash(user['password'], password):
+            session['user'] = {'name': user['name'], 'email': user['email']}
+            flash('Logged in successfully', 'success')
+            return redirect(url_for('home'))
+        else:
+            flash('Invalid email or password', 'error')
+
+    return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    session.pop('user', None)
+    flash('Logged out successfully', 'success')
+    return redirect(url_for('index'))
+
+# Protect routes that require authentication
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user' not in session:
+            flash('Please log in to access this page', 'error')
+            return redirect(url_for('login', next=request.url))
+        return f(*args, **kwargs)
+    return decorated_function
+
+@app.route('/my-applications')
+@login_required
+def my_applications(admin_mode=False):
+    if 'user' not in session:
+        return redirect(url_for('login'))
+
+    if admin_mode==True:
+        user_email = 'daniel.pacheco@dallascounty.org'
+    elif admin_mode==False: 
+        user_email = session['user']['email']
+
+    # Connect to MongoDB
+    client = MongoClient(mongo_uri)
+    db = client[db_name]
+    collection = db['ysab']
+
+    # Fetch applications for the current user from 'ysab' collection
+    user_applications = list(collection.find(
+        {'email': {'$regex': f'^{user_email}$', '$options': 'i'}},
+        {'_id': 1, 'timestamp': 1, 'title': 1}
+    ))
+
+    # Fetch applications for the current user from 'ysab-external' collection
+    external_collection = db['ysab-external']
+    user_external_applications = list(external_collection.find(
+        {'email': {'$regex': f'^{user_email}$', '$options': 'i'}},
+        {'_id': 1, 'timestamp': 1, 'title': 1}
+    ))
+
+    # Combine both application lists
+    all_applications = user_applications + user_external_applications
+
+    if not all_applications:
+        message = "No records found."
+        return render_template('my_applications.html', message=message)
+    
+    # Format the data for the template
+    applications = []
+    for app in all_applications:
+        # Check if the application is from user_applications or user_external_applications
+        if app in user_applications:
+            app_type = 'Internal Application'
+        elif app in user_external_applications:
+            app_type = 'External Application'
+        else:
+            app_type = 'Unknown Application'  # Fallback in case of unexpected data
+
+        applications.append({
+            'id': str(app['_id']),
+            'submission_date': app['timestamp'],
+            'title': app['title'],
+            'type': app_type  # Use the determined app_type
+        })
+
+    client.close()
+
+    return render_template('my_applications.html', applications=applications)
+
+@app.route('/help')
+def help():
+    return render_template('help.html')
 
 @app.route('/application')
+@login_required
 def application():
     return render_template('application.html')
 
 @app.route('/progress-report')
-def progress_report():
-    return render_template('progress-report.html', dropdown_items = get_program_list(), app_list = get_app_list(), prog_list = get_prog_list())
-
-# @app.route('/continuation')
-# def continuation():
-#     return render_template('continuation.html', app_list = get_app_list())
+@login_required
+def progress_report(admin_mode=False):
+    if admin_mode==True:
+        user_email = 'daniel.pacheco@dallascounty.org'
+        return render_template('progress-report.html', dropdown_items=get_program_list(), app_list=get_app_list(user_email), prog_list=get_prog_list())   
+    if admin_mode==False:
+        user_email = session['user']['email']
+        return render_template('progress-report.html', dropdown_items=get_program_list(), app_list=get_app_list(user_email), prog_list=get_prog_list())
 
 @app.route('/external')
+@login_required
 def external():
     return render_template('external.html')
 
@@ -469,7 +642,12 @@ def submit_application_form():
                 collection.insert_one(metadata_app_data)
 
            # make html application w/ user responses
-            make_app_form(form_data)
+            # make_app_form(form_data)
+
+            # Send Discord notification
+            discord_webhook_url = os.getenv("DISCORD_WEBHOOK_URL")  # Ensure you have this in your .env
+            message = f"Application updated:\n- ID: {form_data['_id']}\n- Type: {'Internal Application'}\n- Name: {name}\n- Email: {email} \n- Title: {form_data['title']}"
+            requests.post(discord_webhook_url, json={"content": message})
 
             # return jsonify({'success': True, 'message': 'Form data submitted successfully'})
             return render_template('confirmation_a.html', name=name, email=email)
@@ -519,7 +697,12 @@ def submit_external_form():
             collection = db['ysab-external']
             collection.insert_one(form_data)
            # make html application w/ user responses
-            make_ext_form(form_data)
+            # make_ext_form(form_data)
+
+            # Send Discord notification
+            discord_webhook_url = os.getenv("DISCORD_WEBHOOK_URL")  # Ensure you have this in your .env
+            message = f"Application updated:\n- ID: {form_data['_id']}\n- Type: {'External Application'}\n- Name: {name}\n- Email: {email} \n- Title: {form_data['title']}"
+            requests.post(discord_webhook_url, json={"content": message})
 
             # return jsonify({'success': True, 'message': 'Form data submitted successfully'})
             return render_template('confirmation_e.html', name=name, email=email)
@@ -556,31 +739,31 @@ def submit_continuation_form():
 def edit():
     return render_template('edit.html')
 
-@app.route('/edit-application', methods=['POST'])
-def edit_application():
-    application_id = request.form.get('application_id')
+@app.route('/edit-application/<application_id>/<application_type>')
+def edit_application(application_id, application_type):
     cluster = MongoClient(mongo_uri)
     db = cluster[db_name]
-    collection = db['ysab']
+
+    if application_type == 'Internal Application':
+        collection = db['ysab']
+    elif application_type == 'External Application':
+        collection = db['ysab-external']
+    else:
+        return render_template('error.html', error='Invalid application type')
+
     application = collection.find_one({'_id': application_id})
 
-    if application == None:
-        return render_template('error.html', error=str('Application not found'))
+    if application is None:
+        return render_template('error.html', error='Application not found')
     else:
-        return render_template('edit-application.html', application=application)
+        # Render template based on application type
+        if application_type == 'External Application':
+            return render_template('edit-external-application.html', application=application, application_type=application_type)
+        elif application_type == 'Internal Application':    
+            return render_template('edit-application.html', application=application, application_type=application_type)
+        else:
+            return render_template('error.html', error='Invalid application type')
 
-'''    # validate edit timeframe
-    application_time = dt.strptime(application['timestamp'], '%m-%d-%Y %H:%M')
-    current_time = dt.strptime(get_timestamp(), '%m-%d-%Y %H:%M')
-    if (current_time - application_time).days > 7:
-        return render_template('error.html', error=str('The application cannot be edited as it has surpassed the 7-day modification period.'))
-
-    else:
-        # update timestamp
-        application['timestamp'] = get_timestamp()
-        return render_template('edit-application.html', application=application)'''
-
-    
 @app.route('/update-application', methods=['POST'])
 def update_application():
     try:
@@ -589,30 +772,74 @@ def update_application():
         name = request.form.get('name')
         email = request.form.get('email')
         application_id = request.form.get('_id')
-
+        application_type = request.form.get('application_type')
         # make new id, timestamp
         updated_data['timestamp'] = get_timestamp()
-        updated_data['_id'] = app_id()
-
+        
         cluster = MongoClient(mongo_uri)
         db = cluster[db_name]
-        collection = db['ysab']
+
+        if application_type == 'Internal Application':
+            collection = db['ysab']
+            updated_data['_id'] = app_id()
+        elif application_type == 'External Application':
+            collection = db['ysab-external']
+            updated_data['_id'] = ext_id()
+        else:
+            return render_template('error.html', error='Invalid application type')
 
         # delete og record, insert new edited record
         collection.delete_one({'_id': application_id})
         collection.insert_one(updated_data)
 
-        # make html application w/ user responses
-        make_app_form(updated_data)
+        # Send Discord notification
+        discord_webhook_url = os.getenv("DISCORD_WEBHOOK_URL")  # Ensure you have this in your .env
+        message = f"Application updated:\n- ID: {application_id}\n- Type: {application_type}\n- Name: {name}\n- Email: {email} \n- Title: {updated_data['title']}"
+        requests.post(discord_webhook_url, json={"content": message})
 
-        return render_template('confirmation_a.html', name=name, email=email)
+        # make html application w/ user responses
+        if application_type == 'Internal Application':
+            make_app_form(updated_data)
+            return render_template('confirmation_a.html', name=name, email=email)
+        elif application_type == 'External Application':
+            make_ext_form(updated_data)
+            return render_template('confirmation_e.html', name=name, email=email)
+
     except Exception as e:
-             return render_template('error.html', error=str(e))
+        return render_template('error.html', error=str(e))
 
 @app.route('/download_application')
 def download_file_a():
     p = r'templates/ysab-application-record.html'
     return send_file(p, as_attachment=True)
+
+@app.route('/download_application_fromtable/<application_id>')
+def download_file_a_fromtable(application_id):
+    with MongoClient(mongo_uri) as client:
+        db = client[db_name]
+        collection = db['ysab']
+        application = collection.find_one({'_id': application_id})
+
+    if application:
+        make_app_form(application, download_source='table')
+        p = r'templates/ysab-application-record.html'
+        return send_file(p, as_attachment=True, download_name=f"ysab_application_{application_id}.html")
+    else:
+        return "Application not found", 404
+    
+@app.route('/download_external_fromtable/<application_id>')
+def download_file_e_fromtable(application_id):
+    with MongoClient(mongo_uri) as client:
+        db = client[db_name]
+        collection = db['ysab-external']
+        application = collection.find_one({'_id': application_id})
+
+    if application:
+        make_ext_form(application, download_source='table')
+        p = r'templates/ysab-external-record.html'
+        return send_file(p, as_attachment=True, download_name=f"ysab_external_application_{application_id}.html")
+    else:
+        return "Application not found", 404
 
 @app.route('/download_progress_report')
 def download_file_p():
