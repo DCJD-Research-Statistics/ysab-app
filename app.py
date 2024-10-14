@@ -487,6 +487,11 @@ def signup():
         users_collection.insert_one(new_user)
         flash('Account created successfully', 'success')
         return redirect(url_for('login'))
+    
+    # Send Discord notification
+    discord_webhook_url = os.getenv("DISCORD_WEBHOOK_URL") 
+    message = f"📩 New User Signup:\n- Name: {name}\n- Email: {email}"
+    requests.post(discord_webhook_url, json={"content": message})
 
     return render_template('signup.html')
 
@@ -645,8 +650,8 @@ def submit_application_form():
             # make_app_form(form_data)
 
             # Send Discord notification
-            discord_webhook_url = os.getenv("DISCORD_WEBHOOK_URL")  # Ensure you have this in your .env
-            message = f"Application updated:\n- ID: {form_data['_id']}\n- Type: {'Internal Application'}\n- Name: {name}\n- Email: {email} \n- Title: {form_data['title']}"
+            discord_webhook_url = os.getenv("DISCORD_WEBHOOK_URL") 
+            message = f"🔵 New Application Submitted:\n- ID: {form_data['_id']}\n- Type: {'Internal Application'}\n- Name: {name}\n- Email: {email} \n- Title: {form_data['title']}"
             requests.post(discord_webhook_url, json={"content": message})
 
             # return jsonify({'success': True, 'message': 'Form data submitted successfully'})
@@ -673,7 +678,12 @@ def submit_progress_report():
             collection.insert_one(form_data)
 
            # make html application w/ user responses
-            make_prog_form(form_data)
+            # make_prog_form(form_data)
+
+            # Send Discord notification
+            discord_webhook_url = os.getenv("DISCORD_WEBHOOK_URL") 
+            message = f"🟢 Progress Report Submitted:\n- ID: {form_data['_id']}\n- Name: {name}\n- Email: {email} \n- Reporting Period: {form_data['reporting_period']}"
+            requests.post(discord_webhook_url, json={"content": message})
 
             # return jsonify({'success': True, 'message': 'Form data submitted successfully'})
             return render_template('confirmation_p.html', name=name, email=email)
@@ -701,7 +711,7 @@ def submit_external_form():
 
             # Send Discord notification
             discord_webhook_url = os.getenv("DISCORD_WEBHOOK_URL")  # Ensure you have this in your .env
-            message = f"Application updated:\n- ID: {form_data['_id']}\n- Type: {'External Application'}\n- Name: {name}\n- Email: {email} \n- Title: {form_data['title']}"
+            message = f"🟠 External Application Submitted:\n- ID: {form_data['_id']}\n- Name: {name}\n- Email: {email} \n- Title: {form_data['title']}"
             requests.post(discord_webhook_url, json={"content": message})
 
             # return jsonify({'success': True, 'message': 'Form data submitted successfully'})
