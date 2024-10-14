@@ -486,13 +486,15 @@ def signup():
         }
         users_collection.insert_one(new_user)
         flash('Account created successfully', 'success')
+
+        # Send Discord notification
+        discord_webhook_url = os.getenv("DISCORD_WEBHOOK_URL") 
+        message = f"📩 New User Signup:\n- Name: {name}\n- Email: {email}"
+        requests.post(discord_webhook_url, json={"content": message})
+
         return redirect(url_for('login'))
     
-    # Send Discord notification
-    discord_webhook_url = os.getenv("DISCORD_WEBHOOK_URL") 
-    message = f"📩 New User Signup:\n- Name: {name}\n- Email: {email}"
-    requests.post(discord_webhook_url, json={"content": message})
-
+    # If it's a GET request, just render the signup template
     return render_template('signup.html')
 
 @app.route('/login', methods=['GET', 'POST'])
