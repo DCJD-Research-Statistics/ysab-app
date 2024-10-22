@@ -931,9 +931,6 @@ def submit_continuation_form():
             # return jsonify({'success': False, 'error': str(e)})
              return render_template('error.html', error=str(e))
 
-@app.route('/edit')
-def edit():
-    return render_template('edit.html')
 
 @app.route('/edit-application/<application_id>/<application_type>')
 def edit_application(application_id, application_type):
@@ -989,16 +986,16 @@ def update_application():
         collection.insert_one(updated_data)
 
         # Send Discord notification
-        discord_webhook_url = os.getenv("DISCORD_WEBHOOK_URL")  # Ensure you have this in your .env
+        discord_webhook_url = os.getenv("DISCORD_WEBHOOK_URL")
         message = f"🆙 Application updated:\n- ID: {application_id}\n- Type: {application_type}\n- Name: {name}\n- Email: {email} \n- Title: {updated_data['title']}"
         requests.post(discord_webhook_url, json={"content": message})
 
         # make html application w/ user responses
         if application_type == 'Internal Application':
-            make_app_form(updated_data)
+            # make_app_form(updated_data)
             return render_template('confirmation_a.html', name=name, email=email)
         elif application_type == 'External Application':
-            make_ext_form(updated_data)
+            # make_ext_form(updated_data)
             return render_template('confirmation_e.html', name=name, email=email)
 
     except Exception as e:
