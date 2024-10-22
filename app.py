@@ -14,6 +14,8 @@ from functools import wraps  # Add this line
 from bson import ObjectId
 import requests
 
+admin_mode_switch = False
+
 load_dotenv() 
 
 mongo_uri = os.getenv("MONGO_URI")
@@ -28,114 +30,6 @@ def get_timestamp():
     current_time = dt.now(central_timezone)
     timestamp = current_time.strftime("%m-%d-%Y %H:%M")
     return timestamp
-
-def get_program_list():
-    cluster = MongoClient(mongo_uri)
-    db = cluster[db_name]
-    collection = db['ysab']
-    # Retrieve all records from the collection
-    cursor = collection.find()
-    # Convert the cursor to a list of dictionaries
-    records = list(cursor)
-    # Create a Pandas DataFrame
-    df = pd.DataFrame(records)
-    cluster.close()
-    return df.title.to_list()
-
-# pre-populate fields auto
-def get_app_list(user_email):
-    cluster = MongoClient(mongo_uri)
-    db = cluster[db_name]
-    collection = db['ysab']
-    # Retrieve records from the collection for the specific user
-    cursor = collection.find({'email': user_email})
-    # Convert the cursor to a list of dictionaries
-    records = list(cursor)
-    # Create a Pandas DataFrame
-    df = pd.DataFrame(records)
-    if df.empty:
-        cluster.close()
-        return []
-    df['app_record'] = pd.concat([df.timestamp.str[:10], df[['name', 'app_title', 'email', 'phone', 'title', 'amount', 'output1', 'output2', 'output3', 'output4', 'output5', 'target1', 'target2', 'target3', 'target4', 'target5', 'outcome1', 'outcome2', 'outcome3', 'outcome4', 'outcome5', 'target1.1', 'target2.1', 'target3.1', 'target4.1', 'target5.1']].astype(str)], axis=1).apply(lambda row: ' : '.join(row), axis=1)
-    cluster.close()
-    return df.app_record.to_list()
-
-prog_report_items = ['name', 
-                     'title', 
-                     'email', 
-                     'phone', 
-                     'title', 
-                     'how_funds_advanced_goals_of_program', 
-                     'project_contact',
-                     'fiscal_year',
-                     'start_date',
-                     'end_date',
-                     'amount_awarded',
-                     'amount_expended_mid',
-                     'target_a',
-                     'midterm_a', 
-                     'target_b',
-                     'midterm_b', 
-                     'output1',
-                     'output2',
-                     'output3',
-                     'output4',
-                     'output5',
-                     'output6',
-                     'target1',
-                     'target2',
-                     'target3',
-                     'target4',
-                     'target5',
-                     'target6',
-                     'midterm1', 
-                     'midterm2', 
-                     'midterm3', 
-                     'midterm4', 
-                     'midterm5', 
-                     'midterm6',
-                     'outcome1',
-                     'outcome2',
-                     'outcome3',
-                     'outcome4',
-                     'outcome5',
-                     'outcome6',
-                     'target1.1',
-                     'target2.1',
-                     'target3.1',
-                     'target4.1',
-                     'target5.1',
-                     'target6.1',
-                     'midterm1.1', 
-                     'midterm2.1', 
-                     'midterm3.1', 
-                     'midterm4.1', 
-                     'midterm5.1', 
-                     'midterm6.1',
-                    'funds_explain',
-                    'midterm_full_amount_no',
-                    'midterm_full_amount_no2']
-
-# pre-populate fields auto - progress report 
-def get_prog_list():
-    cluster = MongoClient(mongo_uri)
-    db = cluster[db_name]
-    collection = db['progress_reports']
-    cursor = collection.find()
-    records = list(cursor)
-
-    if len(records) == 0:
-        return []
-
-    df = pd.DataFrame(records)
-    # Check if the DataFrame is empty after conversion
-    if df.empty:
-        cluster.close()
-        return []
-    
-    df['app_record'] = pd.concat([df.timestamp.str[:10], df[prog_report_items].astype(str)], axis=1).apply(lambda row: ' : '.join(row), axis=1)
-    cluster.close()
-    return df.app_record.to_list()
 
 def get_app_num():
     with MongoClient(mongo_uri) as client:
@@ -536,12 +430,12 @@ def login_required(f):
 
 @app.route('/my-applications')
 @login_required
-def my_applications(admin_mode=False):
+def my_applications(admin_mode=admin_mode_switch):
     if 'user' not in session:
         return redirect(url_for('login'))
 
     if admin_mode==True:
-        user_email = 'daniel.pacheco@dallascounty.org'
+        user_email = os.getenv("ADMIN_EMAIL")
     elif admin_mode==False: 
         user_email = session['user']['email']
 
@@ -599,17 +493,307 @@ def help():
 @app.route('/application')
 @login_required
 def application():
+    # Check if the user's email ends with 'dallascounty.org'
+    if not session['user']['email'].endswith('dallascounty.org'):
+        flash('Access denied. You must have a dallascounty.org email to access this page.', 'error')
+        return redirect(url_for('home'))  # Redirect to home or another appropriate page
     return render_template('application.html')
 
-@app.route('/progress-report')
+@app.route('/progress-report-selection', methods=['GET'])
 @login_required
-def progress_report(admin_mode=False):
+def progress_report_selection(admin_mode=admin_mode_switch):
     if admin_mode==True:
-        user_email = 'daniel.pacheco@dallascounty.org'
-        return render_template('progress-report.html', dropdown_items=get_program_list(), app_list=get_app_list(user_email), prog_list=get_prog_list())   
-    if admin_mode==False:
+        user_email = os.getenv("ADMIN_EMAIL")
+    elif admin_mode==False: 
         user_email = session['user']['email']
-        return render_template('progress-report.html', dropdown_items=get_program_list(), app_list=get_app_list(user_email), prog_list=get_prog_list())
+
+    # Connect to MongoDB
+    client = MongoClient(mongo_uri)
+    db = client[db_name]
+    collection = db['ysab']
+
+    # Fetch applications for the current user
+    user_applications = list(collection.find(
+        {'email': {'$regex': f'^{user_email}$', '$options': 'i'}},
+        {'_id': 1, 'timestamp': 1, 'title': 1, 'reporting_interval': 1}
+    ))
+
+    # Format the data for the template
+    applications = []
+    for app in user_applications:
+        applications.append({
+            'id': str(app['_id']),
+            'submission_date': app['timestamp'],
+            'title': app['title'],
+            'type': 'Internal Application',
+            'reporting_interval': app.get('reporting_interval', 'Not specified')
+        })
+
+    client.close()
+
+    return render_template('progress_report_selection.html', applications=applications)
+
+@app.route('/progress-report-router/<application_id>/<reporting_interval>')
+@login_required
+def progress_report_router(application_id, reporting_interval):
+    if reporting_interval == 'Quarterly':
+        return redirect(url_for('select_quarter', application_id=application_id))
+    elif reporting_interval in ['Bi-annually', '>Bi-annually']:
+        return redirect(url_for('select_biannual', application_id=application_id))
+    elif reporting_interval in ['Annually', '>Annually']:
+        return redirect(url_for('progress_report_annual', application_id=application_id))
+    else:
+        flash('Invalid reporting interval', 'error')
+        return redirect(url_for('progress_report_selection'))
+
+@app.route('/select-quarter/<application_id>')
+@login_required
+def select_quarter(application_id):
+    return render_template('select_quarter.html', application_id=application_id)
+
+@app.route('/select-biannual/<application_id>')
+@login_required
+def select_biannual(application_id):
+    return render_template('select_biannual.html', application_id=application_id)
+
+@app.route('/progress-report-qt/<application_id>', methods=['GET', 'POST'])
+@login_required
+def progress_report_qt(application_id):
+    # Fetch the application details from the database based on the reporting period
+    client = MongoClient(mongo_uri)
+    db = client[db_name]
+    reporting_period = request.form.get('reporting_period')
+    
+    if reporting_period == 'q1':
+        collection = db['ysab']
+        application = collection.find_one({'_id': application_id})
+    else:
+        collection = db['progress_reports']
+        previous_quarter = 'q' + str(int(reporting_period[-1]) - 1)
+        application = collection.find_one({'application_id': application_id, 'reporting_period': previous_quarter})
+    
+    client.close()
+
+    if not application:
+        flash('Application not found', 'error')
+        return redirect(url_for('progress_report_selection'))
+
+    # Get user information from the session
+    user = session.get('user', {})
+    name = user.get('name', '')
+    email = user.get('email', '')
+
+    # Determine which template to use based on the reporting period
+    if reporting_period == 'q1':
+        template = 'progress-report-qt.html'
+    elif reporting_period == 'q2':
+        template = 'progress-report-qt2.html'
+    elif reporting_period == 'q3':
+        template = 'progress-report-qt3.html'
+    elif reporting_period == 'q4':
+        template = 'progress-report-qt4.html'
+    else:
+        flash('Invalid reporting period', 'error')
+        return redirect(url_for('select_quarter', application_id=application_id))
+
+    # Prepare the context dictionary
+    context = {
+        'application_id': application_id,
+        'user_name': name,
+        'reporting_period': reporting_period,
+        'app_title': application.get('app_title'),
+        'user_email': email,
+        'phone': application.get('phone'),
+        'project_title': application.get('title'),
+    }
+
+    # Adjust 'amount_awarded' based on the reporting period
+    if reporting_period == 'q1':
+        context['amount_awarded'] = application.get('grandTotal')
+    else:
+        context['amount_awarded'] = application.get('amount_awarded')
+
+    # Add output and outcome fields
+    for i in range(1, 6):
+        context[f'output{i}'] = application.get(f'output{i}')
+        context[f'final_target_output_{i}'] = application.get(f'target{i}')
+        context[f'outcome{i}'] = application.get(f'outcome{i}')
+        context[f'final_target_outcome_{i}'] = application.get(f'target{i}.1')
+
+    # Add fields specific to q2, q3, q4 reports
+    if reporting_period != 'q1':
+        for i in range(1, 6):
+            for field in ['target', 'aa', 'ontrack']:
+                for type in ['', 'outcome_']:
+                    for q in range(1, int(reporting_period[-1])):
+                        key = f'q{q}_{type}{field}_{i}'
+                        context[key] = application.get(key)
+        for i in ['a', 'b']:
+            for field in ['target', 'aa', 'ontrack']:
+                for type in ['']:
+                    for q in range(1, int(reporting_period[-1])):
+                        key = f'q{q}_{type}{field}_{i}'
+                        context[key] = application.get(key)
+        # Add final_target_output_a for outputs and outcomes
+        for i in range(1, 6):
+            context[f'final_target_output_{i}'] = application.get(f'final_target_output_{i}')
+            context[f'final_target_outcome_{i}'] = application.get(f'final_target_outcome_{i}')
+        for i in ['a', 'b']:
+            context[f'final_target_output_{i}'] = application.get(f'final_target_output_{i}')
+            context[f'final_target_outcome_{i}'] = application.get(f'final_target_outcome_{i}')
+        # Add amount_expended based on the reporting period
+        if reporting_period == 'q2':
+            context['amount_expended_qt'] = application.get('amount_expended_qt')
+        elif reporting_period == 'q3':
+            context['amount_expended_qt'] = application.get('amount_expended_qt')
+            context['amount_expended_qt2'] = application.get('amount_expended_qt2')
+        elif reporting_period == 'q4':
+            context['amount_expended_qt'] = application.get('amount_expended_qt')
+            context['amount_expended_qt2'] = application.get('amount_expended_qt2')
+            context['amount_expended_qt3'] = application.get('amount_expended_qt3')
+
+    # Render the appropriate quarterly progress report template with auto-filled information
+    return render_template(template, **context)
+
+@app.route('/progress-report-bi/<application_id>', methods=['GET', 'POST'])
+@login_required
+def progress_report_bi(application_id):
+    # Fetch the application details from the database based on the reporting period
+    client = MongoClient(mongo_uri)
+    db = client[db_name]
+    reporting_period = request.form.get('reporting_period')
+    
+    if reporting_period == 'mid_year':
+        collection = db['ysab']
+        application = collection.find_one({'_id': application_id})
+    elif reporting_period == 'end_year':
+        collection = db['progress_reports']
+        application = collection.find_one({'application_id': application_id, 'reporting_period': 'mid_year'})
+    else:
+        flash('Invalid reporting period', 'error')
+        return redirect(url_for('select_biannual', application_id=application_id))
+    
+    client.close()
+
+    if not application:
+        flash('Application not found', 'error')
+        return redirect(url_for('progress_report_selection'))
+
+    # Get user information from the session
+    user = session.get('user', {})
+    name = user.get('name', '')
+    email = user.get('email', '')
+
+    # Determine which template to use based on the reporting period
+    if reporting_period == 'mid_year':
+        template = 'progress-report-bi.html'
+    elif reporting_period == 'end_year':
+        template = 'progress-report-end_year.html'
+    else:
+        flash('Invalid reporting period', 'error')
+        return redirect(url_for('select_biannual', application_id=application_id))
+
+    # Prepare the context dictionary
+    context = {
+        'application_id': application_id,
+        'user_name': name,
+        'reporting_period': reporting_period,
+        'app_title': application.get('app_title'),
+        'user_email': email,
+        'phone': application.get('phone'),
+        'project_title': application.get('title'),
+    }
+
+    # Adjust 'amount_awarded' based on the reporting period
+    if reporting_period == 'mid_year':
+        context['amount_awarded'] = application.get('grandTotal')
+    else:
+        context['amount_awarded'] = application.get('amount_awarded')
+
+    # Add output and outcome fields
+    for i in range(1, 6):
+        context[f'output{i}'] = application.get(f'output{i}')
+        context[f'final_target_output_{i}'] = application.get(f'target{i}')
+        context[f'outcome{i}'] = application.get(f'outcome{i}')
+        context[f'final_target_outcome_{i}'] = application.get(f'target{i}.1')
+
+    # Add fields specific to midterm and final reports
+    if reporting_period != 'mid_year':
+        for i in range(1, 6):
+            for field in ['target', 'aa', 'ontrack']:
+                for type in ['', 'outcome_']:
+                    for q in ['midterm', 'final']:
+                        key = f'{q}_{type}{field}_{i}'
+                        context[key] = application.get(key)
+        for i in ['a', 'b']:
+            for field in ['target', 'aa', 'ontrack']:
+                for type in ['']:
+                    for q in ['midterm', 'final']:
+                        key = f'{q}_{type}{field}_{i}'
+                        context[key] = application.get(key)
+        # Add final_target_output_a for outputs and outcomes
+        for i in range(1, 6):
+            context[f'final_target_output_{i}'] = application.get(f'final_target_output_{i}')
+            context[f'final_target_outcome_{i}'] = application.get(f'final_target_outcome_{i}')
+        for i in ['a', 'b']:
+            context[f'final_target_output_{i}'] = application.get(f'final_target_output_{i}')
+            context[f'final_target_outcome_{i}'] = application.get(f'final_target_outcome_{i}')
+
+        # Add amount_expended_mid field
+        context['amount_expended_mid'] = application.get('amount_expended_mid')
+
+
+    # Render the appropriate bi-annual progress report template with auto-filled information
+    return render_template(template, **context)
+
+@app.route('/progress-report-annual/<application_id>', methods=['GET', 'POST'])
+@login_required
+def progress_report_annual(application_id):
+    # Fetch the application details from the database
+    client = MongoClient(mongo_uri)
+    db = client[db_name]
+    collection = db['ysab']
+    application = collection.find_one({'_id': application_id})
+    client.close()
+    if not application:
+        flash('Application not found', 'error')
+        return redirect(url_for('progress_report_selection'))
+
+    # Get user information from the session
+    user = session.get('user', {})
+    name = user.get('name', '')
+    email = user.get('email', '')
+    reporting_period = 'Annually'
+
+    # Render the annual progress report template with auto-filled information
+    return render_template('progress-report-annual.html',
+                           reporting_period=reporting_period,
+                           user_name=name,
+                           app_title=application['app_title'],
+                           user_email=email,
+                           phone=application['phone'],
+                           project_title=application['title'],
+                           output1=application['output1'],
+                           output2=application['output2'],
+                           output3=application['output3'],
+                           output4=application['output4'],
+                           output5=application['output5'],
+                           target1=application['target1'],
+                           target2=application['target2'],
+                           target3=application['target3'],
+                           target4=application['target4'],
+                           target5=application['target5'],
+                           outcome1=application['outcome1'],
+                           outcome2=application['outcome2'],
+                           outcome3=application['outcome3'],
+                           outcome4=application['outcome4'],
+                           outcome5=application['outcome5'],
+                           target1_1=application['target1.1'],
+                           target2_1=application['target2.1'],
+                           target3_1=application['target3.1'],
+                           target4_1=application['target4.1'],
+                           target5_1=application['target5.1'],
+                           grand_total=application['grandTotal'])
 
 @app.route('/external')
 @login_required
@@ -664,34 +848,34 @@ def submit_application_form():
         
 @app.route('/submit_progress_report', methods=['POST'])
 def submit_progress_report():
-        try:     
-            # Get form data
-            form_data = request.form.to_dict()
-            name = request.form.get('name')
-            email = request.form.get('email')
-            form_id = progress_report_id(request.form.get('reporting_period'))
+    try:     
+        # Get form data
+        form_data = request.form.to_dict()
+        name = request.form.get('name')
+        email = request.form.get('email')
+        title = request.form.get('title')
+        form_id = progress_report_id(request.form.get('reporting_period'))
 
-            form_data = {'_id': form_id, 'timestamp': get_timestamp(), **form_data}
+        if not title:
+            title = form_data.get('project_title', 'Untitled Project')
+            print(f"Warning: Title not found in form submission for {form_id}")
 
-            # Insert data into MongoDB
-            cluster = MongoClient(mongo_uri)
-            db = cluster[db_name]
-            collection = db['progress_reports']
-            collection.insert_one(form_data)
+        form_data = {'_id': form_id, 'timestamp': get_timestamp(), 'title': title, **form_data}
 
-           # make html application w/ user responses
-            # make_prog_form(form_data)
+        # Insert data into MongoDB
+        cluster = MongoClient(mongo_uri)
+        db = cluster[db_name]
+        collection = db['progress_reports']
+        collection.insert_one(form_data)
 
-            # Send Discord notification
-            discord_webhook_url = os.getenv("DISCORD_WEBHOOK_URL") 
-            message = f"🟢 Progress Report Submitted:\n- ID: {form_data['_id']}\n- Name: {name}\n- Email: {email} \n- Reporting Period: {form_data['reporting_period']}"
-            requests.post(discord_webhook_url, json={"content": message})
+        # Send Discord notification
+        discord_webhook_url = os.getenv("DISCORD_WEBHOOK_URL") 
+        message = f"🟢 Progress Report Submitted:\n- ID: {form_data['_id']}\n- Name: {name}\n- Email: {email} \n- Reporting Period: {form_data['reporting_period']}\n- Title: {title}"
+        requests.post(discord_webhook_url, json={"content": message})
 
-            # return jsonify({'success': True, 'message': 'Form data submitted successfully'})
-            return render_template('confirmation_p.html', name=name, email=email)
-        except Exception as e:
-            # return jsonify({'success': False, 'error': str(e)})
-             return render_template('error.html', error=str(e))
+        return render_template('confirmation_p.html', name=name, email=email)
+    except Exception as e:
+        return render_template('error.html', error=str(e))
         
 @app.route('/submit_external_form', methods=['POST'])
 def submit_external_form():
@@ -806,7 +990,7 @@ def update_application():
 
         # Send Discord notification
         discord_webhook_url = os.getenv("DISCORD_WEBHOOK_URL")  # Ensure you have this in your .env
-        message = f"Application updated:\n- ID: {application_id}\n- Type: {application_type}\n- Name: {name}\n- Email: {email} \n- Title: {updated_data['title']}"
+        message = f"🆙 Application updated:\n- ID: {application_id}\n- Type: {application_type}\n- Name: {name}\n- Email: {email} \n- Title: {updated_data['title']}"
         requests.post(discord_webhook_url, json={"content": message})
 
         # make html application w/ user responses

@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="{{url_for('static', filename='/style.css')}}"> 
+  <title>YSAB Progress Report</title>   
+  <link rel="icon" href="{{url_for('static', filename='images/fav-icon-red.svg')}}">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+    .main-content {
+      max-width: 1400px;
+      margin: 20px auto;
+      padding: 0 20px;
+    }
+    .readonly-input {
+      background-color: #f0f0f0;
+      color: #666;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <div class="header-bar">
+    <div class="header-content">
+      <div class="header-logo">
+        <img src="{{url_for('static', filename='images/juvenile-logo.svg')}}" alt="DCJD Logo">
+        <span>DCJD YSAB Funds</span>
+      </div>
+      <div class="header-links">
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('help') }}">Help</a>
+        <a href="{{ url_for('my_applications') }}">Applications</a>
+        {% if 'user' in session %}
+          <a href="{{ url_for('logout') }}">Logout</a>
+        {% else %}
+          <a href="{{ url_for('login') }}">Login</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <form action="/submit_progress_report" method="POST">
+      <header>
+        <h2>Dallas County Juror Fund Allocation Progress Report</h2>
+        <h3 style="color: blue;">Annual</h3>
+      </header>
+
+      <h3>Submission Instructions:</h2>
+          <ol>
+              <li>Informants must answer all questions that are applicable</li>
+              <li>Length of responses must adhere to the specified word limit indicated in the question</li>
+              <li>Informants must click the submit button to complete the report</li>
+            </ol>
+
+      <p><b>Disclaimer:</b> For privacy and security reasons, please be advised not to include any confidential or sensitive information in your submission.</p>
+      <input type="hidden" name="application_id" value="{{ application_id }}">
+      <input type="hidden" name="application_type" value="Progress Report">
+      <input type="hidden" name="reporting_period" value="Annual">
+
+      <div>
+      <br>
+        <label for="name">Name</label>
+        <div>
+          <input id="name" name="name" type="text" value="{{ user_name }}" size="8" tabindex="1" required>
+        </div>
+      </div>
+
+      <div>
+          <label for="app_title">
+            Applicant Title
+          </label>
+          <div>
+            <input id="app_title" name="app_title" type="text" value="{{ app_title }}" size="8" tabindex="1">
+         </div>
+      </div>
+
+      <div>
+          <label for="email">
+            Contact Email
+          </label>
+          <div>
+            <input id="email" name="email" type="email" spellcheck="false" value="{{ user_email }}" maxlength="255" tabindex="3" required> 
+         </div>
+      </div>
+
+      <div>
+        <label for="phone">
+          Contact Phone Number
+        </label>
+        <div>
+          <input id="phone" name="phone" type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="123-456-7890" oninput="formatPhoneNumber(this)" maxlength="12" value="{{ phone }}" required>
+        </div>
+      </div>
+    <script>
+      function formatPhoneNumber(input) {
+        // Remove any non-numeric characters
+        var phoneNumber = input.value.replace(/\D/g, '');
+
+        // Check if the length is greater than 10, trim it
+        if (phoneNumber.length > 10) {
+          phoneNumber = phoneNumber.substr(0, 10);
+        }
+
+        // Add dashes in the required format
+        var formattedPhoneNumber =
+          phoneNumber.slice(0, 3) + '-' + phoneNumber.slice(3, 6) + '-' + phoneNumber.slice(6, 10);
+
+        // Update the input field value
+        input.value = formattedPhoneNumber;
+      }
+    </script>
+
+    <h3>Profile</h3>
+
+      <div>
+        <br>
+          <label for="title">Project Title</label>
+          <div>
+            <input id="title" name="title" type="text" value="{{ project_title }}" size="8" tabindex="1" required disabled>
+          </div>
+        </div>
+
+      <div>
+        <label for="how_funds_advanced_goals_of_program">
+          Describe specifically how the use of your YSAB award advanced the goals and objectives of your program. Link the use of your YSAB award with the impact it has made on your outcomes.
+        </label>
+        <div>
+          <textarea id="how_funds_advanced_goals_of_program" name="how_funds_advanced_goals_of_program" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder=""></textarea>
+        </div>
+      </div>
+
+      <div>
+          <label for="project_contact">
+          Project Contact (Name)
+          </label>
+          <div>
+            <input id="project_contact" name="project_contact" type="text" size="8" tabindex="1">
+         </div>
+      </div>
+
+      <div>
+        <label for="fiscal_year">Fiscal Year</label>
+        <div>
+          <input id="fiscal_year" name="fiscal_year" type="number" size="8" tabindex="1" min="1" max="99999">
+       </div>
+      </div>
+        
+      <div>
+        <label for="start_date">Start Date:</label>
+        <div>
+          <input type="date" id="start_date" name="start_date" value="2024-01-01" min="2018-01-01" max="2099-12-31" />
+        </div>
+      </div>
+
+      <div>
+        <label for="end_date">End Date:</label>
+        <div>
+          <input type="date" id="end_date" name="end_date" value="2024-01-01" min="2018-01-01" max="2099-12-31" />
+        </div>
+      </div>
+
+      <div>
+          <label for="amount_awarded">
+          Amount Awarded
+          </label>
+          <div>
+            <input id="amount_awarded" name="amount_awarded" type="number" size="8" tabindex="1" min="1" max="999999" value="{{ grand_total }}" readonly class="readonly-input">
+         </div>
+      </div>
+
+    <div id="amount_expended_final">
+      <label for="amount_expended_final">
+      Amount Expended
+      </label>
+      <div>
+        <input name="amount_expended_final" type="number" size="8" tabindex="1" min="1" max="99999">
+     </div>
+    </div>
+
+    <br>
+    <br>
+    <h3>Performance Measures</h3>
+    <h4>Output Measures</h4>
+      
+    <table align="center" border=1 cellspacing="1" cellpadding="5">
+      <thead>
+          <tr>
+              <th style="width:50%">Output Measures</th>
+              <th>Annual Actual Achieved</th>
+              <th style="text-align: center;">Target</th>
+              <th class="final-column" style="width:15%">Annual Target Achieved</th>
+          </tr>
+      </thead>
+      <tbody>
+          <tr>
+              <td>Number of youth directly benefited</td>
+              <td class="final-column">
+                <input id="annual_output_aa_a" name="annual_output_aa_a" type="text" size="8" tabindex="1">
+              </td>
+              <td style="text-align: center;" >
+                <input id="annual_target_output_a" name="annual_target_output_a" type="text" size="8" tabindex="1">
+              </td>
+              <td style="text-align: center;">
+                <select id="ontrack_output_target_a" name="ontrack_output_target_a"  tabindex="11"> 
+                    <option value="Choose an item">Choose an item</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>
+              </td>
+          </tr>
+          <tr>
+              <td>Number of individuals not under the authority of DCJD benefited</td>
+              <td class="final-column">
+                <input id="annual_output_aa_b" name="annual_output_aa_b" type="text" size="8" tabindex="1">
+              </td>
+              <td style="text-align: center;" >
+                <input id="annual_target_output_b" name="annual_target_output_b" type="text" size="8" tabindex="1">
+              </td>
+              <td style="text-align: center;">
+                <select id="ontrack_output_target_b" name="ontrack_output_target_b"  tabindex="11"> 
+                    <option value="Choose an item">Choose an item</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>                
+              </td>
+          </tr>
+          <tr>
+              <td>
+                <input id="output1" name="output1" type="text" value="{{ output1 }}" readonly class="readonly-input">
+              </td>
+              <td class="final-column">
+                <input id="annual_output_aa_1" name="annual_output_aa_1" type="text" size="8" tabindex="1">
+              </td>
+              <td style="text-align: center;" >
+                <input id="annual_target_output_1" name="annual_target_output_1" type="text" value="{{ target1 }}" size="8" tabindex="1" readonly class="readonly-input" style="text-align: center;">
+              </td>
+              <td style="text-align: center;">
+                <select id="ontrack_output_target_1" name="ontrack_output_target_1"  tabindex="11"> 
+                    <option value="Choose an item">Choose an item</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>
+              </td>
+          </tr>
+          <tr>
+            <td>
+              <input id="output2" name="output2" type="text" value="{{ output2 }}" readonly class="readonly-input">
+            </td>
+            <td class="final-column">
+              <input id="annual_output_aa_2" name="annual_output_aa_2" type="text" size="8" tabindex="1">
+            </td>
+            <td style="text-align: center;" >
+              <input id="annual_target_output_2" name="annual_target_output_2" type="text" value="{{ target2 }}" size="8" tabindex="1" readonly class="readonly-input" style="text-align: center;">
+            </td>
+            <td style="text-align: center;">
+              <select id="ontrack_output_target_2" name="ontrack_output_target_2"  tabindex="11"> 
+                  <option value="Choose an item">Choose an item</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+            </td>
+        </tr>      
+        <tr>
+          <td>
+            <input id="output3" name="output3" type="text" value="{{ output3 }}" readonly class="readonly-input">
+          </td>
+          <td class="final-column">
+            <input id="annual_output_aa_3" name="annual_output_aa_3" type="text" size="8" tabindex="1">
+          </td>
+          <td style="text-align: center;" >
+            <input id="annual_target_output_3" name="annual_target_output_3" type="text" value="{{ target3 }}" size="8" tabindex="1" readonly class="readonly-input" style="text-align: center;">
+          </td>
+          <td style="text-align: center;">
+            <select id="ontrack_output_target_3" name="ontrack_output_target_3"  tabindex="11"> 
+                <option value="Choose an item">Choose an item</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+          </td>
+      </tr> 
+      <tr>
+        <td>
+          <input id="output4" name="output4" type="text" value="{{ output4 }}" readonly class="readonly-input">
+        </td>
+        <td class="final-column">
+          <input id="annual_output_aa_4" name="annual_output_aa_4" type="text" size="8" tabindex="1">
+        </td>
+        <td style="text-align: center;" >
+          <input id="annual_target_output_4" name="annual_target_output_4" type="text" value="{{ target4 }}" size="8" tabindex="1" readonly class="readonly-input" style="text-align: center;">
+        </td>
+        <td class="final-column" style="text-align: center;">
+          <select id="ontrack_output_target_4" name="ontrack_output_target_4"  tabindex="11"> 
+              <option value="Choose an item">Choose an item</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+        </td>
+    </tr>    
+    <tr>
+      <td>
+        <input id="output5" name="output5" type="text" value="{{ output5 }}" readonly class="readonly-input">
+      </td>
+      <td class="final-column">
+        <input id="annual_output_aa_5" name="annual_output_aa_5" type="text" size="8" tabindex="1">
+      </td>
+      <td style="text-align: center;" >
+        <input id="annual_target_output_5" name="annual_target_output_5" type="text" value="{{ target5 }}" size="8" tabindex="1" readonly class="readonly-input" style="text-align: center;">
+      </td>
+      <td style="text-align: center;">
+        <select id="ontrack_output_target_5" name="ontrack_output_target_5"  tabindex="11"> 
+            <option value="Choose an item">Choose an item</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+      </td>
+    </tr>        
+      </tbody>
+    </table>
+
+    <br>
+    <h4>Outcome Measures</h4>
+    <p>(These should be identical to the outcome measures in the original application)</p>
+
+    <table align="center" border=1 cellspacing="1" cellpadding="5">
+      <thead>
+          <tr>
+              <th style="width:50%">Outcome Measures</th>
+              <th>Annual Actual Achieved</th>
+              <th style="text-align: center;">Target</th>
+              <th class="final-column" style="width:15%">Annual Target Achieved</th>
+          </tr>
+      </thead>
+      <tbody>
+          <tr>
+              <td>                    
+                <input id="outcome1" name="outcome1" type="text" value="{{ outcome1 }}" readonly class="readonly-input"> 
+              </td>
+              <td>
+                <input id="annual_outcome_aa_1" name="annual_outcome_aa_1" type="text" size="8" tabindex="1">
+              </td>
+              <td class="final-column">
+                <input id="annual_target_outcome_1" name="annual_target_outcome_1" type="text" size="8" tabindex="1" value="{{ target1_1 }}" readonly class="readonly-input" style="text-align: center;">
+              </td>
+              <td style="text-align: center;">
+                <select id="ontrack_outcome_target_1" name="ontrack_outcome_target_1"  tabindex="11"> 
+                    <option value="Choose an item">Choose an item</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>
+              </td>
+          </tr>
+          <tr>
+              <td>
+                <input id="outcome2" name="outcome2" type="text" value="{{ outcome2 }}" readonly class="readonly-input">
+              </td>
+              <td class="final-column">
+                <input id="annual_outcome_aa_2" name="annual_outcome_aa_2" type="text" size="8" tabindex="1">
+              </td>
+              <td class="final-column">
+                <input id="annual_target_outcome_2" name="annual_target_outcome_2" type="text" value="{{ target2_1 }}" size="8" tabindex="1" readonly class="readonly-input" style="text-align: center;">
+              </td>
+              <td style="text-align: center;">
+                <select id="ontrack_outcome_target_2" name="ontrack_outcome_target_2"  tabindex="11"> 
+                    <option value="Choose an item">Choose an item</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>                
+              </td>
+          </tr>
+          <tr>
+            <td>
+              <input id="outcome3" name="outcome3" type="text" value="{{ outcome3 }}" readonly class="readonly-input">
+            </td>
+            <td>
+              <input id="annual_outcome_aa_3" name="annual_outcome_aa_3" type="text" size="8" tabindex="1">
+            </td>
+            <td class="final-column">
+              <input id="annual_target_outcome_3" name="annual_target_outcome_3" type="text" size="8" tabindex="1" value="{{ target3_1 }}" readonly class="readonly-input" style="text-align: center;">
+            </td>
+            <td style="text-align: center;">
+              <select id="ontrack_outcome_target_3" name="ontrack_outcome_target_3"  tabindex="11"> 
+                  <option value="Choose an item">Choose an item</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+            </td>
+        </tr>      
+        <tr>
+          <td>
+            <input id="outcome4" name="outcome4" type="text" value="{{ outcome4 }}" readonly class="readonly-input">
+          </td>
+          <td>
+            <input id="annual_outcome_aa_4" name="annual_outcome_aa_4" type="text" size="8" tabindex="1">
+          </td>
+          <td class="final-column">
+            <input id="annual_target_outcome_4" name="annual_target_outcome_4" type="text" size="8" tabindex="1" value="{{ target4_1 }}" readonly class="readonly-input" style="text-align: center;">
+          </td>
+          <td style="text-align: center;">
+            <select id="ontrack_outcome_target_4" name="ontrack_outcome_target_4"  tabindex="11"> 
+                <option value="Choose an item">Choose an item</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+          </td>
+      </tr> 
+      <tr>
+        <td>
+          <input id="outcome5" name="outcome5" type="text" value="{{ outcome5 }}" readonly class="readonly-input">
+        </td>
+        <td>
+          <input id="annual_outcome_aa_5" name="annual_outcome_aa_5" type="text" size="8" tabindex="1">
+        </td>
+        <td class="final-column">
+          <input id="annual_target_outcome_5" name="annual_target_outcome_5" type="text" size="8" tabindex="1" value="{{ target5_1 }}" readonly class="readonly-input" style="text-align: center;">
+        </td>
+        <td style="text-align: center;">
+          <select id="ontrack_outcome_target_5" name="ontrack_outcome_target_5"  tabindex="11"> 
+              <option value="Choose an item">Choose an item</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </td>
+      </tr>    
+      </tbody>
+    </table>
+
+    <br><br>
+    <h3>Programmatic Considerations</h3>
+
+      <div>
+        <label for="funds_explain"><b>Award Amendment</b> <p>If the YSAB award needs to be increased for this project before the end of the period, make the request and provide a justification for the increase and the amount of the increase.</p></label>
+        <div>
+          <textarea id="funds_explain" name="funds_explain" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder="Maximum 250 words"></textarea>
+        </div>
+      </div>
+      
+      <div id="final_full_amount">
+        <p style="color:red;">Annual Report Only</p>
+        <label for="final_full_amount">Did you spend the full amount awarded in your application?</label>
+        <div>
+          <select name="final_full_amount"  tabindex="11"> 
+            <option value="Choose an item">Choose an item</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="final_full_amount_no">
+        <label for="final_full_amount_no">
+        If no, describe any problems or obstacles that have affected your ability to spend your grant funds and <u>indicate the percentage spent</u>.
+        </label>
+        <div>
+         <textarea name="final_full_amount_no" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder=""></textarea>
+        </div>
+     </div>
+
+     <div id="final_full_amount_no2">
+        <label for="final_full_amount_no2">
+          If your output and/or outcome target levels were <b>not</b> met, describe any problems or obstacles that affected your ability to achieve them. 
+        </label>
+        <div>
+          <textarea name="final_full_amount_no2" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder=""></textarea>
+        </div>
+      </div>
+
+      <br>
+
+      <div>
+        <label for="challenges_discrepances">Provide any overlooked challenges or discrepancies encountered while managing the grant funds, such as discrepancies between the intended and actual use of funds or unanticipated issues not addressed elsewhere.</label>
+        <div>
+          <textarea id="challenges_discrepances" name="challenges_discrepances" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder=""></textarea>
+        </div>
+      </div>
+
+      <br><br>
+
+      <div style="text-align: justify;">
+        <div style="display: inline-flex; align-items: center; border: 1px solid red; padding: 15px;">
+          <input type="checkbox" id="disclaimer_check" name="disclaimer_check" value="agree" required style="width: 15px; height: 15px;" required>
+          <label for="disclaimer_check" style="margin-left: 10px;">All of the information contained within this progress report is true and accurate as of the date this report is being submitted. As the informant, you affirm that all due diligence has been completed. This report is made in good faith and with respect for the purpose of the Youth Services Advisory Board grant program for the express direct benefit of the youth under the authority of the Dallas County Juvenile Department.</label>
+        </div>
+      </div>
+
+      <br>
+
+      <div class="container">
+        <div class="center">
+          <input id="saveForm" name="saveForm" type="submit" value="Submit" class="submit-button" disabled>
+        </div>
+      </div>
+
+      <script>
+        const disclaimerCheckbox = document.getElementById('disclaimer_check');
+        const submitButton = document.getElementById('saveForm');
+      
+        disclaimerCheckbox.addEventListener('change', function() {
+          if (this.checked) {
+            submitButton.style.backgroundColor = 'blue';
+            submitButton.disabled = false;
+          } else {
+            submitButton.style.backgroundColor = 'grey';
+            submitButton.disabled = true;
+          }
+        });
+      </script>
+
+    </form>
+  </div>
+
+  <footer>
+    <p>Date Updated: October 22, 2024<br>
+  </footer>
+</body>
+</html>
