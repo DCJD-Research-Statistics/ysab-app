@@ -34,7 +34,7 @@ def get_timestamp():
 def get_app_num():
     with MongoClient(mongo_uri) as client:
         db = client[db_name]
-        collection = db["ysab"]
+        collection = db['ysab-applications']
         # Count all records in the collection
         count = collection.count_documents({})
         app_number = count + 1
@@ -122,7 +122,7 @@ def ext_id():
 def get_cont_num():
     cluster = MongoClient(mongo_uri)
     db = cluster[db_name]
-    collection = db['ysab']
+    collection = db['ysab-applications']
     # Retrieve all records from the collection
     cursor = collection.find()
     # Convert the cursor to a list of dictionaries
@@ -442,7 +442,7 @@ def my_applications(admin_mode=admin_mode_switch):
     # Connect to MongoDB
     client = MongoClient(mongo_uri)
     db = client[db_name]
-    collection = db['ysab']
+    collection = db['ysab-applications']
 
     # Fetch applications for the current user from 'ysab' collection
     user_applications = list(collection.find(
@@ -510,7 +510,7 @@ def progress_report_selection(admin_mode=admin_mode_switch):
     # Connect to MongoDB
     client = MongoClient(mongo_uri)
     db = client[db_name]
-    collection = db['ysab']
+    collection = db['ysab-applications']
 
     # Fetch applications for the current user
     user_applications = list(collection.find(
@@ -565,7 +565,7 @@ def progress_report_qt(application_id):
     reporting_period = request.form.get('reporting_period')
     
     if reporting_period == 'q1':
-        collection = db['ysab']
+        collection = db['ysab-applications']
         application = collection.find_one({'_id': application_id})
     else:
         collection = db['progress_reports']
@@ -616,9 +616,9 @@ def progress_report_qt(application_id):
     # Add output and outcome fields
     for i in range(1, 6):
         context[f'output{i}'] = application.get(f'output{i}')
-        context[f'final_target_output_{i}'] = application.get(f'target{i}')
+        context[f'final_target_output_{i}'] = application.get(f'target_output_{i}')
         context[f'outcome{i}'] = application.get(f'outcome{i}')
-        context[f'final_target_outcome_{i}'] = application.get(f'target{i}.1')
+        context[f'final_target_outcome_{i}'] = application.get(f'target_outcome_{i}')
 
     # Add fields specific to q2, q3, q4 reports
     if reporting_period != 'q1':
@@ -664,7 +664,7 @@ def progress_report_bi(application_id):
     reporting_period = request.form.get('reporting_period')
     
     if reporting_period == 'mid_year':
-        collection = db['ysab']
+        collection = db['ysab-applications']
         application = collection.find_one({'_id': application_id})
     elif reporting_period == 'end_year':
         collection = db['progress_reports']
@@ -713,9 +713,9 @@ def progress_report_bi(application_id):
     # Add output and outcome fields
     for i in range(1, 6):
         context[f'output{i}'] = application.get(f'output{i}')
-        context[f'final_target_output_{i}'] = application.get(f'target{i}')
+        context[f'final_target_output_{i}'] = application.get(f'target_output_{i}')
         context[f'outcome{i}'] = application.get(f'outcome{i}')
-        context[f'final_target_outcome_{i}'] = application.get(f'target{i}.1')
+        context[f'final_target_outcome_{i}'] = application.get(f'target_outcome_{i}')
 
     # Add fields specific to midterm and final reports
     if reporting_period != 'mid_year':
@@ -752,7 +752,7 @@ def progress_report_annual(application_id):
     # Fetch the application details from the database
     client = MongoClient(mongo_uri)
     db = client[db_name]
-    collection = db['ysab']
+    collection = db['ysab-applications']
     application = collection.find_one({'_id': application_id})
     client.close()
     if not application:
@@ -778,21 +778,21 @@ def progress_report_annual(application_id):
                            output3=application['output3'],
                            output4=application['output4'],
                            output5=application['output5'],
-                           target1=application['target1'],
-                           target2=application['target2'],
-                           target3=application['target3'],
-                           target4=application['target4'],
-                           target5=application['target5'],
+                           target1=application['target_output_1'],
+                           target2=application['target_output_2'],
+                           target3=application['target_output_3'],
+                           target4=application['target_output_4'],
+                           target5=application['target_output_5'],
                            outcome1=application['outcome1'],
                            outcome2=application['outcome2'],
                            outcome3=application['outcome3'],
                            outcome4=application['outcome4'],
                            outcome5=application['outcome5'],
-                           target1_1=application['target1.1'],
-                           target2_1=application['target2.1'],
-                           target3_1=application['target3.1'],
-                           target4_1=application['target4.1'],
-                           target5_1=application['target5.1'],
+                           target1_1=application['target_outcome_1'],
+                           target2_1=application['target_outcome_2'],
+                           target3_1=application['target_outcome_3'],
+                           target4_1=application['target_outcome_4'],
+                           target5_1=application['target_outcome_5'],
                            grand_total=application['grandTotal'])
 
 @app.route('/external')
@@ -823,7 +823,7 @@ def submit_application_form():
             # Insert data into MongoDB - application
             with MongoClient(mongo_uri) as client:
                 db = client[db_name]
-                collection = db['ysab']
+                collection = db['ysab-applications']
                 collection.insert_one(form_data)
 
             # insert data into metadata collection
@@ -938,7 +938,7 @@ def edit_application(application_id, application_type):
     db = cluster[db_name]
 
     if application_type == 'Internal Application':
-        collection = db['ysab']
+        collection = db['ysab-applications']
     elif application_type == 'External Application':
         collection = db['ysab-external']
     else:
@@ -966,36 +966,53 @@ def update_application():
         email = request.form.get('email')
         application_id = request.form.get('_id')
         application_type = request.form.get('application_type')
-        # make new id, timestamp
+
+        # Update timestamp
         updated_data['timestamp'] = get_timestamp()
         
         cluster = MongoClient(mongo_uri)
         db = cluster[db_name]
 
         if application_type == 'Internal Application':
-            collection = db['ysab']
-            updated_data['_id'] = app_id()
+            collection = db['ysab-applications']
         elif application_type == 'External Application':
             collection = db['ysab-external']
-            updated_data['_id'] = ext_id()
         else:
             return render_template('error.html', error='Invalid application type')
 
-        # delete og record, insert new edited record
-        collection.delete_one({'_id': application_id})
-        collection.insert_one(updated_data)
+        # Remove '_id' from updated_data to prevent attempting to modify the immutable field
+        updated_data.pop('_id', None)
+
+        # Fetch the current document to check existing values
+        current_doc = collection.find_one({'_id': application_id})
+        
+        if current_doc:
+            # Update 'edited' and 'num_edits' fields
+            updated_data['edited'] = 'yes'
+            updated_data['num_edits'] = current_doc.get('num_edits', 0) + 1
+        else:
+            # Set initial values for new documents
+            updated_data['edited'] = 'no'
+            updated_data['num_edits'] = 0
+
+        # Update the existing record
+        result = collection.update_one(
+            {'_id': application_id},
+            {'$set': updated_data},
+            upsert=True
+        )
+
+        if result.modified_count == 0 and result.upserted_id is None:
+            return render_template('error.html', error='No changes made to the application')
 
         # Send Discord notification
         discord_webhook_url = os.getenv("DISCORD_WEBHOOK_URL")
-        message = f"🆙 Application updated:\n- ID: {application_id}\n- Type: {application_type}\n- Name: {name}\n- Email: {email} \n- Title: {updated_data['title']}"
+        message = f"🆙 Application updated:\n- ID: {application_id}\n- Type: {application_type}\n- Name: {name}\n- Email: {email} \n- Title: {updated_data['title']}\n- Number of edits: {updated_data.get('num_edits', 1)}"
         requests.post(discord_webhook_url, json={"content": message})
 
-        # make html application w/ user responses
         if application_type == 'Internal Application':
-            # make_app_form(updated_data)
             return render_template('confirmation_a.html', name=name, email=email)
         elif application_type == 'External Application':
-            # make_ext_form(updated_data)
             return render_template('confirmation_e.html', name=name, email=email)
 
     except Exception as e:
@@ -1010,7 +1027,7 @@ def download_file_a():
 def download_file_a_fromtable(application_id):
     with MongoClient(mongo_uri) as client:
         db = client[db_name]
-        collection = db['ysab']
+        collection = db['ysab-applications']
         application = collection.find_one({'_id': application_id})
 
     if application:
