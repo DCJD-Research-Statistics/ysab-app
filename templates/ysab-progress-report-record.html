@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<link href="{{url_for('static', filename='/style.css')}}" rel="stylesheet"/>
+<title>YSAB Progress Report</title>
+<link href="{{url_for('static', filename='images/fav-icon-red.svg')}}" rel="icon"/>
+<style>
+    * {
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box;
+    }
+
+    body {
+      padding: 20px 15%;
+      margin: 0;
+    }
+
+    form header {
+      margin: 0 0 20px 0; 
+    }
+
+    form header div {
+      font-size: 90%;
+      color: #999;
+    }
+
+    form header h2 {
+      margin: 0 0 5px 0;
+    }
+
+    form > div {
+      clear: both;
+      overflow: hidden;
+      padding: 1px;
+      margin: 0 0 10px 0;
+    }
+
+    form > div > fieldset > div > div {
+      margin: 0 0 5px 0;
+    }
+
+    form > div > label,
+    legend {
+      width: 25%;
+      float: left;
+      padding-right: 10px;
+    }
+
+    form > div > div,
+    form > div > fieldset > div {
+      width: 75%;
+      float: right;
+    }
+
+    form > div > fieldset label {
+      font-size: 90%;
+    }
+
+    fieldset {
+      border: 0;
+      padding: 0;
+    }
+
+    input[type=text],
+    input[type=email],
+    input[type=url],
+    input[type=password],
+    textarea {
+      width: 100%;
+      border-top: 1px solid #ccc;
+      border-left: 1px solid #ccc;
+      border-right: 1px solid #eee;
+      border-bottom: 1px solid #eee;
+      resize: none;
+    }
+
+    input[type=text],
+    input[type=email],
+    input[type=url],
+    input[type=password] {
+      width: 50%;
+    }
+
+    input[type=text]:focus,
+    input[type=email]:focus,
+    input[type=url]:focus,
+    input[type=password]:focus,
+    textarea:focus {
+      outline: 0;
+      border-color: #4697e4;
+    }
+
+    @media (max-width: 600px) {
+      form > div {
+        margin: 0 0 15px 0; 
+      }
+      form > div > label,
+      legend {
+        width: 100%;
+        float: none;
+        margin: 0 0 5px 0;
+      }
+      form > div > div,
+      form > div > fieldset > div {
+        width: 100%;
+        float: none;
+      }
+      input[type=text],
+      input[type=email],
+      input[type=url],
+      input[type=password],
+      textarea,
+      select {
+        width: 100%; 
+      }
+    }
+
+    @media (min-width: 1200px) {
+      form > div > label,
+      legend {
+        text-align: right;
+      }
+    }
+
+    /* Table styles */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    .grand-total-table {
+      width: 50%;
+      margin-top: 20px;
+    }
+
+    /* Center alignment styles */
+    .center {
+      margin: 0;
+      position: relative; 
+      text-align: center;
+      padding: 10px 0;
+    }
+
+    .container {
+      height: 110px;
+      position: relative;
+      text-align: center;
+    }
+
+    /* Main content wrapper */
+    .main-content {
+      max-width: 1400px;
+      margin: 20px auto;
+      padding: 0 20px;
+    }
+
+    /* Readonly input styling */
+    input[readonly], textarea[readonly] {
+      background-color: #f0f0f0;
+      color: #666;
+      border: 1px solid #ccc;
+    }
+
+
+
+    /* Output measures table specific styles */
+    .output-measures-table input[type="text"],
+    .output-measures-table input[type="number"] {
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .output-measures-table select {
+      width: 100%;
+    }
+    .form-value {
+        display: inline-block;
+        min-height: 20px;
+        padding: 4px 8px;
+        background-color: #ffffff;
+        border: 1px solid #ffffff;
+        border-radius: 4px;
+        width: 100%;
+    }
+
+    /* Update the input and textarea styles */
+    input[type=text],
+    input[type=email],
+    input[type=url],
+    input[type=password],
+    input[type=tel],
+    input[type=number],
+    input[type=date],
+    textarea,
+    select {
+        background: transparent;
+        border: none;
+        border-radius: 0;
+        padding: 4px 0;
+        margin: 0;
+        font-family: inherit;
+        font-size: inherit;
+        color: inherit;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+
+    /* Remove focus outline */
+    input:focus,
+    textarea:focus,
+    select:focus {
+        outline: none;
+        border-color: transparent;
+    }
+
+    /* Style for readonly inputs to look like plain text */
+    input[readonly],
+    textarea[readonly] {
+        background-color: transparent;
+        color: inherit;
+        border: none;
+        cursor: default;
+    }
+
+    /* Remove number input spinners */
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+
+    /* Table cell inputs should align with text */
+    table input[type=text],
+    table input[type=number] {
+        text-align: inherit;
+        width: 100%;
+        padding: 0;
+    }
+
+    /* Style select dropdowns to look more text-like when disabled */
+    select[disabled] {
+        background-color: transparent;
+        border: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        padding: 0;
+    }
+  </style>
+</head>
+<body>
+<div class="main-content">
+<form action="/submit_progress_report" method="POST">
+<header>
+<div class="center">
+<h2>Dallas County Juror Fund Allocation Progress Report</h2>
+<h3 style="color: blue;">Q4</h3>
+</div>
+<div class="center">
+<h2 style="color:blue">Submission Record</h2>
+<h4>10-24-2024 14:27</h4>
+</div>
+</header>
+<div>
+<br/>
+<label for="name">Name</label>
+<div>
+<input id="name" name="name" readonly="" size="8" tabindex="1" type="text" value="Juan Lomeli"/>
+</div>
+</div>
+<div>
+<label for="app_title">
+            Applicant Title
+          </label>
+<div>
+<input id="app_title" name="app_title" readonly="" size="8" tabindex="1" type="text" value="Project Coordinator"/>
+</div>
+</div>
+<div>
+<label for="email">
+            Contact Email
+          </label>
+<div>
+<input id="email" maxlength="255" name="email" readonly="" spellcheck="false" tabindex="3" type="email" value="juan.lomeli@dallascounty.org"/>
+</div>
+</div>
+<div>
+<label for="phone">
+          Contact Phone Number
+        </label>
+<div>
+<input id="phone" maxlength="12" name="phone" oninput="formatPhoneNumber(this)" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="123-456-7890" readonly="" type="tel" value="214-555-1234"/>
+</div>
+</div>
+<script>
+      function formatPhoneNumber(input) {
+        // Remove any non-numeric characters
+        var phoneNumber = input.value.replace(/\D/g, '');
+
+        // Check if the length is greater than 10, trim it
+        if (phoneNumber.length > 10) {
+          phoneNumber = phoneNumber.substr(0, 10);
+        }
+
+        // Add dashes in the required format
+        var formattedPhoneNumber =
+          phoneNumber.slice(0, 3) + '-' + phoneNumber.slice(3, 6) + '-' + phoneNumber.slice(6, 10);
+
+        // Update the input field value
+        input.value = formattedPhoneNumber;
+      }
+    </script>
+<h3>Profile</h3>
+<div>
+<br/>
+<label for="title">Project Title</label>
+<div>
+<input id="title" name="title" readonly="" size="8" tabindex="1" type="text" value="Super Cool Awesome Project 9000"/>
+</div>
+</div>
+<div>
+<label for="how_funds_advanced_goals_of_program">
+          Describe specifically how the use of your YSAB award advanced the goals and objectives of your program. Link the use of your YSAB award with the impact it has made on your outcomes.
+        </label>
+<div>
+<textarea cols="50" id="how_funds_advanced_goals_of_program" name="how_funds_advanced_goals_of_program" placeholder="" rows="0" spellcheck="true" tabindex="4"></textarea>
+</div>
+</div>
+<div>
+<label for="project_contact">
+          Project Contact (Name)
+          </label>
+<div>
+<input id="project_contact" name="project_contact" readonly="" size="8" tabindex="1" type="text" value=""/>
+</div>
+</div>
+<div>
+<label for="fiscal_year">Fiscal Year</label>
+<div>
+<input id="fiscal_year" max="99999" min="1" name="fiscal_year" readonly="" size="8" tabindex="1" type="number" value=""/>
+</div>
+</div>
+<div>
+<label for="start_date">Start Date:</label>
+<div>
+<input id="start_date" max="2099-12-31" min="2018-01-01" name="start_date" readonly="" type="date" value="2024-01-01"/>
+</div>
+</div>
+<div>
+<label for="end_date">End Date:</label>
+<div>
+<input id="end_date" max="2099-12-31" min="2018-01-01" name="end_date" readonly="" type="date" value="2024-01-01"/>
+</div>
+</div>
+<div>
+<label for="amount_awarded">
+          Amount Awarded
+          </label>
+<div>
+<input id="amount_awarded" max="999999" min="1" name="amount_awarded" readonly="" size="8" tabindex="1" type="number" value="10000.00"/>
+</div>
+</div>
+<div id="amount_expended_qt">
+<label for="amount_expended_qt">
+        Amount Expended - Q1
+        </label>
+<div>
+<input class="readonly-input" max="99999" min="1" name="amount_expended_qt" readonly="" size="8" tabindex="1" type="number" value=""/>
+</div>
+</div>
+<div id="amount_expended_qt2">
+<label>
+        Amount Expended - Q2
+        </label>
+<div>
+<input class="readonly-input" id="amount_expended_qt2" max="99999" min="1" name="amount_expended_qt2" readonly="" size="8" tabindex="1" type="number" value=""/>
+</div>
+</div>
+<div id="amount_expended_qt3">
+<label for="amount_expended_qt3">
+      Amount Expended - Q3
+      </label>
+<div>
+<input class="readonly-input" id="amount_expended_qt3" max="99999" min="1" name="amount_expended_qt3" readonly="" size="8" tabindex="1" type="number" value=""/>
+</div>
+</div>
+<div id="amount_expended_qt4">
+<label for="amount_expended_qt4">
+      Amount Expended - Q4
+      </label>
+<div>
+<input id="amount_expended_qt4" max="99999" min="1" name="amount_expended_qt4" readonly="" size="8" tabindex="1" type="number" value=""/>
+</div>
+</div>
+<br/>
+<br/>
+<h3>Performance Measures</h3>
+<h4>Output Measures</h4>
+<table align="center" border="1" cellpadding="5" cellspacing="1" class="output-measures-table">
+<thead>
+<tr>
+<th>Output Measures</th>
+<th>Quarter 1 Actual Achieved</th>
+<th>Quarter 2 Actual Achieved</th>
+<th>Quarter 3 Actual Achieved</th>
+<th>Quarter 4 Actual Achieved</th>
+<th>Count</th>
+<th>Target</th>
+<th class="qt-column">Final Target Achieved</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Number of youth directly benefited</td>
+<td>
+<input id="q1_aa_a" name="q1_aa_a" oninput="updateCount('a')" readonly="" size="8" tabindex="1" type="number" value="50"/>
+</td>
+<td>
+<input id="q2_aa_a" name="q2_aa_a" oninput="updateCount('a')" readonly="" size="8" tabindex="1" type="number" value="150"/>
+</td>
+<td>
+<input id="q3_aa_a" name="q3_aa_a" oninput="updateCount('a')" readonly="" size="8" tabindex="1" type="number" value="500"/>
+</td>
+<td>
+<input id="q4_aa_a" name="q4_aa_a" oninput="updateCount('a')" readonly="" size="8" tabindex="1" type="number" value="800"/>
+</td>
+<td>
+<input id="count_a" name="count_a" readonly="" size="8" style="text-align: center;" tabindex="1" type="number" value="700"/>
+</td>
+<td style="text-align: center;">
+<input id="final_target_output_a" name="final_target_output_a" readonly="" size="8" style="text-align: center;" tabindex="1" type="text" value="200"/>
+</td>
+<td class="qt-column" style="text-align: center;">
+<select class="field select medium" id="final_achieved_a" name="final_achieved_a" style="text-align: center;" tabindex="11">
+<option selected="selected" value="Choose an item">Choose an item</option>
+<option value="Yes">Yes</option>
+<option value="No">No</option>
+</select>
+</td>
+</tr>
+<tr>
+<td>Number of individuals not under the authority of DCJD benefited</td>
+<td>
+<input id="q1_aa_b" name="q1_aa_b" readonly="" size="8" tabindex="1" type="number" value="5"/>
+</td>
+<td>
+<input id="q2_aa_b" name="q2_aa_b" readonly="" size="8" tabindex="1" type="number" value="15"/>
+</td>
+<td>
+<input id="q3_aa_b" name="q3_aa_b" readonly="" size="8" tabindex="1" type="number" value="18"/>
+</td>
+<td>
+<input id="q4_aa_b" name="q4_aa_b" readonly="" size="8" tabindex="1" type="number" value="20"/>
+</td>
+<td>
+<input id="count_b" name="count_b" readonly="" size="8" style="text-align: center;" tabindex="1" type="number" value="38"/>
+</td>
+<td style="text-align: center;">
+<input id="final_target_output_b" name="final_target_output_b" readonly="" size="8" style="text-align: center;" tabindex="1" type="text" value="20"/>
+</td>
+<td class="qt-column" style="text-align: center;">
+<select class="field select medium" id="final_achieved_b" name="final_achieved_b" style="text-align: center;" tabindex="11">
+<option selected="selected" value="Choose an item">Choose an item</option>
+<option value="Yes">Yes</option>
+<option value="No">No</option>
+</select>
+</td>
+</tr>
+<tr>
+<td>
+<input id="output1" name="output1" readonly="" type="text" value="Number of youth attending workshops."/>
+</td>
+<td>
+<input id="q1_aa_1" name="q1_aa_1" readonly="" size="8" tabindex="1" type="number" value=""/>
+</td>
+<td>
+<input id="q2_aa_1" name="q2_aa_1" readonly="" size="8" tabindex="1" type="number" value=""/>
+</td>
+<td>
+<input id="q3_aa_1" name="q3_aa_1" readonly="" size="8" tabindex="1" type="number" value="40"/>
+</td>
+<td>
+<input id="q4_aa_1" name="q4_aa_1" readonly="" size="8" tabindex="1" type="number" value="50"/>
+</td>
+<td>
+<input id="count_1" name="count_1" readonly="" size="8" style="text-align: center;" tabindex="1" type="number" value="40"/>
+</td>
+<td style="text-align: center;">
+<input id="final_target_output_1" name="final_target_output_1" readonly="" size="8" style="text-align: center;" tabindex="1" type="text" value="75"/>
+</td>
+<td class="qt-column" style="text-align: center;">
+<select class="field select medium" id="final_achieved_1" name="final_achieved_1" style="text-align: center;" tabindex="11">
+<option selected="selected" value="Choose an item">Choose an item</option>
+<option value="Yes">Yes</option>
+<option value="No">No</option>
+</select>
+</td>
+</tr>
+<tr>
+<td>
+<input id="output2" name="output2" readonly="" type="text" value="Number of mentorship matches created."/>
+</td>
+<td>
+<input id="q1_aa_2" name="q1_aa_2" readonly="" size="8" tabindex="1" type="number" value=""/>
+</td>
+<td>
+<input id="q2_aa_2" name="q2_aa_2" readonly="" size="8" tabindex="1" type="number" value=""/>
+</td>
+<td>
+<input id="q3_aa_2" name="q3_aa_2" readonly="" size="8" tabindex="1" type="number" value="23"/>
+</td>
+<td>
+<input id="q4_aa_2" name="q4_aa_2" readonly="" size="8" tabindex="1" type="number" value="22"/>
+</td>
+<td>
+<input id="count_2" name="count_2" readonly="" size="8" style="text-align: center;" tabindex="1" type="number" value="23"/>
+</td>
+<td style="text-align: center;">
+<input id="final_target_output_2" name="final_target_output_2" readonly="" size="8" style="text-align: center;" tabindex="1" type="text" value="25"/>
+</td>
+<td class="qt-column" style="text-align: center;">
+<select class="field select medium" id="final_achieved_2" name="final_achieved_2" style="text-align: center;" tabindex="11">
+<option selected="selected" value="Choose an item">Choose an item</option>
+<option value="Yes">Yes</option>
+<option value="No">No</option>
+</select>
+</td>
+</tr>
+<tr>
+<td>
+<input id="output3" name="output3" readonly="" type="text" value="Number of projects completed by youth."/>
+</td>
+<td>
+<input id="q1_aa_3" name="q1_aa_3" readonly="" size="8" tabindex="1" type="number" value=""/>
+</td>
+<td>
+<input id="q2_aa_3" name="q2_aa_3" readonly="" size="8" tabindex="1" type="number" value=""/>
+</td>
+<td>
+<input id="q3_aa_3" name="q3_aa_3" readonly="" size="8" tabindex="1" type="number" value="3"/>
+</td>
+<td>
+<input id="q4_aa_3" name="q4_aa_3" readonly="" size="8" tabindex="1" type="number" value="11"/>
+</td>
+<td>
+<input id="count_3" name="count_3" readonly="" size="8" style="text-align: center;" tabindex="1" type="number" value="3"/>
+</td>
+<td style="text-align: center;">
+<input id="final_target_output_3" name="final_target_output_3" readonly="" size="8" style="text-align: center;" tabindex="1" type="text" value="50"/>
+</td>
+<td class="qt-column" style="text-align: center;">
+<select class="field select medium" id="final_achieved_3" name="final_achieved_3" style="text-align: center;" tabindex="11">
+<option selected="selected" value="Choose an item">Choose an item</option>
+<option value="Yes">Yes</option>
+<option value="No">No</option>
+</select>
+</td>
+</tr>
+<tr>
+<td>
+<input id="output4" name="output4" readonly="" type="text" value=""/>
+</td>
+<td>
+<input id="q1_aa_4" name="q1_aa_4" readonly="" size="8" tabindex="1" type="number" value=""/>
+</td>
+<td>
+<input id="q2_aa_4" name="q2_aa_4" readonly="" size="8" tabindex="1" type="number" value=""/>
+</td>
+<td>
+<input id="q3_aa_4" name="q3_aa_4" readonly="" size="8" tabindex="1" type="number" value=""/>
+</td>
+<td>
+<input id="q4_aa_4" name="q4_aa_4" readonly="" size="8" tabindex="1" type="number" value=""/>
+</td>
+<td>
+<input id="count_4" name="count_4" readonly="" size="8" style="text-align: center;" tabindex="1" type="number" value="0"/>
+</td>
+<td style="text-align: center;">
+<input id="final_target_output_4" name="final_target_output_4" readonly="" size="8" style="text-align: center;" tabindex="1" type="text" value=""/>
+</td>
+<td class="qt-column" style="text-align: center;">
+<select class="field select medium" id="final_achieved_4" name="final_achieved_4" style="text-align: center;" tabindex="11">
+<option selected="selected" value="Choose an item">Choose an item</option>
+<option value="Yes">Yes</option>
+<option value="No">No</option>
+</select>
+</td>
+</tr>
+<tr>
+<td>
+<input id="output5" name="output5" readonly="" type="text" value=""/>
+</td>
+<td>
+<input id="q1_aa_5" name="q1_aa_5" readonly="" size="8" tabindex="1" type="number" value=""/>
+</td>
+<td>
+<input id="q2_aa_5" name="q2_aa_5" readonly="" size="8" tabindex="1" type="number" value=""/>
+</td>
+<td>
+<input id="q3_aa_5" name="q3_aa_5" readonly="" size="8" tabindex="1" type="number" value=""/>
+</td>
+<td>
+<input id="q4_aa_5" name="q4_aa_5" readonly="" size="8" tabindex="1" type="number" value=""/>
+</td>
+<td>
+<input id="count_5" name="count_5" readonly="" size="8" style="text-align: center;" tabindex="1" type="number" value="0"/>
+</td>
+<td style="text-align: center;">
+<input id="final_target_output_5" name="final_target_output_5" readonly="" size="8" style="text-align: center;" tabindex="1" type="text" value=""/>
+</td>
+<td class="qt-column" style="text-align: center;">
+<select class="field select medium" id="final_achieved_5" name="final_achieved_5" style="text-align: center;" tabindex="11">
+<option selected="selected" value="Choose an item">Choose an item</option>
+<option value="Yes">Yes</option>
+<option value="No">No</option>
+</select>
+</td>
+</tr>
+</tbody>
+</table>
+<script>
+    function updateCount(row) {
+      const q1 = parseFloat(document.getElementById(`q1_aa_${row}`).value) || 0;
+      const q2 = parseFloat(document.getElementById(`q2_aa_${row}`).value) || 0;
+      const q3 = parseFloat(document.getElementById(`q3_aa_${row}`).value) || 0;
+      const q4 = parseFloat(document.getElementById(`q4_aa_${row}`).value) || 0;
+      
+      const count = q1 + q2 + q3 + q4;
+      document.getElementById(`count_${row}`).value = count;
+    }
+
+    // Initialize counts on page load and add event listeners
+    document.addEventListener('DOMContentLoaded', function() {
+      ['a', 'b', '1', '2', '3', '4', '5'].forEach(row => {
+        updateCount(row);
+        ['q1_aa_', 'q2_aa_', 'q3_aa_', 'q4_aa_'].forEach(quarter => {
+          const input = document.getElementById(quarter + row);
+          if (input) {
+            input.addEventListener('input', () => updateCount(row));
+          }
+        });
+      });
+    });
+    </script>
+<br/>
+<h4>Outcome Measures</h4>
+<p>(These should be identical to the outcome measures in the original application)</p>
+<table align="center" border="1" cellpadding="5" cellspacing="1">
+<thead>
+<tr>
+<th style="width:50%">Outcome Measures</th>
+<th>Q1 Actual Achieved</th>
+<th>Q2 Actual Achieved</th>
+<th>Q3 Actual Achieved</th>
+<th>Q4 Actual Achieved</th>
+<th style="text-align: center;">Target</th>
+<th class="qt-column" style="text-align: center;">Final Target Achieved</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<input id="outcome1" name="outcome1" readonly="" type="text" value="% of youth who report increased confidence in pursuing creative and entrepreneurial endeavors."/>
+</td>
+<td>
+<input id="q1_outcome_aa_1" name="q1_outcome_aa_1" readonly="" size="8" tabindex="1" type="text" value="12%"/>
+</td>
+<td>
+<input id="q2_outcome_aa_1" name="q2_outcome_aa_1" readonly="" size="8" tabindex="1" type="text" value="25%"/>
+</td>
+<td>
+<input id="q3_outcome_aa_1" name="q3_outcome_aa_1" readonly="" size="8" tabindex="1" type="text" value="50%"/>
+</td>
+<td>
+<input id="q4_outcome_aa_1" name="q4_outcome_aa_1" readonly="" size="8" tabindex="1" type="text" value="90%"/>
+</td>
+<td style="text-align: center;">
+<input id="final_target_outcome_1" name="final_target_outcome_1" readonly="" size="8" style="text-align: center;" tabindex="1" type="text" value="85%"/>
+</td>
+<td class="qt-column" style="text-align: center;">
+<select class="field select medium" id="final_outcome_achieved_1" name="final_outcome_achieved_1" style="text-align: center;" tabindex="11">
+<option selected="selected" value="Choose an item">Choose an item</option>
+<option value="Yes">Yes</option>
+<option value="No">No</option>
+</select>
+</td>
+</tr>
+<tr>
+<td>
+<input id="outcome2" name="outcome2" readonly="" type="text" value="% of youth who develop and pitch a project by the end of the program."/>
+</td>
+<td>
+<input id="q1_outcome_aa_2" name="q1_outcome_aa_2" readonly="" size="8" tabindex="1" type="text" value="14%"/>
+</td>
+<td>
+<input id="q2_outcome_aa_2" name="q2_outcome_aa_2" readonly="" size="8" tabindex="1" type="text" value="35%"/>
+</td>
+<td>
+<input id="q3_outcome_aa_2" name="q3_outcome_aa_2" readonly="" size="8" tabindex="1" type="text" value="60%"/>
+</td>
+<td>
+<input id="q4_outcome_aa_2" name="q4_outcome_aa_2" readonly="" size="8" tabindex="1" type="text" value="95%"/>
+</td>
+<td style="text-align: center;">
+<input id="final_target_outcome_2" name="final_target_outcome_2" readonly="" size="8" style="text-align: center;" tabindex="1" type="text" value="70%"/>
+</td>
+<td class="qt-column" style="text-align: center;">
+<select class="field select medium" id="final_outcome_achieved_2" name="final_outcome_achieved_2" style="text-align: center;" tabindex="11">
+<option selected="selected" value="Choose an item">Choose an item</option>
+<option value="Yes">Yes</option>
+<option value="No">No</option>
+</select>
+</td>
+</tr>
+<tr>
+<td>
+<input id="outcome3" name="outcome3" readonly="" type="text" value=""/>
+</td>
+<td>
+<input id="q1_outcome_aa_3" name="q1_outcome_aa_3" readonly="" size="8" tabindex="1" type="text" value=""/>
+</td>
+<td>
+<input id="q2_outcome_aa_3" name="q2_outcome_aa_3" readonly="" size="8" tabindex="1" type="text" value=""/>
+</td>
+<td>
+<input id="q3_outcome_aa_3" name="q3_outcome_aa_3" readonly="" size="8" tabindex="1" type="text" value=""/>
+</td>
+<td>
+<input id="q4_outcome_aa_3" name="q4_outcome_aa_3" readonly="" size="8" tabindex="1" type="text" value=""/>
+</td>
+<td style="text-align: center;">
+<input id="final_target_outcome_3" name="final_target_outcome_3" readonly="" size="8" style="text-align: center;" tabindex="1" type="text" value=""/>
+</td>
+<td class="qt-column" style="text-align: center;">
+<select class="field select medium" id="final_outcome_achieved_3" name="final_outcome_achieved_3" style="text-align: center;" tabindex="11">
+<option selected="selected" value="Choose an item">Choose an item</option>
+<option value="Yes">Yes</option>
+<option value="No">No</option>
+</select>
+</td>
+</tr>
+<tr>
+<td>
+<input id="outcome4" name="outcome4" readonly="" type="text" value=""/>
+</td>
+<td>
+<input id="q1_outcome_aa_4" name="q1_outcome_aa_4" readonly="" size="8" tabindex="1" type="text" value=""/>
+</td>
+<td>
+<input id="q2_outcome_aa_4" name="q2_outcome_aa_4" readonly="" size="8" tabindex="1" type="text" value=""/>
+</td>
+<td>
+<input id="q3_outcome_aa_4" name="q3_outcome_aa_4" readonly="" size="8" tabindex="1" type="text" value=""/>
+</td>
+<td>
+<input id="q4_outcome_aa_4" name="q4_outcome_aa_4" readonly="" size="8" tabindex="1" type="text" value=""/>
+</td>
+<td style="text-align: center;">
+<input id="final_target_outcome_4" name="final_target_outcome_4" readonly="" size="8" style="text-align: center;" tabindex="1" type="text" value=""/>
+</td>
+<td class="qt-column" style="text-align: center;">
+<select class="field select medium" id="final_outcome_achieved_4" name="final_outcome_achieved_4" style="text-align: center;" tabindex="11">
+<option selected="selected" value="Choose an item">Choose an item</option>
+<option value="Yes">Yes</option>
+<option value="No">No</option>
+</select>
+</td>
+</tr>
+<tr>
+<td>
+<input id="outcome5" name="outcome5" readonly="" type="text" value=""/>
+</td>
+<td>
+<input id="q1_outcome_aa_5" name="q1_outcome_aa_5" readonly="" size="8" tabindex="1" type="text" value=""/>
+</td>
+<td>
+<input id="q2_outcome_aa_5" name="q2_outcome_aa_5" readonly="" size="8" tabindex="1" type="text" value=""/>
+</td>
+<td>
+<input id="q3_outcome_aa_5" name="q3_outcome_aa_5" readonly="" size="8" tabindex="1" type="text" value=""/>
+</td>
+<td>
+<input id="q4_outcome_aa_5" name="q4_outcome_aa_5" readonly="" size="8" tabindex="1" type="text" value=""/>
+</td>
+<td style="text-align: center;">
+<input id="final_target_outcome_5" name="final_target_outcome_5" readonly="" size="8" style="text-align: center;" tabindex="1" type="text" value=""/>
+</td>
+<td class="qt-column" style="text-align: center;">
+<select class="field select medium" id="final_outcome_achieved_5" name="final_outcome_achieved_5" style="text-align: center;" tabindex="11">
+<option selected="selected" value="Choose an item">Choose an item</option>
+<option value="Yes">Yes</option>
+<option value="No">No</option>
+</select>
+</td>
+</tr>
+</tbody>
+</table>
+<br/><br/>
+<h3>Programmatic Considerations</h3>
+<div>
+<label for="funds_explain"><b>Award Amendment</b> <p>If the YSAB award needs to be increased for this project before the end of the period, make the request and provide a justification for the increase and the amount of the increase.</p></label>
+<div>
+<textarea cols="50" id="funds_explain" name="funds_explain" placeholder="Maximum 250 words" readonly="" rows="0" spellcheck="true" tabindex="4"></textarea>
+</div>
+</div>
+<div id="qt_full_amount">
+<p style="color:red;">Quarterly-term Report Only</p>
+<label for="qt_full_amount">Are you on track to spend the full amount awarded in your application?</label>
+<div>
+<select name="qt_full_amount" readonly="" tabindex="11">
+<option value="Choose an item">Choose an item</option>
+<option value="Yes">Yes</option>
+<option value="No">No</option>
+</select>
+</div>
+</div>
+<div id="qt_full_amount_no">
+<label for="qt_full_amount_no">
+        If no, describe any problems or obstacles that have affected your ability to spend your grant funds.
+      </label>
+<div>
+<textarea cols="50" name="qt_full_amount_no" placeholder="" readonly="" rows="10" spellcheck="true" tabindex="4"></textarea>
+</div>
+</div>
+<div id="qt_full_amount_no2">
+<label for="qt_full_amount_no2">
+        If you are <b>not</b> on track to meet output and/or outcome target levels, describe any problems or obstacles that have affected your ability to achieve them.
+      </label>
+<div>
+<textarea cols="50" name="qt_full_amount_no2" placeholder="" readonly="" rows="10" spellcheck="true" tabindex="4"></textarea>
+</div>
+</div>
+<br/>
+<div>
+<label for="challenges_discrepances">Provide any overlooked challenges or discrepancies encountered while managing the grant funds, such as discrepancies between the intended and actual use of funds or unanticipated issues not addressed elsewhere.</label>
+<div>
+<textarea cols="50" id="challenges_discrepances" name="challenges_discrepances" placeholder="" readonly="" rows="0" spellcheck="true" tabindex="4"></textarea>
+</div>
+</div>
+</form>
+</div>
+</body>
+</html>

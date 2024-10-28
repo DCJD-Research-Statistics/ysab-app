@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YSAB My Progress Reports</title>
+    <link rel="icon" href="{{url_for('static', filename='images/juvenile-logo.svg')}}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{url_for('static', filename='/style.css')}}">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        .header-bar {
+            background-color: #f8f9fa;
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .header-logo {
+            display: flex;
+            align-items: center;
+        }
+        .header-logo img {
+            height: 40px;
+            margin-right: 10px;
+        }
+        .header-links a {
+            margin-left: 15px;
+            color: #000000;
+            text-decoration: none;
+        }
+        .header-links a:hover {
+            text-decoration: underline;
+        }
+        .main-content {
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .table {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border: none;
+        }
+        .table th {
+            background-color: #000000;
+            border: none;
+            color: white;
+        }
+        .table td {
+            vertical-align: middle;
+            border: none;
+        }
+        .table th {
+            background-color: #000000;
+            border-top: none;
+            color: white;
+        }
+        .table td, .table th {
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <div class="header-bar">
+      <div class="header-content">
+        <div class="header-logo">
+          <img src="{{url_for('static', filename='images/juvenile-logo.svg')}}" alt="DCJD Logo">
+          <span>DCJD YSAB Funds</span>
+        </div>
+        <div class="header-links">
+          <a href="{{ url_for('home') }}">Home</a>
+          <a href="{{ url_for('help') }}">Help</a>
+          <a href="{{ url_for('my_applications') }}">Applications</a>
+          {% if 'user' in session %}
+            <a href="{{ url_for('logout') }}">Logout</a>
+          {% else %}
+            <a href="{{ url_for('login') }}">Login</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="main-content">
+        <h1 class="mb-4">Your Progress Reports</h1>
+        <p class="text-muted mb-4">View your progress reports for the selected application</p>
+        
+        {% if message %}
+        <div class="alert alert-warning" role="alert">
+            {{ message }}
+        </div>
+        {% endif %}
+        
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Report Date</th>
+                    <th>Title</th>
+                    <th>Reporting Interval</th>
+                    <th>Reporting Period</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for report in progress_reports %}
+                <tr>
+                    <td>{{ report.timestamp }}</td>
+                    <td>{{ report.title }}</td>
+                    <td>{{ report.reporting_interval }}</td>
+                    <td>{{ report.reporting_period }}</td>
+                    <td>
+                        <a href="{{ url_for('download_file_p_fromtable', application_id=report._id) }}" class="action-link btn btn-primary text-white">Download</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

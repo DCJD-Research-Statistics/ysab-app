@@ -162,6 +162,139 @@
     .value{
       text-align:left;
     }
+    .form-value {
+        display: inline-block;
+        min-height: 20px;
+        padding: 4px 8px;
+        background-color: #ffffff;
+        border: 1px solid #ffffff;
+        border-radius: 4px;
+        width: 100%;
+    }
+
+    /* Update input and textarea styles to look like plain text */
+    input[type=text],
+    input[type=email],
+    input[type=url],
+    input[type=password],
+    input[type=tel],
+    input[type=number],
+    textarea,
+    select {
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      padding: 4px 0;
+      margin: 0;
+      font-family: inherit;
+      font-size: inherit;
+      color: inherit;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      width: 100%;
+    }
+
+    /* Remove focus outline */
+    input:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: transparent;
+    }
+
+    /* Style for disabled inputs to look like plain text */
+    input[disabled],
+    textarea[disabled],
+    select[disabled] {
+      background-color: transparent;
+      color: inherit;
+      border: none;
+      cursor: default;
+      opacity: 1;
+    }
+
+    /* Remove number input spinners */
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+
+    /* Table cell inputs should align with text */
+    table input[type=text],
+    table input[type=number],
+    table textarea {
+      text-align: inherit;
+      width: 100%;
+      padding: 0;
+    }
+
+    /* Style select dropdowns to look more text-like when disabled */
+    select[disabled] {
+      background-color: transparent;
+      border: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      padding: 0;
+    }
+
+    /* Remove borders from table inputs */
+    table input,
+    table textarea {
+      border: none !important;
+      background: transparent !important;
+    }
+
+    /* Style for form value display */
+    .form-value {
+      display: inline-block;
+      min-height: 20px;
+      padding: 4px 0;
+      background-color: transparent;
+      border: none;
+      width: 100%;
+    }
+
+    /* Ensure table cells maintain proper spacing */
+    table td {
+      padding: 8px;
+      vertical-align: top;
+    }
+
+    /* Style for readonly inputs in tables */
+    table input[readonly] {
+      background-color: transparent;
+      border: none;
+      color: inherit;
+    }
+    /* Add to the existing style section */
+    table#output_measures input,
+    table#outcome_measures input {
+      width: 100%;
+      min-height: 40px;
+      padding: 8px;
+      box-sizing: border-box;
+    }
+
+    table#output_measures td,
+    table#outcome_measures td {
+      padding: 8px;
+      vertical-align: middle;
+    }
+
+    /* Ensure target columns have proper width */
+table#output_measures th:last-child,
+table#outcome_measures th:last-child,
+    table#output_measures td:last-child,
+    table#outcome_measures td:last-child {
+      width: 30%;
+    }
   </style>
 </head>
 
@@ -364,32 +497,32 @@
       <div>
         <table id="output_measures">
           <thead>
-              <tr>
-                  <th>Output Measures</th>
-                  <th>Target</th>
-              </tr>
+            <tr>
+              <th>Output Measures</th>
+              <th>Target</th>
+            </tr>
           </thead>
           <tbody>
-              <tr>
-                  <td><textarea id="output1" name="output1" spellcheck="true" rows="2" cols="50" tabindex="4" disabled></textarea></td>
-                  <td><textarea id="target1" name="target1" spellcheck="true" rows="2" cols="20" tabindex="4" disabled></textarea></td>
-              </tr>
-              <tr>
-                  <td><textarea id="output2" name="output2" spellcheck="true" rows="2" cols="50" tabindex="4" disabled></textarea></td>
-                  <td><textarea id="target2" name="target2" spellcheck="true" rows="2" cols="20" tabindex="4" disabled></textarea></td>
-              </tr>
-              <tr>
-                  <td><textarea id="output3" name="output3" spellcheck="true" rows="2" cols="50" tabindex="4" disabled></textarea></td>
-                  <td><textarea id="target3" name="target3" spellcheck="true" rows="2" cols="20" tabindex="4" disabled></textarea></td>
-              </tr>
-              <tr>
-                  <td><textarea id="output4" name="output4" spellcheck="true" rows="2" cols="50" tabindex="4" disabled></textarea></td>
-                  <td><textarea id="target4" name="target4" spellcheck="true" rows="2" cols="20" tabindex="4" disabled></textarea></td>
-              </tr>
-              <tr>
-                  <td><textarea id="output5" name="output5" spellcheck="true" rows="2" cols="50" tabindex="4" disabled></textarea></td>
-                  <td><textarea id="target5" name="target5" spellcheck="true" rows="2" cols="20" tabindex="4" disabled></textarea></td>
-              </tr>
+            <tr>
+              <td><input type="text" id="output1" name="output1" disabled></td>
+              <td><input type="text" id="target_output_1" name="target_output_1" disabled></td>
+            </tr>
+            <tr>
+              <td><input type="text" id="output2" name="output2" disabled></td>
+              <td><input type="text" id="target_output_2" name="target_output_2" disabled></td>
+            </tr>
+            <tr>
+              <td><input type="text" id="output3" name="output3" disabled></td>
+              <td><input type="text" id="target_output_3" name="target_output_3" disabled></td>
+            </tr>
+            <tr>
+              <td><input type="text" id="output4" name="output4" disabled></td>
+              <td><input type="text" id="target_output_4" name="target_output_4" disabled></td>
+            </tr>
+            <tr>
+              <td><input type="text" id="output5" name="output5" disabled></td>
+              <td><input type="text" id="target_output_5" name="target_output_5" disabled></td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -400,32 +533,32 @@
       <div>
         <table id="outcome_measures">
           <thead>
-              <tr>
-                  <th>Outcome Measures</th>
-                  <th>Target</th>
-              </tr>
+            <tr>
+              <th>Outcome Measures</th>
+              <th>Target</th>
+            </tr>
           </thead>
           <tbody>
-              <tr>
-                  <td><textarea id="outcome1" name="outcome1" spellcheck="true" rows="2" cols="50" tabindex="4" disabled></textarea></td>
-                  <td><textarea id="target1.1" name="target1.1" spellcheck="true" rows="2" cols="20" tabindex="4" disabled></textarea></td>
-              </tr>
-              <tr>
-                  <td><textarea id="outcome2" name="outcome2" spellcheck="true" rows="2" cols="50" tabindex="4" disabled></textarea></td>
-                  <td><textarea id="target2.1" name="target2.1" spellcheck="true" rows="2" cols="20" tabindex="4" disabled></textarea></td>
-              </tr>
-              <tr>
-                  <td><textarea id="outcome3" name="outcome3" spellcheck="true" rows="2" cols="50" tabindex="4" disabled></textarea></td>
-                  <td><textarea id="target3.1" name="target3.1" spellcheck="true" rows="2" cols="20" tabindex="4" disabled></textarea></td>
-              </tr>
-              <tr>
-                  <td><textarea id="outcome4" name="outcome4" spellcheck="true" rows="2" cols="50" tabindex="4" disabled></textarea></td>
-                  <td><textarea id="target4.1" name="target4.1" spellcheck="true" rows="2" cols="20" tabindex="4" disabled></textarea></td>
-              </tr>
-              <tr>
-                  <td><textarea id="outcome5" name="outcome5" spellcheck="true" rows="2" cols="50" tabindex="4" disabled></textarea></td>
-                  <td><textarea id="target5.1" name="target5.1" spellcheck="true" rows="2" cols="20" tabindex="4" disabled></textarea></td>
-              </tr>
+            <tr>
+              <td><input type="text" id="outcome1" name="outcome1" disabled></td>
+              <td><input type="text" id="target_outcome_1" name="target_outcome_1" disabled></td>
+            </tr>
+            <tr>
+              <td><input type="text" id="outcome2" name="outcome2" disabled></td>
+              <td><input type="text" id="target_outcome_2" name="target_outcome_2" disabled></td>
+            </tr>
+            <tr>
+              <td><input type="text" id="outcome3" name="outcome3" disabled></td>
+              <td><input type="text" id="target_outcome_3" name="target_outcome_3" disabled></td>
+            </tr>
+            <tr>
+              <td><input type="text" id="outcome4" name="outcome4" disabled></td>
+              <td><input type="text" id="target_outcome_4" name="target_outcome_4" disabled></td>
+            </tr>
+            <tr>
+              <td><input type="text" id="outcome5" name="outcome5" disabled></td>
+              <td><input type="text" id="target_outcome_5" name="target_outcome_5" disabled></td>
+            </tr>
           </tbody>
         </table>
       </div>

@@ -202,19 +202,46 @@ def make_app_form(form_data, download_source='submission'):
         with open(r'templates/ysab-application-record.html', 'w') as file:
             file.write(str(soup))
 
-def make_prog_form(form_data):
+def make_prog_form(form_data, download_source='submission'):
+    # Convert ObjectId to string if present
+    if '_id' in form_data and isinstance(form_data['_id'], ObjectId):
+        form_data['_id'] = str(form_data['_id'])
+
+    # Determine which template to use based on reporting period
+    reporting_period = form_data.get('reporting_period', '')
+    if reporting_period == 'q1':
+        template_path = 'templates/ysab-progress-report-qt.html'
+    elif reporting_period == 'q2':
+        template_path = 'templates/ysab-progress-report-qt2.html'
+    elif reporting_period == 'q3':
+        template_path = 'templates/ysab-progress-report-qt3.html'
+    elif reporting_period == 'q4':
+        template_path = 'templates/ysab-progress-report-qt4.html'
+    elif reporting_period == 'mid_year':
+        template_path = 'templates/ysab-progress-report-bi.html'
+    elif reporting_period == 'end_year':
+        template_path = 'templates/ysab-progress-report-end_year.html'
+    else:
+        template_path = 'templates/ysab-progress-report-annual.html'
+
     # Read the HTML file
-    with open(r'templates/progress-report-copy.html', 'r', encoding="utf8") as file:
+    with open(template_path, 'r', encoding="utf8") as file:
         html_content = file.read()
+    
     # Parse the HTML content with BeautifulSoup
     soup = BeautifulSoup(html_content, 'html.parser')
 
-    # Find the existing h3 tag and update it with the timestamp
-    h4_tag = soup.find('h4')
-    if h4_tag:
-        h4_tag.string = f"{get_timestamp()}"
+    # Find the existing h4 tag and update it with the timestamp
+    if download_source == 'submission':
+        h4_tag = soup.find('h4')
+        if h4_tag:
+            h4_tag.string = f"{get_timestamp()}"
+    elif download_source == 'table':
+        h4_tag = soup.find('h4')
+        if h4_tag:
+            h4_tag.string = f"{form_data['timestamp']}"
 
-    # Update the value attribute of input fields based on dictionary keys
+    # Update values for form fields
     for key, value in form_data.items():
         input_field = soup.find('input', {'id': key})
         if input_field:
@@ -234,12 +261,12 @@ def make_prog_form(form_data):
         if textarea_field:
             # Calculate required rows for the textarea content
             cols = int(textarea_field.get('cols', 50))
-            lines = value.split('\n')
+            lines = str(value).split('\n')
             rows = 0
             for line in lines:
                 rows += math.ceil(len(line) / cols)
 
-            textarea_field.string = value
+            textarea_field.string = str(value)
             textarea_field['rows'] = str(rows)
             
         # Handle table input fields
@@ -247,9 +274,9 @@ def make_prog_form(form_data):
         if table_input_field:
             table_input_field['value'] = value
 
-        # Save the updated HTML content to a file
-        with open(r'templates/progress-report-copy-record.html', 'w') as file:
-            file.write(str(soup))
+    # Save the updated HTML content to a file
+    with open('templates/ysab-progress-report-record.html', 'w', encoding="utf8") as file:
+        file.write(str(soup))
 
 def make_ext_form(form_data, download_source='submission'):
     # Read the HTML file
@@ -354,7 +381,7 @@ def home():
 def signup():
     if request.method == 'POST':
         name = request.form.get('name')
-        email = request.form.get('email')
+        email = request.form.get('email').lower()
         password = request.form.get('password')
         confirm_password = request.form.get('confirm_password')
 
@@ -394,7 +421,7 @@ def signup():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        email = request.form.get('email')
+        email = request.form.get('email').lower()
         password = request.form.get('password')
 
         # MongoDB connection
@@ -869,9 +896,9 @@ def submit_progress_report():
         collection.insert_one(form_data)
 
         # Send Discord notification
-        discord_webhook_url = os.getenv("DISCORD_WEBHOOK_URL") 
-        message = f"🟢 Progress Report Submitted:\n- ID: {form_data['_id']}\n- Name: {name}\n- Email: {email} \n- Reporting Period: {form_data['reporting_period']}\n- Title: {title}"
-        requests.post(discord_webhook_url, json={"content": message})
+        # discord_webhook_url = os.getenv("DISCORD_WEBHOOK_URL") 
+        # message = f"🟢 Progress Report Submitted:\n- ID: {form_data['_id']}\n- Name: {name}\n- Email: {email} \n- Reporting Period: {form_data['reporting_period']}\n- Title: {title}"
+        # requests.post(discord_webhook_url, json={"content": message})
 
         return render_template('confirmation_p.html', name=name, email=email)
     except Exception as e:
@@ -1050,6 +1077,38 @@ def download_file_e_fromtable(application_id):
         return send_file(p, as_attachment=True, download_name=f"ysab_external_application_{application_id}.html")
     else:
         return "Application not found", 404
+    
+@app.route('/download_progress_report/<application_id>')
+def download_file_p_fromtable(application_id):
+    with MongoClient(mongo_uri) as client:
+        db = client[db_name]
+        collection = db['progress_reports']
+        report = collection.find_one({'_id': application_id})
+
+    if report:
+        make_prog_form(report, download_source='table')
+        
+        # Generate filename based on reporting period
+        reporting_period = report.get('reporting_period', '')
+        period_name = {
+            'q1': 'Q1',
+            'q2': 'Q2',
+            'q3': 'Q3',
+            'q4': 'Q4',
+            'mid_year': 'Mid_Year',
+            'end_year': 'End_Year',
+            'annual': 'Annual'
+        }.get(reporting_period, '')
+        
+        filename = f"ysab_progress_report_{period_name}_{application_id}.html"
+        
+        return send_file(
+            'templates/ysab-progress-report-record.html',
+            as_attachment=True,
+            download_name=filename
+        )
+    else:
+        return "Progress Report not found", 404
 
 @app.route('/download_progress_report')
 def download_file_p():
@@ -1066,5 +1125,49 @@ def download_file_c():
     p = r'templates/ysab-continuation-record.html'
     return send_file(p, as_attachment=True)
 
+@app.route('/my_progress_report/<application_id>')
+@login_required
+def my_progress_report(application_id):
+    # Connect to MongoDB
+    client = MongoClient(mongo_uri)
+    db = client[db_name]
+    collection = db['progress_reports']
+
+    # Fetch progress reports for the given application_id
+    progress_reports = list(collection.find({'application_id': application_id}))
+
+    client.close()
+
+    if not progress_reports:
+        message = "No progress reports found for this application."
+        return render_template('my_progress_report.html', message=message)
+
+    progress_reports = [
+        {
+            '_id': report['_id'],
+            'timestamp': report['timestamp'],
+            'title': report['title'],
+            'reporting_interval': (
+                'Quarterly' if report.get('reporting_period') in ['q1', 'q2', 'q3', 'q4']
+                else 'Bi-annual' if report.get('reporting_period') in ['mid_year', 'end_year']
+                else 'Annual' if report.get('reporting_period') == 'annual'
+                else 'N/A'
+            ),
+            'reporting_period':(
+                'Q1' if report.get('reporting_period') == 'q1'
+                else 'Q2' if report.get('reporting_period') == 'q2'
+                else 'Q3' if report.get('reporting_period') == 'q3'
+                else 'Q4' if report.get('reporting_period') == 'q4'
+                else 'Mid-Year' if report.get('reporting_period') == 'mid_year'
+                else 'End-Year' if report.get('reporting_period') == 'end_year'
+                else 'Annual' if report.get('reporting_period') == 'annual'
+                else 'N/A'
+            ),
+        }
+        for report in progress_reports
+    ]
+    return render_template('my_progress_report.html', progress_reports=progress_reports)
+
 if __name__ == '__main__':
     app.run(debug=False)
+

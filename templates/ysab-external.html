@@ -3,6 +3,7 @@
 <head>
   <title>YSAB External Application</title>   
   <style>
+    /* Base styles from ysab-application.html */
     * {
       -webkit-box-sizing: border-box;
       -moz-box-sizing: border-box;
@@ -12,79 +13,126 @@
     body {
       padding: 20px 15%;
     }
+
     form header {
       margin: 0 0 20px 0; 
     }
+
     form header div {
       font-size: 90%;
       color: #999;
     }
+
     form header h2 {
       margin: 0 0 5px 0;
     }
+
     form > div {
       clear: both;
       overflow: hidden;
       padding: 1px;
       margin: 0 0 10px 0;
     }
+
     form > div > fieldset > div > div {
       margin: 0 0 5px 0;
     }
+
     form > div > label,
     legend {
-        width: 25%;
+      width: 25%;
       float: left;
       padding-right: 10px;
     }
+
     form > div > div,
     form > div > fieldset > div {
       width: 75%;
       float: right;
     }
+
     form > div > fieldset label {
-        font-size: 90%;
+      font-size: 90%;
     }
+
     fieldset {
-        border: 0;
+      border: 0;
       padding: 0;
     }
 
+    /* Table styles */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    /* Plain text input styles */
     input[type=text],
     input[type=email],
     input[type=url],
     input[type=password],
-    textarea {
-        width: 100%;
-      border-top: 1px solid #ccc;
-      border-left: 1px solid #ccc;
-      border-right: 1px solid #eee;
-      border-bottom: 1px solid #eee;
-      resize: none;
-      overflow: none;
-    }
-    input[type=text],
-    input[type=email],
-    input[type=url],
-    input[type=password] {
-      width: 50%;
-    }
-    input[type=text]:focus,
-    input[type=email]:focus,
-    input[type=url]:focus,
-    input[type=password]:focus,
-    textarea:focus {
-      outline: 0;
-      border-color: #4697e4;
+    input[type=tel],
+    input[type=number],
+    textarea,
+    select {
+      background: transparent;
+      border: none;
+      padding: 4px 0;
+      margin: 0;
+      font-family: inherit;
+      font-size: inherit;
+      color: inherit;
+      width: 100%;
     }
 
+    /* Table input styles */
+    table input[type=text],
+    table input[type=number],
+    table textarea {
+      width: 100%;
+      padding: 4px;
+      text-align: inherit;
+    }
+
+    /* Disabled/readonly styles */
+    input[disabled],
+    textarea[disabled],
+    select[disabled],
+    input[readonly],
+    textarea[readonly] {
+      background-color: transparent;
+      color: inherit;
+      border: none;
+      cursor: default;
+      opacity: 1;
+    }
+
+    /* Remove spinners from number inputs */
+    input[type=number]::-webkit-inner-spin-button, 
+    input[type=number]::-webkit-outer-spin-button { 
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Responsive styles */
     @media (max-width: 600px) {
       form > div {
         margin: 0 0 15px 0; 
       }
       form > div > label,
       legend {
-          width: 100%;
+        width: 100%;
         float: none;
         margin: 0 0 5px 0;
       }
@@ -102,37 +150,15 @@
         width: 100%; 
       }
     }
+
     @media (min-width: 1200px) {
       form > div > label,
-        legend {
-          text-align: right;
+      legend {
+        text-align: right;
       }
     }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    th, td {
-        border: 1px solid black;
-        padding: 8px;
-        text-align: left;
-    }
-    th {
-        background-color: #f2f2f2;
-    }
 
-    /* Adjust the width of the input text boxes */
-    input[type="text"] {
-      width: 100%;
-      box-sizing: border-box;
-    }
-
-    .grand-total-table {
-      width: 50%;
-      margin-top: 20px;
-    }
-
+    /* Center and container styles */
     .center {
       margin: 0;
       position: absolute;
@@ -148,19 +174,18 @@
       text-align: center;
     }
 
-    .submit-button {
-      position: absolute;
-      width: 150px;
-      height: 40px;
-      background-color: grey;
-      border: none;
-      color: white;
-      border-radius: 5px;
-      cursor:pointer
+    /* Output/Outcome measure tables */
+    table#output_measures th:last-child,
+    table#outcome_measures th:last-child,
+    table#output_measures td:last-child,
+    table#outcome_measures td:last-child {
+      width: 30%;
     }
 
-    .value{
-      text-align:left;
+    /* Grand total table */
+    .grand-total-table {
+      width: 50%;
+      margin-top: 20px;
     }
   </style>
 </head>
@@ -421,23 +446,23 @@
           <tbody>
               <tr>
                   <td><input type="text" name="output1" disabled></td>
-                  <td><input type="text" name="target1" disabled></td>
+                  <td><input type="text" name="target_output_1" disabled></td>
               </tr>
               <tr>
                   <td><input type="text" name="output2" disabled></td>
-                  <td><input type="text" name="target2" disabled></td>
+                  <td><input type="text" name="target_output_2" disabled></td>
               </tr>
               <tr>
                   <td><input type="text" name="output3" disabled></td>
-                  <td><input type="text" name="target3" disabled></td>
+                  <td><input type="text" name="target_output_3" disabled></td>
               </tr>
               <tr>
                   <td><input type="text" name="output4" disabled></td>
-                  <td><input type="text" name="target4" disabled></td>
+                  <td><input type="text" name="target_output_4" disabled></td>
               </tr>
               <tr>
                   <td><input type="text" name="output5" disabled></td>
-                  <td><input type="text" name="target5" disabled></td>
+                  <td><input type="text" name="target_output_5" disabled></td>
               </tr>
           </tbody>
         </table>
@@ -457,23 +482,23 @@
           <tbody>
               <tr>
                   <td><input type="text" name="outcome1" disabled></td>
-                  <td><input type="text" name="target1.1" disabled></td>
+                  <td><input type="text" name="target_outcome_1" disabled></td>
               </tr>
               <tr>
                   <td><input type="text" name="outcome2" disabled></td>
-                  <td><input type="text" name="target2.1" disabled></td>
+                  <td><input type="text" name="target_outcome_2" disabled></td>
               </tr>
               <tr>
                   <td><input type="text" name="outcome3" disabled></td>
-                  <td><input type="text" name="target3.1" disabled></td>
+                  <td><input type="text" name="target_outcome_3" disabled></td>
               </tr>
               <tr>
                   <td><input type="text" name="outcome4" disabled></td>
-                  <td><input type="text" name="target4.1" disabled></td>
+                  <td><input type="text" name="target_outcome_4" disabled></td>
               </tr>
               <tr>
                   <td><input type="text" name="outcome5" disabled></td>
-                  <td><input type="text" name="target5.1" disabled></td>
+                  <td><input type="text" name="target_outcome_5" disabled></td>
               </tr>
           </tbody>
         </table>
