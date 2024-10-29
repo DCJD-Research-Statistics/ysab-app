@@ -19,11 +19,18 @@ admin_mode_switch = False
 load_dotenv() 
 
 mongo_uri = os.getenv("MONGO_URI")
-db_name = os.getenv("DB_NAME")
+if admin_mode_switch==True:
+    db_name = os.getenv("DB_NAME_DEV")
+    discord_webhook_url = os.getenv("DISCORD_WEBHOOK_URL_DEV") 
+elif admin_mode_switch==False:
+    db_name = os.getenv("DB_NAME")
+    discord_webhook_url = os.getenv("DISCORD_WEBHOOK_URL") 
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", secrets.token_hex(16))
 
+# Get admin emails from environment variable and split into a list
+ADMIN_EMAILS = os.getenv('ADMIN_EMAILS', '').split(',')
 
 def get_timestamp():
     central_timezone = pytz.timezone('America/Chicago')
@@ -368,14 +375,14 @@ def make_cont_form(form_data):
 @app.route("/", methods=['GET', 'POST'])
 def index():
     if 'user' in session:
-        return render_template('landing.html', user=session['user'])
-    return render_template('landing.html')
+        return render_template('landing.html', user=session['user'], admin_emails=ADMIN_EMAILS)
+    return render_template('landing.html', admin_emails=ADMIN_EMAILS)
 
 @app.route("/home", methods=['GET', 'POST'])
 def home():
     if 'user' in session:
-        return render_template('home.html', user=session['user'])
-    return render_template('home.html')
+        return render_template('home.html', user=session['user'], admin_emails=ADMIN_EMAILS)
+    return render_template('home.html', admin_emails=ADMIN_EMAILS)
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -409,7 +416,6 @@ def signup():
         flash('Account created successfully', 'success')
 
         # Send Discord notification
-        discord_webhook_url = os.getenv("DISCORD_WEBHOOK_URL") 
         message = f"📩 New User Signup:\n- Name: {name}\n- Email: {email}"
         requests.post(discord_webhook_url, json={"content": message})
 
@@ -426,6 +432,8 @@ def login():
 
         # MongoDB connection
         client = MongoClient(mongo_uri)
+        # main ysab database
+        db_name = os.getenv("DB_NAME")
         db = client[db_name]
         users_collection = db['users']
 
@@ -462,7 +470,7 @@ def my_applications(admin_mode=admin_mode_switch):
         return redirect(url_for('login'))
 
     if admin_mode==True:
-        user_email = os.getenv("ADMIN_EMAIL")
+        user_email = os.getenv("EMAIL")
     elif admin_mode==False: 
         user_email = session['user']['email']
 
@@ -511,7 +519,7 @@ def my_applications(admin_mode=admin_mode_switch):
 
     client.close()
 
-    return render_template('my_applications.html', applications=applications)
+    return render_template('my_applications.html', applications=applications, admin_emails=ADMIN_EMAILS)
 
 @app.route('/help')
 def help():
@@ -530,7 +538,7 @@ def application():
 @login_required
 def progress_report_selection(admin_mode=admin_mode_switch):
     if admin_mode==True:
-        user_email = os.getenv("ADMIN_EMAIL")
+        user_email = os.getenv("EMAIL")
     elif admin_mode==False: 
         user_email = session['user']['email']
 
@@ -863,7 +871,6 @@ def submit_application_form():
             # make_app_form(form_data)
 
             # Send Discord notification
-            discord_webhook_url = os.getenv("DISCORD_WEBHOOK_URL") 
             message = f"🔵 New Application Submitted:\n- ID: {form_data['_id']}\n- Type: {'Internal Application'}\n- Name: {name}\n- Email: {email} \n- Title: {form_data['title']}"
             requests.post(discord_webhook_url, json={"content": message})
 
@@ -896,9 +903,8 @@ def submit_progress_report():
         collection.insert_one(form_data)
 
         # Send Discord notification
-        # discord_webhook_url = os.getenv("DISCORD_WEBHOOK_URL") 
-        # message = f"🟢 Progress Report Submitted:\n- ID: {form_data['_id']}\n- Name: {name}\n- Email: {email} \n- Reporting Period: {form_data['reporting_period']}\n- Title: {title}"
-        # requests.post(discord_webhook_url, json={"content": message})
+        message = f"🟢 Progress Report Submitted:\n- ID: {form_data['_id']}\n- Name: {name}\n- Email: {email} \n- Reporting Period: {form_data['reporting_period']}\n- Title: {title}"
+        requests.post(discord_webhook_url, json={"content": message})
 
         return render_template('confirmation_p.html', name=name, email=email)
     except Exception as e:
@@ -923,7 +929,6 @@ def submit_external_form():
             # make_ext_form(form_data)
 
             # Send Discord notification
-            discord_webhook_url = os.getenv("DISCORD_WEBHOOK_URL")  # Ensure you have this in your .env
             message = f"🟠 External Application Submitted:\n- ID: {form_data['_id']}\n- Name: {name}\n- Email: {email} \n- Title: {form_data['title']}"
             requests.post(discord_webhook_url, json={"content": message})
 
@@ -1033,7 +1038,6 @@ def update_application():
             return render_template('error.html', error='No changes made to the application')
 
         # Send Discord notification
-        discord_webhook_url = os.getenv("DISCORD_WEBHOOK_URL")
         message = f"🆙 Application updated:\n- ID: {application_id}\n- Type: {application_type}\n- Name: {name}\n- Email: {email} \n- Title: {updated_data['title']}\n- Number of edits: {updated_data.get('num_edits', 1)}"
         requests.post(discord_webhook_url, json={"content": message})
 
@@ -1053,6 +1057,8 @@ def download_file_a():
 @app.route('/download_application_fromtable/<application_id>')
 def download_file_a_fromtable(application_id):
     with MongoClient(mongo_uri) as client:
+        # use ysab main db
+        db_name = os.getenv("DB_NAME")
         db = client[db_name]
         collection = db['ysab-applications']
         application = collection.find_one({'_id': application_id})
@@ -1067,6 +1073,8 @@ def download_file_a_fromtable(application_id):
 @app.route('/download_external_fromtable/<application_id>')
 def download_file_e_fromtable(application_id):
     with MongoClient(mongo_uri) as client:
+        # use ysab main db
+        db_name = os.getenv("DB_NAME")
         db = client[db_name]
         collection = db['ysab-external']
         application = collection.find_one({'_id': application_id})
@@ -1081,6 +1089,8 @@ def download_file_e_fromtable(application_id):
 @app.route('/download_progress_report/<application_id>')
 def download_file_p_fromtable(application_id):
     with MongoClient(mongo_uri) as client:
+        # use ysab main db
+        db_name = os.getenv("DB_NAME")
         db = client[db_name]
         collection = db['progress_reports']
         report = collection.find_one({'_id': application_id})
@@ -1130,6 +1140,8 @@ def download_file_c():
 def my_progress_report(application_id):
     # Connect to MongoDB
     client = MongoClient(mongo_uri)
+    # use ysab main db
+    db_name = os.getenv("DB_NAME")
     db = client[db_name]
     collection = db['progress_reports']
 
@@ -1167,6 +1179,199 @@ def my_progress_report(application_id):
         for report in progress_reports
     ]
     return render_template('my_progress_report.html', progress_reports=progress_reports)
+
+@app.route('/admin-dashboard')
+@login_required
+def admin_dashboard():
+    # Check if user is admin
+    if 'user' not in session or session['user']['email'] not in ADMIN_EMAILS:
+        flash('Access denied. Admin privileges required.', 'error')
+        return redirect(url_for('home'))
+    
+    with MongoClient(mongo_uri) as client:
+        # use ysab main db
+        db_name = os.getenv("DB_NAME")
+        db = client[db_name]
+        
+        # Get total users
+        total_users = db['users'].count_documents({})
+        
+        # Get total applications (both internal and external)
+        total_internal = db['ysab-applications'].count_documents({})
+        total_external = db['ysab-external'].count_documents({})
+        total_applications = total_internal + total_external
+        
+        # Get pending reviews (you'll need to add a status field to your applications)
+        pending_reviews = db['ysab-applications'].count_documents({'status': 'pending'})
+        
+        # Get approved applications
+        approved_applications = db['ysab-applications'].count_documents({'status': 'approved'})
+        
+        # Get recent activities (you might want to create a new collection for this)
+        recent_activities = list(db['activities'].find().sort('timestamp', -1).limit(5))
+
+    return render_template('admin_dashboard.html',
+                         admin_emails=ADMIN_EMAILS,
+                         total_users=total_users,
+                         total_applications=total_applications,
+                         pending_reviews=pending_reviews,
+                         approved_applications=approved_applications,
+                         recent_activities=recent_activities)
+
+@app.route('/admin/applications')
+@login_required
+def all_applications():
+    # Check if user is admin
+    if 'user' not in session or session['user']['email'] not in ADMIN_EMAILS:
+        flash('Access denied. Admin privileges required.', 'error')
+        return redirect(url_for('home'))
+
+    # Connect to MongoDB
+    client = MongoClient(mongo_uri)
+    # use ysab main db
+    db_name = os.getenv("DB_NAME")
+    db = client[db_name]
+    
+    # Fetch all applications from both collections
+    applications_collection = db['ysab-applications']
+    external_collection = db['ysab-external']
+    
+    # Fetch all applications (without email filter)
+    all_internal_applications = list(applications_collection.find(
+        {},
+        {'_id': 1, 'timestamp': 1, 'title': 1, 'email': 1, 'name': 1}
+    ))
+    
+    all_external_applications = list(external_collection.find(
+        {},
+        {'_id': 1, 'timestamp': 1, 'title': 1, 'email': 1, 'name': 1}
+    ))
+
+    # Combine both application lists
+    all_applications = all_internal_applications + all_external_applications
+
+    if not all_applications:
+        message = "No applications found in the system."
+        return render_template('admin_applications.html', message=message)
+    
+    # Format the data for the template
+    applications = []
+    for app in all_applications:
+        # Check if the application is internal or external
+        if app in all_internal_applications:
+            app_type = 'Internal Application'
+        elif app in all_external_applications:
+            app_type = 'External Application'
+        else:
+            app_type = 'Unknown Application'
+
+        applications.append({
+            'id': str(app['_id']),
+            'submission_date': app['timestamp'],
+            'title': app['title'],
+            'email': app['email'],
+            'name': app['name'],
+            'type': app_type
+        })
+
+    client.close()
+
+    # Sort applications by submission date (newest first)
+    applications.sort(key=lambda x: x['submission_date'], reverse=True)
+
+    return render_template('admin_applications.html', applications=applications, admin_emails=ADMIN_EMAILS)
+
+@app.route('/manage-applications')
+@login_required
+def manage_applications():
+    # Check if user is admin
+    if 'user' not in session or session['user']['email'] not in ADMIN_EMAILS:
+        flash('Access denied. Admin privileges required.', 'error')
+        return redirect(url_for('home'))
+
+    # Connect to MongoDB
+    client = MongoClient(mongo_uri)
+    # use ysab main db
+    db_name = os.getenv("DB_NAME")
+    db = client[db_name]
+    
+    # Fetch all applications from both collections
+    applications_collection = db['ysab-applications']
+    external_collection = db['ysab-external']
+    
+    # Fetch all applications
+    all_internal_applications = list(applications_collection.find(
+        {},
+        {'_id': 1, 'timestamp': 1, 'title': 1, 'name': 1, 'application_status': 1}
+    ))
+    
+    all_external_applications = list(external_collection.find(
+        {},
+        {'_id': 1, 'timestamp': 1, 'title': 1, 'name': 1, 'application_status': 1}
+    ))
+
+    # Combine and format applications
+    applications = []
+    for app in all_internal_applications + all_external_applications:
+        applications.append({
+            'id': str(app['_id']),
+            'submission_date': app['timestamp'],
+            'name': app.get('name', 'N/A'),
+            'title': app.get('title', 'N/A'),
+            'type': 'Internal Application' if app in all_internal_applications else 'External Application',
+            'application_status': app.get('application_status', 'pending')
+        })
+
+    # Sort by submission date (newest first)
+    applications.sort(key=lambda x: x['submission_date'], reverse=True)
+
+    return render_template('manage_applications.html', applications=applications, admin_emails=ADMIN_EMAILS)
+
+@app.route('/update_application_status', methods=['POST'])
+@login_required
+def update_application_status():
+    if 'user' not in session or session['user']['email'] not in ADMIN_EMAILS:
+        return jsonify({'success': False, 'error': 'Unauthorized'})
+
+    application_id = request.form.get('application_id')
+    new_status = request.form.get('application_status')
+
+    try:
+        client = MongoClient(mongo_uri)
+        # use ysab main db
+        db_name = os.getenv("DB_NAME")
+        db = client[db_name]
+        
+        # Try updating in internal applications first
+        result = db['ysab-applications'].update_one(
+            {'_id': application_id},
+            {'$set': {'application_status': new_status}}
+        )
+
+        # If not found in internal, try external applications
+        if result.modified_count == 0:
+            result = db['ysab-external'].update_one(
+                {'_id': application_id},
+                {'$set': {'application_status': new_status}}
+            )
+
+        if result.modified_count > 0:
+            # Log the status change in activities collection
+            db['activities'].insert_one({
+                'timestamp': get_timestamp(),
+                'type': 'Status Update',
+                'description': f'Application {application_id} status changed to {new_status}',
+                'user': session['user']['email']
+            })
+            
+            return jsonify({'success': True})
+        else:
+            return jsonify({'success': False, 'error': 'Application not found'})
+
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+    finally:
+        client.close()
 
 if __name__ == '__main__':
     app.run(debug=False)

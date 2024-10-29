@@ -3,18 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YSAB My Applications</title>
+    <title>YSAB All Applications</title>
     <link rel="icon" href="{{url_for('static', filename='images/juvenile-logo.svg')}}">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{url_for('static', filename='/style.css')}}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         body {
-          margin: 0;
-          padding: 0;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
         }
         .main-content {
             padding: 20px;
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 80px auto;
         }
         .table {
@@ -57,24 +59,34 @@
         .action-link:hover {
             text-decoration: underline;
         }
+        .search-box {
+            margin-bottom: 20px;
+        }
     </style>
 </head>
-{% include 'header.html' %}
+<body>
+    {% include 'header.html' %}
 
     <div class="main-content">
-        <h1 class="mb-4">Your applications</h1>
-        <p class="text-muted mb-4">View, edit, and download your previous applications</p>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1>All Applications</h1>
+            <div class="search-box">
+                <input type="text" class="form-control" id="searchInput" placeholder="Search applications...">
+            </div>
+        </div>
         
         {% if message %}
         <div class="alert alert-warning" role="alert">
             {{ message }}
-            </div>
+        </div>
         {% endif %}
         
         <table class="table">
             <thead>
                 <tr>
+                    <th style="text-align: center;">ID</th>
                     <th>Submission Date</th>
+                    <th>Applicant Name</th>
                     <th>Application</th>
                     <th>Type</th>
                     <th>Actions</th>
@@ -83,17 +95,25 @@
             <tbody>
                 {% for application in applications %}
                 <tr>
+                    <td>{{ application.id }}</td>
                     <td>{{ application.submission_date }}</td>
+                    <td>{{ application.name }}</td>
                     <td>{{ application.title }}</td>
                     <td>{{ application.type }}</td>
                     <td>
                         {% if application.type == 'Internal Application' %}
-                            <a href="{{ url_for('download_file_a_fromtable', application_id=application.id) }}" class="btn btn-primary btn-sm"><i class="fas fa-download"></i> Download</a>
+                            <a href="{{ url_for('download_file_a_fromtable', application_id=application.id) }}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-download"></i> Download
+                            </a>
                         {% elif application.type == 'External Application' %}
-                            <a href="{{ url_for('download_file_e_fromtable', application_id=application.id) }}" class="btn btn-primary btn-sm"><i class="fas fa-download"></i> Download</a>
+                            <a href="{{ url_for('download_file_e_fromtable', application_id=application.id) }}" class="btn btn-primary btn-sm">
+                                <i class="fas fa-download"></i> Download
+                            </a>
                         {% endif %}
-                        <a href="{{ url_for('edit_application', application_id=application.id, application_type=application.type) }}" class="btn btn-secondary btn-sm"><i class="fas fa-edit"></i> Edit</a>
-                        <a href="{{ url_for('my_progress_report', application_id=application.id) }}" class="btn btn-success btn-sm"><i class="fas fa-chart-line"></i> Progress Report</a>
+
+                        <a href="{{ url_for('my_progress_report', application_id=application.id) }}" class="btn btn-success btn-sm">
+                            <i class="fas fa-chart-line"></i> Progress Report
+                        </a>
                     </td>
                 </tr>
                 {% endfor %}
@@ -104,5 +124,17 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+    <script>
+        // Simple search functionality
+        $(document).ready(function(){
+            $("#searchInput").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $("table tbody tr").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
 </body>
-</html>
+</html> 

@@ -69,64 +69,13 @@
         .btn:hover {
             background-color: #155db1;
         }
-        /* Add these styles for flash messages */
-        .flash-messages {
-            position: fixed;
-            top: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1000;
-            width: 80%;
-            max-width: 400px;
-        }
-        .alert {
-            padding: 20px; /* Increased padding for better spacing */
-            margin-bottom: 10px;
-            border: 1px solid transparent;
-            border-radius: 4px;
-            font-size: 16px; /* Increased font size for better readability */
-            text-align: center;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Added shadow for visibility */
-        }
-        .alert-success {
-            color: #155724;
-            background-color: #d4edda;
-            border-color: #c3e6cb;
-        }
-        .alert-danger {
-            color: #721c24;
-            background-color: #f8d7da;
-            border-color: #f5c6cb;
-        }
-        .alert-success {
-            color: #ffffff;
-            background-color: #5bb16f;
-            border-color: #459450;
-        }
     </style>
 </head>
 <body>
     <!-- Move flash messages here, right after the body tag -->
     {% include 'flash_messages.html' %}
 
-    <div class="header-bar">
-      <div class="header-content">
-        <div class="header-logo">
-          <img src="{{url_for('static', filename='images/juvenile-logo.svg')}}" alt="DCJD Logo">
-          <span>DCJD YSAB Funds</span>
-        </div>
-        <div class="header-links">
-          <a href="{{ url_for('home') }}">Home</a>
-          <a href="{{ url_for('help') }}">Help</a>
-          <a href="{{ url_for('my_applications') }}">Applications</a>
-          {% if 'user' in session %}
-            <a href="{{ url_for('logout') }}">Logout</a>
-          {% else %}
-            <a href="{{ url_for('login') }}">Login</a>
-          {% endif %}
-        </div>
-      </div>
-    </div>
+    {% include 'header.html' %}
 
     <div class="main-content">
         <h1>Welcome to the Dallas County Juvenile Department YSAB Documents Site</h1>

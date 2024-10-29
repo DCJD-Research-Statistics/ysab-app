@@ -26,25 +26,63 @@
     .main-content {
       padding: 20px 15%;
     }
+    .loading-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 9999;
+    }
+    .loading-popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      text-align: center;
+      z-index: 10000;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+    .close-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
+      font-size: 20px;
+      color: #666;
+      background: none;
+      border: none;
+      padding: 0;
+    }
+    .close-button:hover {
+      color: #333;
+    }
+    .loading-popup p {
+      margin: 0 0 15px 0;
+      font-size: 16px;
+      color: #333;
+    }
+    .loading-popup img {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto;
+      display: block;
+    }
   </style>
 </head>
 <body>
-  <div class="header-bar">
-    <div class="header-content">
-      <div class="header-logo">
-        <img src="{{url_for('static', filename='images/juvenile-logo.svg')}}" alt="DCJD Logo">
-        <span>DCJD YSAB Funds</span>
-      </div>
-      <div class="header-links">
-        <a href="{{ url_for('home') }}">Home</a>
-        <a href="{{ url_for('help') }}">Help</a>
-        <a href="{{ url_for('my_applications') }}">Applications</a>
-        {% if 'user' in session %}
-          <a href="{{ url_for('logout') }}">Logout</a>
-        {% else %}
-          <a href="{{ url_for('login') }}">Login</a>
-        {% endif %}
-      </div>
+  {% include 'header.html' %}
+
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-popup">
+      <button class="close-button" onclick="closeLoadingOverlay()">&times;</button>
+      <p>Please wait while your application is being submitted...</p>
+      <img src="{{url_for('static', filename='images/loading_animation.gif')}}" alt="Loading...">
     </div>
   </div>
 
@@ -92,24 +130,7 @@
         <input id="phone" name="phone" type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="123-456-7890" oninput="formatPhoneNumber(this)" maxlength="12" required>
       </div>
     </div>
-  <script>
-    function formatPhoneNumber(input) {
-      // Remove any non-numeric characters
-      var phoneNumber = input.value.replace(/\D/g, '');
-
-      // Check if the length is greater than 10, trim it
-      if (phoneNumber.length > 10) {
-        phoneNumber = phoneNumber.substr(0, 10);
-      }
-
-      // Add dashes in the required format
-      var formattedPhoneNumber =
-        phoneNumber.slice(0, 3) + '-' + phoneNumber.slice(3, 6) + '-' + phoneNumber.slice(6, 10);
-
-      // Update the input field value
-      input.value = formattedPhoneNumber;
-    }
-  </script>
+    <script src="{{url_for('static', filename='phone_number.js')}}"></script>
 
     <div>
         <label for="application_type">
@@ -632,23 +653,7 @@
       </div>
     </div>
 
-    <script>
-      const disclaimerCheckbox = document.getElementById('disclaimer_check');
-      const submitButton = document.getElementById('saveForm');
-    
-      disclaimerCheckbox.addEventListener('change', function() {
-        if (this.checked) {
-          submitButton.style.backgroundColor = 'blue';
-          submitButton.disabled = false;
-        } else {
-          submitButton.style.backgroundColor = 'grey';
-          submitButton.disabled = true;
-        }
-      });
-    </script>
+    <script src="{{url_for('static', filename='submit_script.js')}}"></script>
   </form>
-  <footer>
-    <p>Date Updated: October 11, 2024<br>
-  </footer>
 </body>
 </html>
