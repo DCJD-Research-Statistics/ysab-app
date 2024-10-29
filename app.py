@@ -380,6 +380,8 @@ def index():
 
 @app.route("/home", methods=['GET', 'POST'])
 def home():
+    if 'user' not in session:
+        return redirect(url_for('login'))
     if 'user' in session:
         return render_template('home.html', user=session['user'], admin_emails=ADMIN_EMAILS)
     return render_template('home.html', admin_emails=ADMIN_EMAILS)
@@ -414,6 +416,14 @@ def signup():
         }
         users_collection.insert_one(new_user)
         flash('Account created successfully', 'success')
+
+        # Log the status change in activities collection
+        db['activities'].insert_one({
+            'timestamp': get_timestamp(),
+            'type': 'User Signup',
+            'description': f'New user account created for {name} ({email})',
+            'user': email
+        })
 
         # Send Discord notification
         message = f"📩 New User Signup:\n- Name: {name}\n- Email: {email}"
@@ -482,14 +492,14 @@ def my_applications(admin_mode=admin_mode_switch):
     # Fetch applications for the current user from 'ysab' collection
     user_applications = list(collection.find(
         {'email': {'$regex': f'^{user_email}$', '$options': 'i'}},
-        {'_id': 1, 'timestamp': 1, 'title': 1}
+        {'_id': 1, 'timestamp': 1, 'title': 1, 'application_status': 1}
     ))
 
     # Fetch applications for the current user from 'ysab-external' collection
     external_collection = db['ysab-external']
     user_external_applications = list(external_collection.find(
         {'email': {'$regex': f'^{user_email}$', '$options': 'i'}},
-        {'_id': 1, 'timestamp': 1, 'title': 1}
+        {'_id': 1, 'timestamp': 1, 'title': 1, 'application_status': 1}
     ))
 
     # Combine both application lists
@@ -508,13 +518,14 @@ def my_applications(admin_mode=admin_mode_switch):
         elif app in user_external_applications:
             app_type = 'External Application'
         else:
-            app_type = 'Unknown Application'  # Fallback in case of unexpected data
+            app_type = 'Unknown Application'
 
         applications.append({
             'id': str(app['_id']),
             'submission_date': app['timestamp'],
             'title': app['title'],
-            'type': app_type  # Use the determined app_type
+            'type': app_type,
+            'application_status': app.get('application_status', 'pending')
         })
 
     client.close()
@@ -1205,7 +1216,10 @@ def admin_dashboard():
         pending_reviews = db['ysab-applications'].count_documents({'status': 'pending'})
         
         # Get approved applications
-        approved_applications = db['ysab-applications'].count_documents({'status': 'approved'})
+        approved_applications = db['ysab-applications'].count_documents({'application_status': 'approved'})
+        
+        # Get not approved applications
+        not_approved_applications = db['ysab-applications'].count_documents({'application_status': 'not-approved'})
         
         # Get recent activities (you might want to create a new collection for this)
         recent_activities = list(db['activities'].find().sort('timestamp', -1).limit(5))
@@ -1216,6 +1230,7 @@ def admin_dashboard():
                          total_applications=total_applications,
                          pending_reviews=pending_reviews,
                          approved_applications=approved_applications,
+                         not_approved_applications=not_approved_applications,
                          recent_activities=recent_activities)
 
 @app.route('/admin/applications')
@@ -1333,10 +1348,14 @@ def update_application_status():
     if 'user' not in session or session['user']['email'] not in ADMIN_EMAILS:
         return jsonify({'success': False, 'error': 'Unauthorized'})
 
-    application_id = request.form.get('application_id')
-    new_status = request.form.get('application_status')
-
     try:
+        application_id = request.form.get('application_id')
+        # Convert string ID to ObjectId if needed
+        if ObjectId.is_valid(application_id):
+            application_id = ObjectId(application_id)
+        
+        new_status = request.form.get('application_status')
+
         client = MongoClient(mongo_uri)
         # use ysab main db
         db_name = os.getenv("DB_NAME")
@@ -1366,7 +1385,13 @@ def update_application_status():
             
             return jsonify({'success': True})
         else:
-            return jsonify({'success': False, 'error': 'Application not found'})
+            # Add debug information
+            internal_app = db['ysab-applications'].find_one({'_id': application_id})
+            external_app = db['ysab-external'].find_one({'_id': application_id})
+            if not internal_app and not external_app:
+                return jsonify({'success': False, 'error': f'Application not found with ID: {application_id}'})
+            else:
+                return jsonify({'success': False, 'error': 'Application found but update failed'})
 
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})

@@ -68,11 +68,12 @@
     {% include 'header.html' %}
 
     <div class="main-content">
+        {% include 'backto_admin.html' %}
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1>All Applications</h1>
-            <div class="search-box">
-                <input type="text" class="form-control" id="searchInput" placeholder="Search applications...">
-            </div>
+        </div>
+        <div class="search-box">
+            <input type="text" class="form-control" id="searchInput" placeholder="Search applications...">
         </div>
         
         {% if message %}

@@ -74,10 +74,23 @@
     {% include 'header.html' %}
 
     <div class="main-content">
+        {% include 'backto_admin.html' %}
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1>Manage Applications</h1>
-            <div class="search-box">
-                <input type="text" class="form-control" id="searchInput" placeholder="Search applications...">
+        </div>
+        <div class="search-box">
+            <div class="row">
+                <div class="col-md-8">
+                    <input type="text" class="form-control" id="searchInput" placeholder="Search applications...">
+                </div>
+                <div class="col-md-4">
+                    <select class="form-control" id="statusFilter">
+                        <option value="all">All Statuses</option>
+                        <option value="pending">Pending</option>
+                        <option value="approved">Approved</option>
+                        <option value="not-approved">Not Approved</option>
+                    </select>
+                </div>
             </div>
         </div>
         
@@ -90,10 +103,10 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th>ID</th>
+                    <th style="width: 175px; text-align: center;">ID</th>
                     <th>Submission Date</th>
-                    <th>Applicant Name</th>
-                    <th>Application Title</th>
+                    <th style="width: 175px;">Applicant Name</th>
+                    <th style="width: 250px;">Application Title</th>
                     <th>Type</th>
                     <th>Status</th>
                     <th>Actions</th>
@@ -102,10 +115,10 @@
             <tbody>
                 {% for application in applications %}
                 <tr data-application-id="{{ application.id }}">
-                    <td>{{ application.id }}</td>
+                    <td style="width: 175px;">{{ application.id }}</td>
                     <td>{{ application.submission_date }}</td>
-                    <td>{{ application.name }}</td>
-                    <td>{{ application.title }}</td>
+                    <td style="width: 175px;">{{ application.name }}</td>
+                    <td style="width: 250px;">{{ application.title }}</td>
                     <td>{{ application.type }}</td>
                     <td>
                         <span class="status-badge status-{{ application.application_status|default('pending')|lower }}">
@@ -119,9 +132,15 @@
                         <button class="btn btn-primary btn-sm save-status">Save</button>
                     </td>
                     <td>
-                        <a href="#" class="btn btn-info btn-sm">
-                            <i class="fas fa-eye"></i> Review
-                        </a>
+                        {% if application.type == 'Internal Application' %}
+                            <a href="{{ url_for('download_file_a_fromtable', application_id=application.id) }}" class="btn btn-info btn-sm">
+                                <i class="fas fa-eye"></i> Review
+                            </a>
+                        {% elif application.type == 'External Application' %}
+                            <a href="{{ url_for('download_file_e_fromtable', application_id=application.id) }}" class="btn btn-info btn-sm">
+                                <i class="fas fa-eye"></i> Review
+                            </a>
+                        {% endif %}
                     </td>
                 </tr>
                 {% endfor %}
@@ -135,13 +154,24 @@
     
     <script>
         $(document).ready(function(){
-            // Search functionality
-            $("#searchInput").on("keyup", function() {
-                var value = $(this).val().toLowerCase();
+            // Combined search and filter functionality
+            function filterTable() {
+                var searchValue = $("#searchInput").val().toLowerCase();
+                var statusValue = $("#statusFilter").val().toLowerCase();
+                
                 $("table tbody tr").filter(function() {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                    var rowText = $(this).text().toLowerCase();
+                    var statusMatch = statusValue === 'all' || $(this).find('.status-badge').text().toLowerCase().trim() === statusValue;
+                    var searchMatch = rowText.indexOf(searchValue) > -1;
+                    $(this).toggle(searchMatch && statusMatch);
                 });
-            });
+            }
+
+            // Search input event
+            $("#searchInput").on("keyup", filterTable);
+
+            // Status filter event
+            $("#statusFilter").on("change", filterTable);
 
             // Status change handling
             $(".status-select").on("change", function() {
@@ -168,7 +198,7 @@
                     method: "POST",
                     data: {
                         application_id: applicationId,
-                        status: newStatus
+                        application_status: newStatus
                     },
                     success: function(response) {
                         if (response.success) {

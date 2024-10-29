@@ -37,16 +37,17 @@
             padding: 5px 10px;
             border-radius: 20px;
             font-size: 0.9em;
+            display: inline-block;
         }
-        .status-under-review {
-            background-color: #e9ecef;
-            color: #495057;
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
         }
         .status-approved {
             background-color: #d4edda;
             color: #155724;
         }
-        .status-rejected {
+        .status-not-approved {
             background-color: #f8d7da;
             color: #721c24;
         }
@@ -77,6 +78,7 @@
                     <th>Submission Date</th>
                     <th>Application</th>
                     <th>Type</th>
+                    <th>Status</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -86,6 +88,11 @@
                     <td>{{ application.submission_date }}</td>
                     <td>{{ application.title }}</td>
                     <td>{{ application.type }}</td>
+                    <td>
+                        <span class="status-badge status-{{ application.application_status|default('pending')|lower }}">
+                            {{ application.application_status|default('Pending')|title }}
+                        </span>
+                    </td>
                     <td>
                         {% if application.type == 'Internal Application' %}
                             <a href="{{ url_for('download_file_a_fromtable', application_id=application.id) }}" class="btn btn-primary btn-sm"><i class="fas fa-download"></i> Download</a>
