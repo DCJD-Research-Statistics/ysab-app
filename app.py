@@ -473,6 +473,18 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+def is_admin(email):
+    return email in ADMIN_EMAILS
+
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not is_admin(session['user']['email']):
+            flash('Access denied. You must be an admin to access this page.', 'error')
+            return redirect(url_for('home'))
+        return f(*args, **kwargs)
+    return decorated_function
+
 @app.route('/my-applications')
 @login_required
 def my_applications(admin_mode=admin_mode_switch):
@@ -881,6 +893,14 @@ def submit_application_form():
            # make html application w/ user responses
             # make_app_form(form_data)
 
+            # Log the status change in activities collection
+            db['activities'].insert_one({
+                'timestamp': get_timestamp(),
+                'type': 'Application Submission',
+                'description': f'New application submitted by {name} ({email})',
+                'user': email
+            })
+
             # Send Discord notification
             message = f"🔵 New Application Submitted:\n- ID: {form_data['_id']}\n- Type: {'Internal Application'}\n- Name: {name}\n- Email: {email} \n- Title: {form_data['title']}"
             requests.post(discord_webhook_url, json={"content": message})
@@ -913,6 +933,14 @@ def submit_progress_report():
         collection = db['progress_reports']
         collection.insert_one(form_data)
 
+        # Log the status change in activities collection
+        db['activities'].insert_one({
+            'timestamp': get_timestamp(),
+            'type': 'Progress Report Submission',
+            'description': f'New progress report submitted by {name} ({email})',
+            'user': email
+        })
+
         # Send Discord notification
         message = f"🟢 Progress Report Submitted:\n- ID: {form_data['_id']}\n- Name: {name}\n- Email: {email} \n- Reporting Period: {form_data['reporting_period']}\n- Title: {title}"
         requests.post(discord_webhook_url, json={"content": message})
@@ -938,6 +966,14 @@ def submit_external_form():
             collection.insert_one(form_data)
            # make html application w/ user responses
             # make_ext_form(form_data)
+
+            # Log the status change in activities collection
+            db['activities'].insert_one({
+                'timestamp': get_timestamp(),
+                'type': 'External Application Submission',
+                'description': f'New external application submitted by {name} ({email})',
+                'user': email
+            })
 
             # Send Discord notification
             message = f"🟠 External Application Submitted:\n- ID: {form_data['_id']}\n- Name: {name}\n- Email: {email} \n- Title: {form_data['title']}"
@@ -967,6 +1003,14 @@ def submit_continuation_form():
             collection.insert_one(form_data)
            # make html application w/ user responses
             make_cont_form(form_data)
+
+            # Log the status change in activities collection
+            db['activities'].insert_one({
+                'timestamp': get_timestamp(),
+                'type': 'Continuation Application Submission',
+                'description': f'New continuation application submitted by {name} ({email})',
+                'user': email
+            })
 
             # return jsonify({'success': True, 'message': 'Form data submitted successfully'})
             return render_template('confirmation_c.html', name=name, email=email)
@@ -1047,6 +1091,14 @@ def update_application():
 
         if result.modified_count == 0 and result.upserted_id is None:
             return render_template('error.html', error='No changes made to the application')
+
+        # Log the status change in activities collection
+        db['activities'].insert_one({
+            'timestamp': get_timestamp(),
+            'type': 'Application Update',
+            'description': f'Application {application_id} updated by {name} ({email})',
+            'user': email
+        })
 
         # Send Discord notification
         message = f"🆙 Application updated:\n- ID: {application_id}\n- Type: {application_type}\n- Name: {name}\n- Email: {email} \n- Title: {updated_data['title']}\n- Number of edits: {updated_data.get('num_edits', 1)}"
@@ -1398,6 +1450,85 @@ def update_application_status():
     finally:
         client.close()
 
+@app.route('/manage_users')
+@login_required
+@admin_required
+def manage_users():
+    with MongoClient(mongo_uri) as client:
+        db_name = os.getenv("DB_NAME")
+        db = client[db_name]
+        users = list(db['users'].find())
+    return render_template('manage_users.html', users=users, admin_emails=ADMIN_EMAILS)
+
+@app.route('/delete_user', methods=['POST'])
+@login_required
+@admin_required
+def delete_user():
+    user_id = request.form.get('user_id')
+    
+    try:
+        with MongoClient(mongo_uri) as client:
+            db = client[db_name]
+            result = db['users'].delete_one({'_id': ObjectId(user_id)})
+            return jsonify({'success': result.deleted_count > 0})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+
+@app.route('/activity-dashboard')
+@login_required
+@admin_required
+def activity_dashboard():
+    with MongoClient(mongo_uri) as client:
+        db_name = os.getenv("DB_NAME")
+        db = client[db_name]
+        
+        # Get all activities
+        activities = list(db['activities'].find().sort('timestamp', -1))
+        
+        # Calculate activity metrics
+        total_activities = len(activities)
+        
+        # Get activity counts by type
+        activity_types = {}
+        for activity in activities:
+            activity_type = activity.get('type', 'Unknown')
+            activity_types[activity_type] = activity_types.get(activity_type, 0) + 1
+        
+        # Get user engagement metrics
+        unique_users = len(set(activity['user'] for activity in activities))
+        
+        # Get daily activity counts for the last 30 days
+        from datetime import datetime, timedelta
+        today = datetime.now()
+        thirty_days_ago = today - timedelta(days=30)
+        
+        daily_activities = {}
+        for activity in activities:
+            try:
+                date = datetime.strptime(activity['timestamp'], '%m-%d-%Y %H:%M').date()
+                if date >= thirty_days_ago.date():
+                    daily_activities[date] = daily_activities.get(date, 0) + 1
+            except (ValueError, KeyError):
+                continue
+        
+        # Format dates for chart
+        dates = sorted(daily_activities.keys())
+        activity_counts = [daily_activities[date] for date in dates]
+        formatted_dates = [date.strftime('%Y-%m-%d') for date in dates]
+        
+        return render_template(
+            'activity_dashboard.html',
+            activities=activities[:100],  # Show last 100 activities
+            total_activities=total_activities,
+            activity_types=activity_types,
+            unique_users=unique_users,
+            daily_activity_data={
+                'dates': formatted_dates,
+                'counts': activity_counts
+            },
+            admin_emails=ADMIN_EMAILS
+        )
+
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=admin_mode_switch)
 

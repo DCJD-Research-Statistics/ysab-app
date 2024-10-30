@@ -10,5 +10,16 @@
         </div>
       {% endfor %}
     </div>
+    <script>
+      // Auto-dismiss flash messages after 3 seconds
+      setTimeout(function() {
+        var flashMessages = document.querySelectorAll('.alert');
+        flashMessages.forEach(function(message) {
+          // Use Bootstrap's alert dismiss method
+          var alert = new bootstrap.Alert(message);
+          alert.close();
+        });
+      }, 2500); // 3000 milliseconds = 3 seconds
+    </script>
   {% endif %}
 {% endwith %}

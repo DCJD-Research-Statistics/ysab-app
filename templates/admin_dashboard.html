@@ -160,10 +160,10 @@
             <ul class="sidebar-menu">
                 <li><a href="#"><i class="fas fa-home"></i>Dashboard</a></li>
                 <li><a href="{{ url_for('all_applications') }}"><i class="fas fa-list"></i>View All Applications</a></li>
-                <li><a href="#"><i class="fas fa-chart-line"></i>Activity Dashboard</a></li>
+                <li><a href="{{ url_for('activity_dashboard') }}"><i class="fas fa-chart-line"></i>Activity Dashboard</a></li>
                 <li><a href="{{ url_for('manage_applications') }}"><i class="fas fa-tasks"></i>Manage Applications</a></li>
-                <li><a href="#"><i class="fas fa-users"></i>User Management</a></li>
-                <li><a href="#"><i class="fas fa-cog"></i>Settings</a></li>
+                <li><a href="{{ url_for('manage_users') }}"><i class="fas fa-users"></i>User Management</a></li>
+                <!-- <li><a href="#"><i class="fas fa-cog"></i>Settings</a></li> -->
             </ul>
         </div>
 
@@ -203,6 +203,17 @@
                 <ul class="activity-list">
                     {% for activity in recent_activities %}
                     <li class="activity-item">
+                        {% if activity.type == 'User Signup' %}
+                        📩
+                        {% elif activity.type == 'Application Submission' %}
+                        🔵
+                        {% elif activity.type == 'Progress Report Submission' %}
+                        🟢
+                        {% elif activity.type == 'Application Update' %}
+                        🆙
+                        {% elif activity.type == 'Status Update' %}
+                        🔄
+                        {% endif %}
                         <strong>{{ activity.type }}</strong> - {{ activity.description }}
                         <small style="color: #666;">{{ activity.timestamp }}</small>
                     </li>
