@@ -46,7 +46,7 @@ jobs:
           record = {
               "timestamp": get_timestamp(),
               "type": "Website Update",
-              "description": f"New website update deployed by Juan Lomeli (juan.lomeli@dallascounty.org). Commit message: '${{ steps.commit.outputs.msg }}'",
+              "description": f"New website update deployed by Juan Lomeli: '${{ steps.commit.outputs.msg }}'",
               "user": "juan.lomeli@dallascounty.org"
           }
           collection.insert_one(record)
