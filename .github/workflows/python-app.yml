@@ -37,7 +37,7 @@ jobs:
               return timestamp
 
           client = MongoClient("${{ secrets.MONGODB_URI }}")
-          db = client['your_database_name']
+          db = client['ysab_applications']
           collection = db['activities']
           record = {
               "timestamp": get_timestamp(),
