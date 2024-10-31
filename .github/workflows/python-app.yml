@@ -21,6 +21,10 @@ jobs:
         run: |
           python -m pip install pymongo pytz
 
+      - name: Get Last Commit Message
+        id: commit
+        run: echo "::set-output name=msg::$(git log -1 --pretty=%B)"
+
       - name: Update MongoDB Activities
         env:
           MONGODB_URI: ${{ secrets.MONGODB_URI }}
@@ -41,8 +45,8 @@ jobs:
           collection = db['activities']
           record = {
               "timestamp": get_timestamp(),
-              "type": "Progress Report Submission",
-              "description": "New progress report submitted by Juan Lomeli (juan.lomeli@dallascounty.org)",
+              "type": "Website Update",
+              "description": f"New website update deployed by Juan Lomeli (juan.lomeli@dallascounty.org). Commit message: '${{ steps.commit.outputs.msg }}'",
               "user": "juan.lomeli@dallascounty.org"
           }
           collection.insert_one(record)
