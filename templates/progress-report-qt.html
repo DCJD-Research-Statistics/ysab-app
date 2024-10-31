@@ -28,26 +28,15 @@
     </div>
   </div>
 
+  {% include 'header_progress_report.html' %}
+
   <div class="main-content">
     <form action="/submit_progress_report" method="POST">
-      <header>
-        <h2>Dallas County Juror Fund Allocation Progress Report</h2>
-        <h3 style="color: blue;">{{ reporting_period | upper }}</h3>
-      </header>
 
       <!-- Add these hidden input fields at the beginning of the form -->
       <input type="hidden" name="application_id" value="{{ application_id }}">
       <input type="hidden" name="application_type" value="Progress Report">
       <input type="hidden" name="reporting_period" value="{{ reporting_period }}">
-
-      <h3>Submission Instructions:</h2>
-          <ol>
-              <li>Informants must answer all questions that are applicable</li>
-              <li>Length of responses must adhere to the specified word limit indicated in the question</li>
-              <li>Informants must click the submit button to complete the report</li>
-            </ol>
-
-      <p><b>Disclaimer:</b> For privacy and security reasons, please be advised not to include any confidential or sensitive information in your submission.</p>
 
       <div>
         <br>

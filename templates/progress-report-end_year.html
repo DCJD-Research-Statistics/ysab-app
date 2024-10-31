@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <link rel="stylesheet" href="{{url_for('static', filename='/style.css')}}"> 
-  <title>YSAB Progress Report</title>   
+  <title>YSAB Progress Report - End of Year</title>   
   <link rel="icon" href="{{url_for('static', filename='images/fav-icon-red.svg')}}">
   <style>
     .readonly-input {
@@ -24,21 +24,10 @@
     </div>
   </div>  
 
+  {% include 'header_progress_report.html' %}
+
   <div class="main-content">
     <form action="/submit_progress_report" method="POST">
-      <header>
-        <h2>Dallas County Juror Fund Allocation Progress Report</h2>
-        <h3 style="color: blue;">{{ reporting_period | upper }}</h3>
-      </header>
-
-      <h3>Submission Instructions:</h2>
-          <ol>
-              <li>Informants must answer all questions that are applicable</li>
-              <li>Length of responses must adhere to the specified word limit indicated in the question</li>
-              <li>Informants must click the submit button to complete the report</li>
-            </ol>
-
-      <p><b>Disclaimer:</b> For privacy and security reasons, please be advised not to include any confidential or sensitive information in your submission.</p>
       <input type="hidden" name="application_id" value="{{ application_id }}">
       <input type="hidden" name="application_type" value="Progress Report">
       <input type="hidden" name="reporting_period" value="{{ reporting_period }}">
@@ -85,7 +74,8 @@
         <br>
           <label for="title">Project Title</label>
           <div>
-            <input id="title" name="title" type="text" value="{{ project_title }}" size="8" tabindex="1" required readonly class="readonly-input">
+            <span id="title" style="color: #000000; font-weight: bold;">{{ project_title }}</span>
+            <input type="hidden" id="title" name="title" value="{{ project_title }}">
           </div>
         </div>
 
@@ -175,16 +165,19 @@
           <tr>
               <td>Number of youth directly benefited</td>
               <td style="text-align: center;">
-                <input id="midterm_aa_a" name="midterm_aa_a" type="number" size="8" tabindex="1" value="{{ midterm_aa_a }}" class="readonly-input" readonly oninput="updateCount('a')">
+                <span id="midterm_aa_a" style="color: #000000;">{{ midterm_aa_a }}</span>
+                <input type="hidden" id="midterm_aa_a" name="midterm_aa_a" value="{{ midterm_aa_a }}" readonly oninput="updateCount('a')">
               </td>
               <td style="text-align: center;">
-                <input id="end_year_aa_a" name="end_year_aa_a" type="number" size="8" tabindex="1" oninput="updateCount('a')">
+                <input id="end_year_aa_a" name="end_year_aa_a" type="number" size="8" tabindex="1" oninput="updateCount('a')" style="text-align: center;">
               </td>
               <td style="text-align: center;">
-                <input id="count_a" name="count_a" type="number" size="8" tabindex="1" readonly class="readonly-input" style="text-align: center;">
+                <span id="count_a" style="color: #000000;">{{ count_a }}</span>
+                <input type="hidden" id="count_a" name="count_a" value="{{ count_a }}" readonly oninput="updateCount('a')">
               </td>
               <td style="text-align: center;">
-                <input id="final_target_output_a" name="final_target_output_a" type="number" size="8" tabindex="1" style="text-align: center;" value="{{ final_target_output_a }}" readonly class="readonly-input">
+                <span id="final_target_output_a" style="color: #000000;">{{ final_target_output_a }}</span>
+                <input type="hidden" id="final_target_output_a" name="final_target_output_a" value="{{ final_target_output_a }}" readonly class="readonly-input">
               </td>
               <td style="text-align: center;">
                 <select id="ontrack_target_a" name="ontrack_target_a" class="field select medium" tabindex="11" style="text-align: center;"> 
@@ -197,16 +190,19 @@
           <tr>
               <td>Number of individuals not under the authority of DCJD benefited</td>
               <td style="text-align: center;">
-                <input id="midterm_aa_b" name="midterm_aa_b" type="number" size="8" tabindex="1" value="{{ midterm_aa_b }}" class="readonly-input" readonly>
+                <span id="midterm_aa_b" style="color: #000000;">{{ midterm_aa_b }}</span>
+                <input type="hidden" id="midterm_aa_b" name="midterm_aa_b" value="{{ midterm_aa_b }}" readonly oninput="updateCount('b')">
               </td>
               <td style="text-align: center;">
-                <input id="end_year_aa_b" name="end_year_aa_b" type="number" size="8" tabindex="1">
+                <input id="end_year_aa_b" name="end_year_aa_b" type="number" size="8" tabindex="1" oninput="updateCount('b')" style="text-align: center;>
               </td>
               <td style="text-align: center;">
-                <input id="count_b" name="count_b" type="number" size="8" tabindex="1" readonly class="readonly-input" style="text-align: center;">
+                <span id="count_b" style="color: #000000;">{{ count_b }}</span>
+                <input type="hidden" id="count_b" name="count_b" value="{{ count_b }}" readonly oninput="updateCount('b')">
               </td>
               <td style="text-align: center;">
-                <input id="final_target_b" name="final_target_b" type="number" size="8" tabindex="1" style="text-align: center;" value="{{ final_target_b }}" readonly class="readonly-input">
+                <span id="final_target_b" style="color: #000000;">{{ final_target_b }}</span>
+                <input type="hidden" id="final_target_b" name="final_target_b" value="{{ final_target_b }}" readonly class="readonly-input">
               </td>
               <td style="text-align: center;">
                 <select id="ontrack_target_b" name="ontrack_target_b" class="field select medium" tabindex="11" style="text-align: center;"> 
@@ -217,20 +213,24 @@
               </td>
           </tr>
           <tr>
-              <td style="text-align: center;">
-                <input id="output1" name="output1" type="text" value="{{ output1 }}" size="30" readonly class="readonly-input">
+              <td>
+                <span id="output1" style="color: #000000;">{{ output1 }}</span>
+                <input type="hidden" id="output1" name="output1" value="{{ output1 }}">
               </td>
               <td style="text-align: center;">
-                <input id="midterm_aa_1" name="midterm_aa_1" type="number" value="{{ midterm_aa_1 }}" size="8" tabindex="1" readonly class="readonly-input">
+                <span id="midterm_aa_1" style="color: #000000;">{{ midterm_aa_1 }}</span>
+                <input type="hidden" id="midterm_aa_1" name="midterm_aa_1" value="{{ midterm_aa_1 }}">
               </td>
               <td style="text-align: center;">
-                <input id="end_year_aa_1" name="end_year_aa_1" type="number" size="8" tabindex="1">
+                <input id="end_year_aa_1" name="end_year_aa_1" type="number" size="8" tabindex="1" style="text-align: center;">
               </td>
               <td style="text-align: center;">
-                <input id="count_1" name="count_1" type="number" size="8" tabindex="1" readonly class="readonly-input" style="text-align: center;">
+                <span id="count_1" style="color: #000000;">{{ count_1 }}</span>
+                <input type="hidden" id="count_1" name="count_1" value="{{ count_1 }}" readonly oninput="updateCount('1')">
               </td>
               <td style="text-align: center;">
-                <input id="final_target_output_1" name="final_target_output_1" type="number" value="{{ final_target_output_1 }}" size="8" tabindex="1" style="text-align: center;" readonly class="readonly-input">
+                <span id="final_target_output_1" style="color: #000000;">{{ final_target_output_1 }}</span>
+                <input type="hidden" id="final_target_output_1" name="final_target_output_1" value="{{ final_target_output_1 }}" readonly class="readonly-input">
               </td>
               <td style="text-align: center;">
                 <select id="on_track_target_1" name="on_track_target_1" class="field select medium" tabindex="11" style="text-align: center;"> 
@@ -242,19 +242,23 @@
           </tr>
           <tr>
               <td>
-                <input id="output2" name="output2" type="text" value="{{ output2 }}" size="30" readonly class="readonly-input">
+                <span id="output2" style="color: #000000;">{{ output2 }}</span>
+                <input type="hidden" id="output2" name="output2" value="{{ output2 }}">
               </td>
               <td style="text-align: center;">
-                <input id="midterm_aa_2" name="midterm_aa_2" type="number" value="{{ midterm_aa_2 }}" size="8" tabindex="1" readonly class="readonly-input">  
+                <span id="midterm_aa_2" style="color: #000000;">{{ midterm_aa_2 }}</span>
+                <input type="hidden" id="midterm_aa_2" name="midterm_aa_2" value="{{ midterm_aa_2 }}">
               </td>
               <td style="text-align: center;">
-                <input id="end_year_aa_2" name="end_year_aa_2" type="number" size="8" tabindex="1">
+                <input id="end_year_aa_2" name="end_year_aa_2" type="number" size="8" tabindex="1" style="text-align: center;">
               </td>
               <td style="text-align: center;">
-                <input id="count_2" name="count_2" type="number" size="8" tabindex="1" readonly class="readonly-input" style="text-align: center;">
+                <span id="count_2" style="color: #000000;">{{ count_2 }}</span>
+                <input type="hidden" id="count_2" name="count_2" value="{{ count_2 }}" readonly oninput="updateCount('2')">
               </td>
               <td style="text-align: center;">
-                <input id="final_target_output_2" name="final_target_output_2" type="number" value="{{ final_target_output_2 }}" size="8" tabindex="1" style="text-align: center;" readonly class="readonly-input">
+                <span id="final_target_output_2" style="color: #000000;">{{ final_target_output_2 }}</span>
+                <input type="hidden" id="final_target_output_2" name="final_target_output_2" value="{{ final_target_output_2 }}" readonly class="readonly-input">
               </td>
               <td style="text-align: center;">
                 <select id="ontrack_target_2" name="ontrack_target_2" class="field select medium" tabindex="11" style="text-align: center;"> 
@@ -266,19 +270,23 @@
           </tr>
           <tr>
               <td>
-                <input id="output3" name="output3" type="text" value="{{ output3 }}" size="30" readonly class="readonly-input">
+                <span id="output3" style="color: #000000;">{{ output3 }}</span>
+                <input type="hidden" id="output3" name="output3" value="{{ output3 }}">
               </td>
               <td style="text-align: center;">
-                <input id="midterm_aa_3" name="midterm_aa_3" type="number" value="{{ midterm_aa_3 }}" size="8" tabindex="1" readonly class="readonly-input">
+                <span id="midterm_aa_3" style="color: #000000;">{{ midterm_aa_3 }}</span>
+                <input type="hidden" id="midterm_aa_3" name="midterm_aa_3" value="{{ midterm_aa_3 }}">
               </td>
               <td style="text-align: center;">
-                <input id="end_year_aa_3" name="end_year_aa_3" type="number" size="8" tabindex="1">
+                <input id="end_year_aa_3" name="end_year_aa_3" type="number" size="8" tabindex="1" style="text-align: center;">
               </td>
               <td style="text-align: center;">
-                <input id="count_3" name="count_3" type="number" size="8" tabindex="1" readonly class="readonly-input" style="text-align: center;">
+                <span id="count_3" style="color: #000000;">{{ count_3 }}</span>
+                <input type="hidden" id="count_3" name="count_3" value="{{ count_3 }}" readonly oninput="updateCount('3')">
               </td>
               <td style="text-align: center;">
-                <input id="final_target_output_3" name="final_target_output_3" type="number" value="{{ final_target_output_3 }}" size="8" tabindex="1" style="text-align: center;" readonly class="readonly-input">
+                <span id="final_target_output_3" style="color: #000000;">{{ final_target_output_3 }}</span>
+                <input type="hidden" id="final_target_output_3" name="final_target_output_3" value="{{ final_target_output_3 }}" readonly class="readonly-input">
               </td>
               <td style="text-align: center;">
                 <select id="ontrack_target_3" name="ontrack_target_3" class="field select medium" tabindex="11" style="text-align: center;"> 
@@ -290,19 +298,23 @@
           </tr>
           <tr>
               <td>
-                <input id="output4" name="output4" type="text" value="{{ output4 }}" size="30" readonly class="readonly-input"> 
+                <span id="output4" style="color: #000000;">{{ output4 }}</span>
+                <input type="hidden" id="output4" name="output4" value="{{ output4 }}">
               </td>
               <td style="text-align: center;">
-                <input id="midterm_aa_4" name="midterm_aa_4" type="number" value="{{ midterm_aa_4 }}" size="8" tabindex="1" readonly class="readonly-input">
+                <span id="midterm_aa_4" style="color: #000000;">{{ midterm_aa_4 }}</span>
+                <input type="hidden" id="midterm_aa_4" name="midterm_aa_4" value="{{ midterm_aa_4 }}">
               </td>
               <td style="text-align: center;">
-                <input id="end_year_aa_4" name="end_year_aa_4" type="number" size="8" tabindex="1">
+                <input id="end_year_aa_4" name="end_year_aa_4" type="number" size="8" tabindex="1" style="text-align: center;">
               </td>
               <td style="text-align: center;">
-                <input id="count_4" name="count_4" type="number" size="8" tabindex="1" readonly class="readonly-input" style="text-align: center;">
+                <span id="count_4" style="color: #000000;">{{ count_4 }}</span>
+                <input type="hidden" id="count_4" name="count_4" value="{{ count_4 }}" readonly oninput="updateCount('4')">
               </td>
               <td style="text-align: center;">
-                <input id="final_target_output_4" name="final_target_output_4" type="number" value="{{ final_target_output_4 }}" size="8" tabindex="1" style="text-align: center;" readonly class="readonly-input">
+                <span id="final_target_output_4" style="color: #000000;">{{ final_target_output_4 }}</span>
+                <input type="hidden" id="final_target_output_4" name="final_target_output_4" value="{{ final_target_output_4 }}" readonly class="readonly-input">
               </td>
               <td style="text-align: center;">
                 <select id="ontrack_target_4" name="ontrack_target_4" class="field select medium" tabindex="11" style="text-align: center;"> 
@@ -314,19 +326,23 @@
           </tr>
           <tr>
               <td>
-                <input id="output5" name="output5" type="text" value="{{ output5 }}" size="30" readonly class="readonly-input">
+                <span id="output5" style="color: #000000;">{{ output5 }}</span>
+                <input type="hidden" id="output5" name="output5" value="{{ output5 }}">
               </td>
               <td style="text-align: center;">
-                <input id="midterm_aa_5" name="midterm_aa_5" type="number" value="{{ midterm_aa_5 }}" size="8" tabindex="1" readonly class="readonly-input">
+                <span id="midterm_aa_5" style="color: #000000;">{{ midterm_aa_5 }}</span>
+                <input type="hidden" id="midterm_aa_5" name="midterm_aa_5" value="{{ midterm_aa_5 }}">
               </td>
               <td style="text-align: center;">
-                <input id="end_year_aa_5" name="end_year_aa_5" type="number" size="8" tabindex="1">
+                <input id="end_year_aa_5" name="end_year_aa_5" type="number" size="8" tabindex="1" style="text-align: center;">
               </td>
               <td style="text-align: center;">
-                <input id="count_5" name="count_5" type="number" size="8" tabindex="1" readonly class="readonly-input" style="text-align: center;">
+                <span id="count_5" style="color: #000000;">{{ count_5 }}</span>
+                <input type="hidden" id="count_5" name="count_5" value="{{ count_5 }}" readonly oninput="updateCount('5')">
               </td>
               <td style="text-align: center;">
-                <input id="final_target_output_5" name="final_target_output_5" type="number" value="{{ final_target_output_5 }}" size="8" tabindex="1" style="text-align: center;" readonly class="readonly-input">
+                <span id="final_target_output_5" style="color: #000000;">{{ final_target_output_5 }}</span>
+                <input type="hidden" id="final_target_output_5" name="final_target_output_5" value="{{ final_target_output_5 }}" readonly class="readonly-input">
               </td>
               <td style="text-align: center;">
                 <select id="ontrack_target_5" name="ontrack_target_5" class="field select medium" tabindex="11" style="text-align: center;"> 
@@ -341,22 +357,40 @@
 
     <script>
       function updateCount(row) {
-        const end_year = parseFloat(document.getElementById(`end_year_aa_${row}`).value) || 0;
-        const midterm = parseFloat(document.getElementById(`midterm_aa_${row}`).value) || 0;
-        const count = end_year + midterm;
-        document.getElementById(`count_${row}`).value = count;
+        // Get the midterm value from the hidden input
+        const midtermInput = document.getElementById(`midterm_aa_${row}`);
+        const midterm = parseFloat(midtermInput.value) || 0;
+
+        // Get the end year value from the input field
+        const endYearInput = document.getElementById(`end_year_aa_${row}`);
+        const endYear = parseFloat(endYearInput.value) || 0;
+
+        // Calculate the sum
+        const count = midterm + endYear;
+
+        // Update both the hidden input and the displayed span
+        const countInput = document.getElementById(`count_${row}`);
+        const countSpan = document.getElementById(`count_${row}`);
+        
+        if (countInput) {
+          countInput.value = count;
+        }
+        if (countSpan) {
+          countSpan.textContent = count;
+        }
       }
-  
+
       // Initialize counts on page load and add event listeners
       document.addEventListener('DOMContentLoaded', function() {
         ['a', 'b', '1', '2', '3', '4', '5'].forEach(row => {
+          // Initial calculation
           updateCount(row);
-          ['end_year_aa_', 'midterm_aa_'].forEach(quarter => {
-            const input = document.getElementById(quarter + row);
-            if (input) {
-              input.addEventListener('input', () => updateCount(row));
-            }
-          });
+          
+          // Add listener to end year input
+          const endYearInput = document.getElementById(`end_year_aa_${row}`);
+          if (endYearInput) {
+            endYearInput.addEventListener('input', () => updateCount(row));
+          }
         });
       });
     </script>
@@ -369,27 +403,30 @@
       <thead>
           <tr>
               <th style="width:30%">Outcome Measures</th>
-              <th class="midterm-column">Midterm Actual Achieved</th>
+              <th>Midterm Actual Achieved</th>
               <th>End of Year Actual Achieved</th>
               <th style="text-align: center;">Target</th>
-              <th class="midterm-column" style="width:15%; text-align: center;">On Track To Meet Target</th>
+              <th style="width:15%; text-align: center;">On Track To Meet Target</th>
           </tr>
       </thead>
       <tbody>
           <tr>
               <td>                    
-                <input id="outcome1" name="outcome1" type="text" value="{{ outcome1 }}" readonly class="readonly-input"> 
+                <span id="outcome1" style="color: #000000;">{{ outcome1 }}</span>
+                <input type="hidden" id="outcome1" name="outcome1" value="{{ outcome1 }}">
               </td>
-              <td class="midterm-column">
-                <input id="midterm_outcome_aa_1" name="midterm_outcome_aa_1" type="text" size="8" value="{{ midterm_outcome_aa_1 }}" tabindex="1" readonly class="readonly-input">
+              <td style="text-align: center;">
+                <span id="midterm_outcome_aa_1" style="color: #000000;">{{ midterm_outcome_aa_1 }}</span>
+                <input type="hidden" id="midterm_outcome_aa_1" name="midterm_outcome_aa_1" value="{{ midterm_outcome_aa_1 }}">
               </td>
-              <td>
+              <td style="text-align: center;">
                 <input id="end_year_outcome_aa_1" name="end_year_outcome_aa_1" type="text" size="8" tabindex="1">
               </td>
               <td style="text-align: center;">
-                <input id="final_outcome_target_1" name="final_outcome_target_1" type="text" size="8" tabindex="1" style="text-align: center;" value="{{ final_target_outcome_1 }}" readonly class="readonly-input">
+                <span id="final_outcome_target_1" style="color: #000000;">{{ final_target_outcome_1 }}</span>
+                <input type="hidden" id="final_outcome_target_1" name="final_outcome_target_1" value="{{ final_target_outcome_1 }}" readonly class="readonly-input">
               </td>
-              <td class="midterm-column" style="text-align: center;">
+              <td style="text-align: center;">
                 <select id="midterm_ontrack_outcome_target_1" name="midterm_ontrack_outcome_target_1" class="field select medium" tabindex="11" style="text-align: center;"> 
                     <option value="Choose an item">Choose an item</option>
                     <option value="Yes">Yes</option>
@@ -399,18 +436,21 @@
           </tr>
           <tr>
               <td>
-                <input id="outcome2" name="outcome2" type="text" value="{{ outcome2 }}" readonly class="readonly-input">
+                <span id="outcome2" style="color: #000000;">{{ outcome2 }}</span>
+                <input type="hidden" id="outcome2" name="outcome2" value="{{ outcome2 }}">
               </td>
-              <td class="midterm-column">
-                <input id="midterm_outcome_aa_2" name="midterm_outcome_aa_2" type="text" size="8" value="{{ midterm_outcome_aa_2 }}" tabindex="1" readonly class="readonly-input">
+              <td style="text-align: center;">
+                <span id="midterm_outcome_aa_2" style="color: #000000;">{{ midterm_outcome_aa_2 }}</span>
+                <input type="hidden" id="midterm_outcome_aa_2" name="midterm_outcome_aa_2" value="{{ midterm_outcome_aa_2 }}">
               </td>
-              <td>
+              <td style="text-align: center;">
                 <input id="end_year_outcome_aa_2" name="end_year_outcome_aa_2" type="text" size="8" tabindex="1">
               </td>
               <td style="text-align: center;">
-                <input id="final_outcome_target_2" name="final_outcome_target_2" type="text" size="8" tabindex="1" style="text-align: center;" value="{{ final_target_outcome_2 }}" readonly class="readonly-input">
+                <span id="final_outcome_target_2" style="color: #000000;">{{ final_target_outcome_2 }}</span>
+                <input type="hidden" id="final_outcome_target_2" name="final_outcome_target_2" value="{{ final_target_outcome_2 }}" readonly class="readonly-input">
               </td>
-              <td class="midterm-column" style="text-align: center;">
+              <td style="text-align: center;">
                 <select id="midterm_ontrack_outcome_target_2" name="midterm_ontrack_outcome_target_2" class="field select medium" tabindex="11" style="text-align: center;"> 
                     <option value="Choose an item">Choose an item</option>
                     <option value="Yes">Yes</option>
@@ -420,18 +460,21 @@
           </tr>
           <tr>
             <td>
-              <input id="outcome3" name="outcome3" type="text" value="{{ outcome3 }}" readonly class="readonly-input">
+              <span id="outcome3" style="color: #000000;">{{ outcome3 }}</span>
+              <input type="hidden" id="outcome3" name="outcome3" value="{{ outcome3 }}">
             </td>
-            <td class="midterm-column">
-              <input id="midterm_outcome_aa_3" name="midterm_outcome_aa_3" type="text" size="8" value="{{ midterm_outcome_aa_3 }}" tabindex="1" readonly class="readonly-input">
+            <td style="text-align: center;">
+              <span id="midterm_outcome_aa_3" style="color: #000000;">{{ midterm_outcome_aa_3 }}</span>
+              <input type="hidden" id="midterm_outcome_aa_3" name="midterm_outcome_aa_3" value="{{ midterm_outcome_aa_3 }}">
             </td>
-            <td>
+            <td style="text-align: center;">
               <input id="end_year_outcome_aa_3" name="end_year_outcome_aa_3" type="text" size="8" tabindex="1">
             </td>
             <td style="text-align: center;">
-              <input id="final_outcome_target_3" name="final_outcome_target_3" type="text" size="8" tabindex="1" style="text-align: center;" value="{{ final_target_outcome_3 }}" readonly class="readonly-input">
+              <span id="final_outcome_target_3" style="color: #000000;">{{ final_target_outcome_3 }}</span>
+              <input type="hidden" id="final_outcome_target_3" name="final_outcome_target_3" value="{{ final_target_outcome_3 }}" readonly class="readonly-input">
             </td>
-            <td class="midterm-column" style="text-align: center;">
+            <td style="text-align: center;">
               <select id="midterm_ontrack_outcome_target_3" name="midterm_ontrack_outcome_target_3" class="field select medium" tabindex="11" style="text-align: center;"> 
                   <option value="Choose an item">Choose an item</option>
                   <option value="Yes">Yes</option>
@@ -441,18 +484,21 @@
         </tr>      
         <tr>
           <td>
-            <input id="outcome4" name="outcome4" type="text" value="{{ outcome4 }}" readonly class="readonly-input">
+            <span id="outcome4" style="color: #000000;">{{ outcome4 }}</span>
+            <input type="hidden" id="outcome4" name="outcome4" value="{{ outcome4 }}">
           </td>
-          <td class="midterm-column">
-            <input id="midterm_outcome_aa_4" name="midterm_outcome_aa_4" type="text" size="8" value="{{ midterm_outcome_aa_4 }}" tabindex="1" readonly class="readonly-input">
+          <td>
+            <span id="midterm_outcome_aa_4" style="color: #000000;">{{ midterm_outcome_aa_4 }}</span>
+            <input type="hidden" id="midterm_outcome_aa_4" name="midterm_outcome_aa_4" value="{{ midterm_outcome_aa_4 }}">
           </td>
           <td>
             <input id="end_year_outcome_aa_4" name="end_year_outcome_aa_4" type="text" size="8" tabindex="1">
           </td>
           <td style="text-align: center;">
-            <input id="final_outcome_target_4" name="final_outcome_target_4" type="text" size="8" tabindex="1" style="text-align: center;" value="{{ final_target_outcome_4 }}" readonly class="readonly-input">
+            <span id="final_outcome_target_4" style="color: #000000;">{{ final_target_outcome_4 }}</span>
+            <input type="hidden" id="final_outcome_target_4" name="final_outcome_target_4" value="{{ final_target_outcome_4 }}" readonly class="readonly-input">
           </td>
-          <td class="midterm-column" style="text-align: center;">
+          <td style="text-align: center;">
             <select id="midterm_ontrack_outcome_target_4" name="midterm_ontrack_outcome_target_4" class="field select medium" tabindex="11" style="text-align: center;"> 
                 <option value="Choose an item">Choose an item</option>
                 <option value="Yes">Yes</option>
@@ -462,18 +508,21 @@
       </tr> 
       <tr>
         <td>
-          <input id="outcome5" name="outcome5" type="text" value="{{ outcome5 }}" readonly class="readonly-input">
+          <span id="outcome5" style="color: #000000;">{{ outcome5 }}</span>
+          <input type="hidden" id="outcome5" name="outcome5" value="{{ outcome5 }}">
         </td>
-        <td class="midterm-column">
-          <input id="midterm_outcome_aa_5" name="midterm_outcome_aa_5" type="text" size="8" value="{{ midterm_outcome_aa_5 }}" tabindex="1" readonly class="readonly-input">
+        <td style="text-align: center;">
+          <span id="midterm_outcome_aa_5" style="color: #000000;">{{ midterm_outcome_aa_5 }}</span>
+          <input type="hidden" id="midterm_outcome_aa_5" name="midterm_outcome_aa_5" value="{{ midterm_outcome_aa_5 }}">
         </td>
-        <td>
+        <td style="text-align: center;">
           <input id="end_year_outcome_aa_5" name="end_year_outcome_aa_5" type="text" size="8" tabindex="1">
         </td>
         <td style="text-align: center;">
-          <input id="final_target_outcome_5" name="final_target_outcome_5" type="text" value="{{ final_target_outcome_5 }}" size="8" tabindex="1" style="text-align: center;" readonly class="readonly-input">
+          <span id="final_target_outcome_5" style="color: #000000;">{{ final_target_outcome_5 }}</span>
+          <input type="hidden" id="final_target_outcome_5" name="final_target_outcome_5" value="{{ final_target_outcome_5 }}" readonly class="readonly-input">
         </td>
-        <td class="midterm-column" style="text-align: center;">
+        <td style="text-align: center;">
           <select id="midterm_ontrack_outcome_target_5" name="midterm_ontrack_outcome_target_5" class="field select medium" tabindex="11" style="text-align: center;"> 
               <option value="Choose an item">Choose an item</option>
               <option value="Yes">Yes</option>

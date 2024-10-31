@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 import math
 from werkzeug.security import generate_password_hash, check_password_hash
 import secrets
-from functools import wraps  # Add this line
+from functools import wraps
 from bson import ObjectId
 import requests
 
@@ -890,9 +890,6 @@ def submit_application_form():
                 collection = db['metadata_applications']
                 collection.insert_one(metadata_app_data)
 
-           # make html application w/ user responses
-            # make_app_form(form_data)
-
             # Log the status change in activities collection
             db['activities'].insert_one({
                 'timestamp': get_timestamp(),
@@ -1203,8 +1200,6 @@ def download_file_c():
 def my_progress_report(application_id):
     # Connect to MongoDB
     client = MongoClient(mongo_uri)
-    # use ysab main db
-    db_name = os.getenv("DB_NAME")
     db = client[db_name]
     collection = db['progress_reports']
 

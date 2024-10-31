@@ -1,0 +1,18 @@
+<div class="application-header" style="margin-top: 60px;">
+    <div class="header-content">
+      <h1>Dallas County Juror Fund Progress Report - <span style="color: blue;">{% if reporting_period == 'mid_year' %}Mid Year{% elif reporting_period == 'end_year' %}End Year{% else %}{{ reporting_period | upper }}{% endif %}</span></h1>
+
+      <div class="instructions-box">
+        <h3>Submission Instructions</h3>
+        <ol>
+          <li>Applicants must answer all questions</li>
+          <li>Length of responses must adhere to the specified word limit indicated in the question</li>
+          <li>Applicants must click the submit button to complete the report</li>
+        </ol>
+      </div>
+      <div class="disclaimer-box">
+        <span class="disclaimer-label">Disclaimer:</span>
+        <p>For privacy and security reasons, please be advised not to include any confidential or sensitive information in your submission.</p>
+      </div>
+    </div>
+  </div>

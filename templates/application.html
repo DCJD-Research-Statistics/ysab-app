@@ -16,21 +16,34 @@
     </div>
   </div>
 
+  <div class="application-header" style="margin-top: 60px;">
+    <div class="header-content">
+      <h1>Dallas County Juror Fund Application</h1>
+      <h2>Youth Services Advisory Board (YSAB) Funds</h2>
+      
+      <div class="header-description">
+        <p>Dallas County jurors have the option of contributing their juror fund stipend to help at risk youth in the Dallas County Juvenile Department and the foster care system. The Youth Services Advisory Board (YSAB) oversees the use of the Dallas County Juror Fund for special projects to address specific concerns related to juvenile crime prevention.</p>
+        <p>In order to be eligible for YSAB recommendation, Dallas County Juvenile Department fund requestors must complete the following application.</p>
+      </div>
+
+      <div class="instructions-box">
+        <h3>Submission Instructions</h3>
+        <ol>
+          <li>Applicants must answer all questions</li>
+          <li>Length of responses must adhere to the specified word limit indicated in the question</li>
+          <li>Applicants must click the submit button to complete the application</li>
+        </ol>
+      </div>
+
+      <div class="disclaimer-box">
+        <span class="disclaimer-label">Disclaimer:</span>
+        <p>For privacy and security reasons, please be advised not to include any confidential or sensitive information in your submission.</p>
+      </div>
+    </div>
+  </div>
+
   <div class="main-content">
     <form action="/submit_application_form" method="POST">
-        <header>
-          <h2>Dallas County Juror Fund Application (YSAB Funds)</h2>
-          <div>Dallas County jurors have the option of contributing their juror fund stipend to help at risk youth in the Dallas County Juvenile Department and the foster care system.  The Youth Services Advisory Board (YSAB) oversees the use of the Dallas County Juror Fund for special projects to address specific concerns related to juvenile crime prevention. In order to be eligible for YSAB recommendation, Dallas County Juvenile Department fund requestors must complete the following application. </div>
-        </header>
-
-        <h3>Submission Instructions:</h2>
-            <ol>
-                <li>Applicants must answer all questions</li>
-                <li>Length of responses must adhere to the specified word limit indicated in the question</li>
-                <li>Applicants must click the submit button to complete the application</li>
-              </ol>
-
-        <p><b>Disclaimer:</b> For privacy and security reasons, please be advised not to include any confidential or sensitive information in your submission.</p>
         <input type="hidden" name="application_type" value="Internal Application">
         <input type="hidden" name="edited" value="no">
         <input type="hidden" name="num_edits" value="0">
@@ -535,6 +548,8 @@
         <script src="{{url_for('static', filename='submit_script.js')}}"></script>
       </form>
     </div>
-    
+  </div>
   </body>
+  <br><br>
+{% include 'footer.html' %}
 </html>
