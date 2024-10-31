@@ -14,7 +14,7 @@ from functools import wraps
 from bson import ObjectId
 import requests
 
-admin_mode_switch = True
+admin_mode_switch = False
 
 load_dotenv() 
 
