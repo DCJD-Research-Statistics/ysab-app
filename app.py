@@ -1267,7 +1267,7 @@ def admin_dashboard():
         total_applications = total_internal + total_external
         
         # Get pending reviews (you'll need to add a status field to your applications)
-        pending_reviews = db['ysab-applications'].count_documents({'status': 'pending'})
+        pending_reviews = db['ysab-applications'].count_documents({'application_status': 'pending'})
         
         # Get approved applications
         approved_applications = db['ysab-applications'].count_documents({'application_status': 'approved'})
