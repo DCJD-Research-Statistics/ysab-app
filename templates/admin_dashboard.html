@@ -213,6 +213,8 @@
                         🆙
                         {% elif activity.type == 'Status Update' %}
                         🔄
+                        {% elif activity.type == 'Website Update' %}
+                        💻
                         {% endif %}
                         <strong>{{ activity.type }}</strong> - {{ activity.description }}
                         <small style="color: #666;">{{ activity.timestamp }}</small>

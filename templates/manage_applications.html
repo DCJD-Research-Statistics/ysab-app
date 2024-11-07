@@ -68,6 +68,12 @@
             display: none;
             margin-left: 10px;
         }
+        .status-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
     </style>
 </head>
 <body>
@@ -121,19 +127,21 @@
                     <td style="width: 250px;">{{ application.title }}</td>
                     <td>{{ application.type }}</td>
                     <td>
-                        <span class="status-badge status-{{ application.application_status|default('pending')|lower }}">
-                            {{ application.application_status|default('Pending')|title }}
-                        </span>
-                        <select class="status-select" data-original-status="{{ application.application_status|default('pending') }}">
-                            <option value="pending" {% if application.application_status == 'pending' %}selected{% endif %}>Pending</option>
-                            <option value="approved" {% if application.application_status == 'approved' %}selected{% endif %}>Approved</option>
-                            <option value="not-approved" {% if application.application_status == 'not-approved' %}selected{% endif %}>Not Approved</option>
-                        </select>
-                        <button class="btn btn-primary btn-sm save-status">Save</button>
+                        <div class="status-container">
+                            <span class="status-badge status-{{ application.application_status|default('pending')|lower }}">
+                                {{ application.application_status|default('Pending')|title }}
+                            </span>
+                            <select class="status-select" data-original-status="{{ application.application_status|default('pending') }}">
+                                <option value="pending" {% if application.application_status == 'pending' %}selected{% endif %}>Pending</option>
+                                <option value="approved" {% if application.application_status == 'approved' %}selected{% endif %}>Approved</option>
+                                <option value="not-approved" {% if application.application_status == 'not-approved' %}selected{% endif %}>Not Approved</option>
+                            </select>
+                            <button class="btn btn-primary btn-sm save-status">Save</button>
+                        </div>
                     </td>
                     <td>
                         {% if application.type == 'Internal Application' %}
-                            <a href="{{ url_for('download_file_a_fromtable', application_id=application.id) }}" class="btn btn-info btn-sm">
+                            <a href="{{ url_for('download_file_a_fromtable', application_id=application.id, format='html') }}" class="btn btn-info btn-sm">
                                 <i class="fas fa-eye"></i> Review
                             </a>
                         {% elif application.type == 'External Application' %}

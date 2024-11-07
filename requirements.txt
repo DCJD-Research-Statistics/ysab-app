@@ -6,3 +6,4 @@ pytz
 pandas
 beautifulsoup4
 requests
+reportlab

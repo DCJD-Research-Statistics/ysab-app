@@ -13,6 +13,7 @@ import secrets
 from functools import wraps
 from bson import ObjectId
 import requests
+from make_pdf_app import make_pdf
 
 admin_mode_switch = False
 
@@ -1114,19 +1115,25 @@ def download_file_a():
     p = r'templates/ysab-application-record.html'
     return send_file(p, as_attachment=True)
 
-@app.route('/download_application_fromtable/<application_id>')
-def download_file_a_fromtable(application_id):
+@app.route('/download_application_fromtable/<application_id>/<format>')
+def download_file_a_fromtable(application_id, format):
     with MongoClient(mongo_uri) as client:
-        # use ysab main db
         db_name = os.getenv("DB_NAME")
         db = client[db_name]
         collection = db['ysab-applications']
         application = collection.find_one({'_id': application_id})
 
     if application:
-        make_app_form(application, download_source='table')
-        p = r'templates/ysab-application-record.html'
-        return send_file(p, as_attachment=True, download_name=f"ysab_application_{application_id}.html")
+        if format == 'html':
+            make_app_form(application, download_source='table')
+            p = r'templates/ysab-application-record.html'
+            return send_file(p, as_attachment=True, download_name=f"ysab_application_{application_id}.html")
+        elif format == 'pdf':
+            make_pdf(application, application_id)
+            return send_file(f"ysab_application_{application_id}.pdf", 
+                           as_attachment=True,
+                           download_name=f"ysab_application_{application_id}.pdf",
+                           mimetype='application/pdf')
     else:
         return "Application not found", 404
     
@@ -1282,6 +1289,7 @@ def admin_dashboard():
 
 @app.route('/admin/applications')
 @login_required
+@admin_required
 def all_applications():
     # Check if user is admin
     if 'user' not in session or session['user']['email'] not in ADMIN_EMAILS:
@@ -1301,12 +1309,12 @@ def all_applications():
     # Fetch all applications (without email filter)
     all_internal_applications = list(applications_collection.find(
         {},
-        {'_id': 1, 'timestamp': 1, 'title': 1, 'email': 1, 'name': 1}
+        {'_id': 1, 'timestamp': 1, 'title': 1, 'email': 1, 'name': 1, 'application_status': 1}
     ))
     
     all_external_applications = list(external_collection.find(
         {},
-        {'_id': 1, 'timestamp': 1, 'title': 1, 'email': 1, 'name': 1}
+        {'_id': 1, 'timestamp': 1, 'title': 1, 'email': 1, 'name': 1, 'application_status': 1}
     ))
 
     # Combine both application lists
@@ -1333,7 +1341,8 @@ def all_applications():
             'title': app['title'],
             'email': app['email'],
             'name': app['name'],
-            'type': app_type
+            'type': app_type,
+            'application_status': app.get('application_status', 'pending')
         })
 
     client.close()
