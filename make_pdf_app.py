@@ -226,9 +226,9 @@ def make_pdf(data, application_id):
 
     # budget cost breakdown
     budget_cost_breakdown_data = [
-        ["Overall Project Cost:", f"${data['grandTotal']}"],
-        ["Number of Youth Who Will Benefit:", data["youth_total"]],
-        ["Individual Youth Benefit:", f"${data['benefit_per_youth']}"]
+        ["Overall Project Cost", f"${data['grandTotal']}"],
+        ["Number of Youth Who Will Benefit", data["youth_total"]],
+        ["Individual Youth Benefit", f"${data['benefit_per_youth']}"]
     ]
 
     budget_cost_breakdown_table = Table(budget_cost_breakdown_data, colWidths=[250, 200])

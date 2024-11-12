@@ -491,6 +491,9 @@ def admin_required(f):
 def my_applications(admin_mode=admin_mode_switch):
     if 'user' not in session:
         return redirect(url_for('login'))
+    
+    # Get admin emails list from environment variable
+    admin_emails = os.getenv("ADMIN_EMAILS").split(',')
 
     if admin_mode==True:
         user_email = os.getenv("EMAIL")
@@ -499,7 +502,13 @@ def my_applications(admin_mode=admin_mode_switch):
 
     # Connect to MongoDB
     client = MongoClient(mongo_uri)
-    db = client[db_name]
+
+    # Choose database based on admin status
+    if user_email.lower() in [email.lower() for email in admin_emails]:
+        db = client[os.getenv("DB_NAME_DEV")]
+    else:
+        db = client[os.getenv("DB_NAME")]
+
     collection = db['ysab-applications']
 
     # Fetch applications for the current user from 'ysab' collection
@@ -1205,9 +1214,23 @@ def download_file_c():
 @app.route('/my_progress_report/<application_id>')
 @login_required
 def my_progress_report(application_id):
+    # Get admin emails list from environment variable
+    admin_emails = os.getenv("ADMIN_EMAILS").split(',')
+    
+    # Get user email based on admin mode
+    if admin_mode_switch==True:
+        user_email = os.getenv("EMAIL")
+    elif admin_mode_switch==False: 
+        user_email = session['user']['email']
+
     # Connect to MongoDB
     client = MongoClient(mongo_uri)
-    db = client[db_name]
+
+    # Choose database based on admin status
+    if user_email.lower() in [email.lower() for email in admin_emails]:
+        db = client[os.getenv("DB_NAME_DEV")]
+    else:
+        db = client[os.getenv("DB_NAME")]
     collection = db['progress_reports']
 
     # Fetch progress reports for the given application_id
@@ -1352,7 +1375,7 @@ def all_applications():
 
     return render_template('admin_applications.html', applications=applications, admin_emails=ADMIN_EMAILS)
 
-@app.route('/manage-applications')
+@app.route('/admin/manage-applications')
 @login_required
 def manage_applications():
     # Check if user is admin
@@ -1454,7 +1477,7 @@ def update_application_status():
     finally:
         client.close()
 
-@app.route('/manage_users')
+@app.route('/admin/manage_users')
 @login_required
 @admin_required
 def manage_users():
@@ -1478,7 +1501,7 @@ def delete_user():
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
 
-@app.route('/activity-dashboard')
+@app.route('/admin/activity-dashboard')
 @login_required
 @admin_required
 def activity_dashboard():
@@ -1530,6 +1553,114 @@ def activity_dashboard():
                 'dates': formatted_dates,
                 'counts': activity_counts
             },
+            admin_emails=ADMIN_EMAILS
+        )
+
+@app.route('/admin/budget-dashboard')
+@login_required
+@admin_required
+def budget_dashboard():
+    with MongoClient(mongo_uri) as client:
+        db_name = os.getenv("DB_NAME")
+        db = client[db_name]
+        
+        # Define allocated budgets for each service area (you can modify these values)
+        allocated_budgets = {
+            'Residential Services': 26000,
+            'Detention Services': 27000,
+            'Probation Services': 27000,
+            'Crane Fund': 25000,
+            'Black History Committee': 10000,
+            'Hispanic Committee': 10000,
+            'Holiday': 30000,
+            'Food Pantry': 20000,
+            'GED': 4000,
+            'Education': 0, 
+            'Clinical': 0  
+        }
+        
+        # Get all applications from both internal and external collections
+        internal_apps = list(db['ysab-applications'].find({}, {
+            'amount': 1, 
+            'service_area': 1,
+            'title': 1,
+            'timestamp': 1,
+            'application_status': 1
+        }))
+        
+        external_apps = list(db['ysab-external'].find({}, {
+            'amount': 1,
+            'service_area': 1,
+            'title': 1,
+            'timestamp': 1,
+            'application_status': 1
+        }))
+
+        all_applications = internal_apps + external_apps
+
+        # Helper function to safely convert amount to float
+        def safe_float(value):
+            try:
+                if value and isinstance(value, (str, int, float)):
+                    # Remove any currency symbols and commas
+                    if isinstance(value, str):
+                        value = value.replace('$', '').replace(',', '').strip()
+                    return float(value)
+                return 0.0
+            except (ValueError, TypeError):
+                return 0.0
+
+        # Calculate total budget metrics with safe conversion
+        total_requested = sum(safe_float(app.get('amount')) for app in all_applications)
+        total_approved = sum(
+            safe_float(app.get('amount'))
+            for app in all_applications 
+            if app.get('application_status') == 'approved'
+        )
+        
+        # Group amounts by service area with safe conversion
+        service_area_totals = {}
+        service_area_details = {}
+        
+        for app in all_applications:
+            service_area = app.get('service_area', 'Unspecified')
+            amount = safe_float(app.get('amount'))
+            
+            # Update service_area_totals
+            if service_area not in service_area_totals:
+                service_area_totals[service_area] = 0
+            service_area_totals[service_area] += amount
+            
+            # Initialize the service area if it doesn't exist in details
+            if service_area not in service_area_details:
+                service_area_details[service_area] = {
+                    'applications': [],
+                    'total_requested': 0,
+                    'allocated_budget': allocated_budgets.get(service_area, 0)
+                }
+            
+            # Add the application details
+            service_area_details[service_area]['applications'].append({
+                'title': app.get('title', 'Untitled'),
+                'amount': amount,
+                'status': app.get('application_status', 'pending'),
+                'timestamp': app.get('timestamp', 'N/A')
+            })
+            service_area_details[service_area]['total_requested'] += amount
+
+        # Get recent applications for the table
+        recent_applications = sorted(
+            all_applications,
+            key=lambda x: x.get('timestamp', ''),
+            reverse=True
+        )[:10]  # Get last 10 applications
+
+        return render_template(
+            'budget_dashboard.html',
+            total_requested=total_requested,
+            total_approved=total_approved,
+            service_area_totals=service_area_totals,
+            service_area_details=service_area_details,
             admin_emails=ADMIN_EMAILS
         )
 
