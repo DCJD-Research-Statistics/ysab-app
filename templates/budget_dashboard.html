@@ -146,7 +146,9 @@
     {% include 'header.html' %}
 
     <div class="dashboard-container">
-        {% include 'admin_sidebar.html' %}
+        {% if session['user']['email'] in admin_emails %}
+            {% include 'admin_sidebar.html' %}
+        {% endif %}
 
         <div class="dashboard-content">
             <h1>YSAB Budget Dashboard</h1>

@@ -32,6 +32,7 @@ app.secret_key = os.getenv("SECRET_KEY", secrets.token_hex(16))
 
 # Get admin emails from environment variable and split into a list
 ADMIN_EMAILS = os.getenv('ADMIN_EMAILS', '').split(',')
+DEPUTY_EMAILS = os.getenv('DEPUTY_EMAILS', '').split(',')
 
 def get_timestamp():
     central_timezone = pytz.timezone('America/Chicago')
@@ -376,16 +377,17 @@ def make_cont_form(form_data):
 @app.route("/", methods=['GET', 'POST'])
 def index():
     if 'user' in session:
-        return render_template('landing.html', user=session['user'], admin_emails=ADMIN_EMAILS)
-    return render_template('landing.html', admin_emails=ADMIN_EMAILS)
+        return render_template('landing.html', user=session['user'], admin_emails=ADMIN_EMAILS, deputy_emails=DEPUTY_EMAILS)
+    return render_template('landing.html', admin_emails=ADMIN_EMAILS, deputy_emails=DEPUTY_EMAILS)
 
 @app.route("/home", methods=['GET', 'POST'])
 def home():
     if 'user' not in session:
         return redirect(url_for('login'))
-    if 'user' in session:
-        return render_template('home.html', user=session['user'], admin_emails=ADMIN_EMAILS)
-    return render_template('home.html', admin_emails=ADMIN_EMAILS)
+    return render_template('home.html', 
+                         user=session.get('user'),
+                         admin_emails=ADMIN_EMAILS, 
+                         deputy_emails=DEPUTY_EMAILS)
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -477,11 +479,23 @@ def login_required(f):
 def is_admin(email):
     return email in ADMIN_EMAILS
 
+def is_deputy(email):
+    return email in DEPUTY_EMAILS
+
 def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if not is_admin(session['user']['email']):
             flash('Access denied. You must be an admin to access this page.', 'error')
+            return redirect(url_for('home'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+def deputy_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not is_deputy(session['user']['email']):
+            flash('Access denied. You must be a deputy to access this page.', 'error')
             return redirect(url_for('home'))
         return f(*args, **kwargs)
     return decorated_function
@@ -552,7 +566,7 @@ def my_applications(admin_mode=admin_mode_switch):
 
     client.close()
 
-    return render_template('my_applications.html', applications=applications, admin_emails=ADMIN_EMAILS)
+    return render_template('my_applications.html', applications=applications, admin_emails=ADMIN_EMAILS, deputy_emails=DEPUTY_EMAILS)
 
 @app.route('/help')
 def help():
@@ -1214,8 +1228,6 @@ def download_file_c():
 @app.route('/my_progress_report/<application_id>')
 @login_required
 def my_progress_report(application_id):
-    # Get admin emails list from environment variable
-    admin_emails = os.getenv("ADMIN_EMAILS").split(',')
     
     # Get user email based on admin mode
     if admin_mode_switch==True:
@@ -1227,7 +1239,7 @@ def my_progress_report(application_id):
     client = MongoClient(mongo_uri)
 
     # Choose database based on admin status
-    if user_email.lower() in [email.lower() for email in admin_emails]:
+    if user_email.lower() in [email.lower() for email in ADMIN_EMAILS]:
         db = client[os.getenv("DB_NAME_DEV")]
     else:
         db = client[os.getenv("DB_NAME")]
@@ -1303,6 +1315,7 @@ def admin_dashboard():
 
     return render_template('admin_dashboard.html',
                          admin_emails=ADMIN_EMAILS,
+                         deputy_emails=DEPUTY_EMAILS,
                          total_users=total_users,
                          total_applications=total_applications,
                          pending_reviews=pending_reviews,
@@ -1373,7 +1386,7 @@ def all_applications():
     # Sort applications by submission date (newest first)
     applications.sort(key=lambda x: x['submission_date'], reverse=True)
 
-    return render_template('admin_applications.html', applications=applications, admin_emails=ADMIN_EMAILS)
+    return render_template('admin_applications.html', applications=applications, admin_emails=ADMIN_EMAILS, deputy_emails=DEPUTY_EMAILS)
 
 @app.route('/admin/manage-applications')
 @login_required
@@ -1419,7 +1432,7 @@ def manage_applications():
     # Sort by submission date (newest first)
     applications.sort(key=lambda x: x['submission_date'], reverse=True)
 
-    return render_template('manage_applications.html', applications=applications, admin_emails=ADMIN_EMAILS)
+    return render_template('manage_applications.html', applications=applications, admin_emails=ADMIN_EMAILS, deputy_emails=DEPUTY_EMAILS)
 
 @app.route('/update_application_status', methods=['POST'])
 @login_required
@@ -1485,7 +1498,7 @@ def manage_users():
         db_name = os.getenv("DB_NAME")
         db = client[db_name]
         users = list(db['users'].find())
-    return render_template('manage_users.html', users=users, admin_emails=ADMIN_EMAILS)
+    return render_template('manage_users.html', users=users, admin_emails=ADMIN_EMAILS, deputy_emails=DEPUTY_EMAILS)
 
 @app.route('/delete_user', methods=['POST'])
 @login_required
@@ -1553,13 +1566,17 @@ def activity_dashboard():
                 'dates': formatted_dates,
                 'counts': activity_counts
             },
-            admin_emails=ADMIN_EMAILS
+            admin_emails=ADMIN_EMAILS,
+            deputy_emails=DEPUTY_EMAILS
         )
 
-@app.route('/admin/budget-dashboard')
-@login_required
-@admin_required
+@app.route('/budget-dashboard')
 def budget_dashboard():
+        # Check if user is either admin or deputy
+    if not (is_admin(session['user']['email']) or is_deputy(session['user']['email'])):
+        flash('Access denied. You must be an admin or deputy to access this page.', 'error')
+        return redirect(url_for('home'))
+    
     with MongoClient(mongo_uri) as client:
         db_name = os.getenv("DB_NAME")
         db = client[db_name]
@@ -1661,8 +1678,10 @@ def budget_dashboard():
             total_approved=total_approved,
             service_area_totals=service_area_totals,
             service_area_details=service_area_details,
-            admin_emails=ADMIN_EMAILS
+            admin_emails=ADMIN_EMAILS,
+            deputy_emails=DEPUTY_EMAILS
         )
+
 
 if __name__ == '__main__':
     app.run(debug=admin_mode_switch)
