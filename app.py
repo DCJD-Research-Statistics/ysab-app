@@ -1252,7 +1252,7 @@ def my_progress_report(application_id):
 
     if not progress_reports:
         message = "No progress reports found for this application."
-        return render_template('my_progress_report.html', message=message)
+        return render_template('my_progress_report.html', message=message, admin_emails=ADMIN_EMAILS, deputy_emails=DEPUTY_EMAILS)
 
     progress_reports = [
         {
