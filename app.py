@@ -579,7 +579,7 @@ def application():
     if not session['user']['email'].endswith('dallascounty.org'):
         flash('Access denied. You must have a dallascounty.org email to access this page.', 'error')
         return redirect(url_for('home'))  # Redirect to home or another appropriate page
-    return render_template('application.html')
+    return render_template('application.html', admin_emails=ADMIN_EMAILS, deputy_emails=DEPUTY_EMAILS)
 
 @app.route('/progress-report-selection', methods=['GET'])
 @login_required
