@@ -1278,7 +1278,7 @@ def my_progress_report(application_id):
         }
         for report in progress_reports
     ]
-    return render_template('my_progress_report.html', progress_reports=progress_reports)
+    return render_template('my_progress_report.html', progress_reports=progress_reports, admin_emails=ADMIN_EMAILS, deputy_emails=DEPUTY_EMAILS)
 
 @app.route('/admin-dashboard')
 @login_required
