@@ -69,6 +69,26 @@
         .btn:hover {
             background-color: #155db1;
         }
+        .btn-disabled {
+            background-color: #d1d5db;
+            color: #6b7280;
+            cursor: not-allowed;
+            position: relative;
+        }
+        .btn-disabled:hover::after {
+            content: "No longer taking applications for the FY25 season";
+            position: absolute;
+            top: 110%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            white-space: nowrap;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
 <body>
@@ -84,7 +104,7 @@
             <div class="card">
                 <h2>YSAB DCJD (Internal) Application</h2>
                 <p>Apply for internal YSAB funding for your project.</p>
-                <a href="/application" class="btn">Start Application</a>
+                <a class="btn btn-disabled">Start Application</a>
             </div>
             
             <div class="card">
