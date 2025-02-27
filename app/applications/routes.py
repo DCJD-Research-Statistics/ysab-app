@@ -37,23 +37,23 @@ def submit_application_form():
                 collection = db['ysab-applications']
                 collection.insert_one(form_data)
 
-            # Log the status change in activities collection
-            db['activities'].insert_one({
-                'timestamp': get_timestamp(),
-                'type': 'Application Submission',
-                'description': f'New application submitted by {name} ({email})',
-                'user': email
-            })
+                # Log the status change in activities collection
+                db['activities'].insert_one({
+                    'timestamp': get_timestamp(),
+                    'type': 'Application Submission',
+                    'description': f'New application submitted by {name} ({email})',
+                    'user': email
+                })
 
             # Send Discord notification
             message = f"🔵 New Application Submitted:\n- ID: {form_data['_id']}\n- Type: {'Internal Application'}\n- Name: {name}\n- Email: {email} \n- Title: {form_data['title']}"
             requests.post(discord_webhook_url, json={"content": message})
 
             # return jsonify({'success': True, 'message': 'Form data submitted successfully'})
-            return render_template('applications/confirmation_a.html', name=name, email=email)
+            return render_template('confirmations/confirmation_a.html', name=name, email=email)
         except Exception as e:
             # return jsonify({'success': False, 'error': str(e)})
-             return render_template('main/error.html', error=str(e))
+            return render_template('main/error.html', error=str(e))
         
 @applications.route('/edit-application/<application_id>/<application_type>')
 def edit_application(application_id, application_type):

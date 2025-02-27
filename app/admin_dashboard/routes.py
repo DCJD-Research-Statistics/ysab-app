@@ -30,8 +30,12 @@ def dashboard():
         begin_date = datetime.strptime(begin_date_str, '%m/%d/%Y') if begin_date_str and isinstance(begin_date_str, str) else None
         end_date = datetime.strptime(end_date_str, '%m/%d/%Y') if end_date_str and isinstance(end_date_str, str) else None
         
-        # Get recent activities (you might want to create a new collection for this)
-        recent_activities = list(db['activities'].find().sort('timestamp', -1).limit(5))
+        # Get recent activities
+        activities = list(db['activities'].find())
+        # Convert timestamps to datetime and sort manually
+        activities.sort(key=lambda x: datetime.strptime(x['timestamp'], "%m-%d-%Y %H:%M"), reverse=True)
+        # Get the most recent 5 activities
+        recent_activities = activities[:5]
 
         app_submissions_query = {}
         if begin_date and end_date:
