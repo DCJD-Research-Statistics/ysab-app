@@ -1,0 +1,52 @@
+<style>
+    .sidebar {
+        width: 250px;
+        background-color: #fff;
+        padding: 20px;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        height: calc(100vh - 60px);
+        position: fixed;
+        top: 60px;
+    }
+    .sidebar-menu {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .sidebar-menu li {
+        margin-bottom: 10px;
+    }
+
+    .sidebar-menu a {
+        display: flex;
+        align-items: center;
+        padding: 12px 15px;
+        color: #333;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+    }
+
+    .sidebar-menu a:hover {
+        background-color: #f0f2f5;
+    }
+
+    .sidebar-menu i {
+        margin-right: 10px;
+        width: 20px;
+        text-align: center;
+    }
+</style>
+
+<div class="sidebar">
+    <ul class="sidebar-menu">
+        <li><a href="{{ url_for('admin_dashboard.dashboard') }}"><i class="fas fa-home"></i>Dashboard</a></li>
+        <li><a href="{{ url_for('admin_dashboard.all_applications') }}"><i class="fas fa-list"></i>View All Applications</a></li>
+        <li><a href="{{ url_for('budget_dashboard.dashboard') }}"><i class="fas fa-dollar-sign"></i>Budget Dashboard</a></li>
+        <li><a href="{{ url_for('admin_dashboard.activity_dashboard') }}"><i class="fas fa-chart-line"></i>Activity Dashboard</a></li>
+        <li><a href="{{ url_for('admin_dashboard.manage_applications') }}"><i class="fas fa-tasks"></i>Manage Applications</a></li>
+        <li><a href="{{ url_for('admin_dashboard.manage_users') }}"><i class="fas fa-users"></i>User Management</a></li>
+        <li><a href="{{ url_for('admin_dashboard.manage_application_status') }}"><i class="fas fa-cog"></i>Manage Application Status</a></li>
+        <li><a href="{{ url_for('admin_dashboard.manage_date_range') }}"><i class="fas fa-calendar"></i>Manage Date Range</a></li>
+    </ul>
+</div>

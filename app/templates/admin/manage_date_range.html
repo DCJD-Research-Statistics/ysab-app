@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Date Range</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{url_for('static', filename='/style.css')}}">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+        }
+        .main-content {
+            padding: 20px;
+            max-width: 1600px;
+            margin: 80px auto;
+        }
+        .form-container {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border: none;
+            padding: 20px;
+            margin-left: 300px;
+            margin-right: 300px;
+            margin-bottom: 20px;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+        .status-display {
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+    {% include 'admin/backto_admin.html' %}
+    <div class="main-content">
+        <h1 style="padding: 10px 300px;">Manage Date Range</h1>
+        <div class="form-container">
+            <form id="dateRangeForm">
+                <div class="form-group">
+                    <label for="beginDate">Begin Date:</label>
+                    <input type="date" class="form-control" id="beginDate" name="begin_date" value="{{ begin_date }}">
+                </div>
+                <div class="form-group">
+                    <label for="endDate">End Date:</label>
+                    <input type="date" class="form-control" id="endDate" name="end_date" value="{{ end_date }}">
+                </div>
+                <div class="form-group">
+                    <label for="text">Grant Season Note:</label>
+                    <textarea class="form-control" id="text" name="text">{{ text }}</textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Update Date Range</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#dateRangeForm').submit(function(event) {
+                event.preventDefault();
+                var beginDate = $('#beginDate').val();
+                var endDate = $('#endDate').val();
+                var text = $('#text').val();
+                $.ajax({
+                    url: '{{ url_for("admin_dashboard.update_date_range") }}',
+                    type: 'POST',
+                    data: { begin_date: beginDate, end_date: endDate, text: text },
+                    success: function(response) {
+                        if (response.success) {
+                            alert('Date range updated successfully!');
+                        } else {
+                            alert('Failed to update date range: ' + response.error);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert('An error occurred: ' + xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

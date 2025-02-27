@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" href="{{url_for('static', filename='/style.css')}}"> 
+  <title>YSAB Progress Report - Q4</title>   
+  <link rel="icon" href="{{url_for('static', filename='images/fav-icon-red.svg')}}">
+  <style>
+    input[readonly] {
+      background-color: #f0f0f0;
+      color: #666;
+      border: 1px solid #ccc;
+    }
+    .output-measures-table {
+      width: 100%;
+      table-layout: fixed;
+    }
+    .output-measures-table th,
+    .output-measures-table td {
+      padding: 5px;
+      text-align: center;
+    }
+    .output-measures-table th:first-child,
+    .output-measures-table td:first-child {
+      width: 25%;
+      text-align: left;
+    }
+    .output-measures-table input[type="text"],
+    .output-measures-table input[type="number"] {
+      width: 90%;
+      box-sizing: border-box;
+    }
+    .output-measures-table select {
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+{% include 'main/header.html' %}
+
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-popup">
+    <button class="close-button" onclick="closeLoadingOverlay()">&times;</button>
+    <p>Please wait while your application is being submitted...</p>
+    <img src="{{url_for('static', filename='images/loading_animation.gif')}}" alt="Loading...">
+  </div>
+</div>
+
+  {% include 'header_progress_report.html' %}
+
+  <div class="main-content">
+    <form action="/submit_progress_report" method="POST">
+      <input type="hidden" name="application_id" value="{{ application_id }}">
+      <input type="hidden" name="application_type" value="Progress Report">
+      <input type="hidden" name="reporting_period" value="{{ reporting_period }}">
+
+      <div>
+      <br>
+        <label for="name">Name</label>
+        <div>
+          <input id="name" name="name" type="text" value="{{ user_name }}" size="8" tabindex="1" required>
+        </div>
+      </div>
+
+      <div>
+          <label for="app_title">
+            Applicant Title
+          </label>
+          <div>
+            <input id="app_title" name="app_title" type="text" value="{{ app_title }}" size="8" tabindex="1">
+         </div>
+      </div>
+
+      <div>
+          <label for="email">
+            Contact Email
+          </label>
+          <div>
+            <span id="email" style="color: #000000; font-weight: bold;">{{ user_email }}</span>
+            <input type="hidden" id="email" name="email" value="{{ user_email }}">  
+         </div>
+      </div>
+
+      <div>
+        <label for="phone">
+          Contact Phone Number
+        </label>
+        <div>
+          <input id="phone" name="phone" type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="123-456-7890" oninput="formatPhoneNumber(this)" maxlength="12" value="{{ phone }}" required>
+        </div>
+      </div>
+      <script src="{{url_for('static', filename='phone_number.js')}}"></script>
+
+    <h3>Profile</h3>
+
+      <div>
+        <br>
+          <label for="title">Project Title</label>
+          <div>
+            <span id="title" style="color: #000000; font-weight: bold;">{{ project_title }}</span>
+            <input type="hidden" id="title" name="title" value="{{ project_title }}">  
+          </div>
+        </div>
+
+      <div>
+        <label for="how_funds_advanced_goals_of_program">
+          Describe specifically how the use of your YSAB award advanced the goals and objectives of your program. Link the use of your YSAB award with the impact it has made on your outcomes.
+        </label>
+        <div>
+          <textarea id="how_funds_advanced_goals_of_program" name="how_funds_advanced_goals_of_program" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder=""></textarea>
+        </div>
+      </div>
+
+      <div>
+          <label for="project_contact">
+          Project Contact (Name)
+          </label>
+          <div>
+            <input id="project_contact" name="project_contact" type="text" value="" size="8" tabindex="1">
+         </div>
+      </div>
+
+      <div>
+        <label for="fiscal_year">Fiscal Year</label>
+        <div>
+          <input id="fiscal_year" name="fiscal_year" type="number" value="" size="8" tabindex="1" min="1" max="99999">
+       </div>
+      </div>
+        
+      <div>
+        <label for="start_date">Start Date:</label>
+        <div>
+          <input type="date" id="start_date" name="start_date" value="2024-01-01" min="2018-01-01" max="2099-12-31" />
+        </div>
+      </div>
+
+      <div>
+        <label for="end_date">End Date:</label>
+        <div>
+          <input type="date" id="end_date" name="end_date" value="2024-01-01" min="2018-01-01" max="2099-12-31" />
+        </div>
+      </div>
+
+      <div>
+          <label for="amount_awarded">
+          Amount Awarded
+          </label>
+          <div>
+            <span id="amount_awarded" style="color: #000000; font-weight: bold;">${{ amount_awarded }}</span>
+            <input type="hidden" id="amount_awarded" name="amount_awarded" value="{{ amount_awarded }}">  
+         </div>
+      </div>
+
+      <div id="amount_expended_qt">
+        <label for="amount_expended_qt">
+        Amount Expended - Q1
+        </label>
+        <div>
+          <span id="amount_expended_qt" style="color: #000000; font-weight: bold;">${{ amount_expended_qt }}</span>
+          <input type="hidden" id="amount_expended_qt" name="amount_expended_qt" value="{{ amount_expended_qt }}">  
+       </div>
+     </div>
+
+      <div id="amount_expended_qt2">
+        <label>
+        Amount Expended - Q2
+        </label>
+        <div>
+          <span id="amount_expended_qt2" style="color: #000000; font-weight: bold;">${{ amount_expended_qt2 }}</span>
+          <input type="hidden" id="amount_expended_qt2" name="amount_expended_qt2" value="{{ amount_expended_qt2 }}">  
+       </div>
+     </div>
+
+    <div id="amount_expended_qt3">
+      <label for="amount_expended_qt3">
+      Amount Expended - Q3
+      </label>
+      <div>
+        <span id="amount_expended_qt3" style="color: #000000; font-weight: bold;">${{ amount_expended_qt3 }}</span>
+        <input type="hidden" id="amount_expended_qt3" name="amount_expended_qt3" value="{{ amount_expended_qt3 }}">  
+     </div>
+    </div>
+
+    <div id="amount_expended_qt4">
+      <label for="amount_expended_qt4">
+      Amount Expended - Q4
+      </label>
+      <div>
+        <input type="number" id="amount_expended_qt4" name="amount_expended_qt4" value="{{ amount_expended_qt4 }}">  
+     </div>
+    </div>
+
+
+
+    <br>
+    <br>
+    <h3>Performance Measures</h3>
+    <h4>Output Measures</h4>
+      
+    <table class="output-measures-table" align="center" border=1 cellspacing="1" cellpadding="5">
+      <thead>
+          <tr>
+              <th>Output Measures</th>
+              <th>Quarter 1 Actual Achieved</th>
+              <th>Quarter 2 Actual Achieved</th>
+              <th>Quarter 3 Actual Achieved</th>
+              <th>Quarter 4 Actual Achieved</th>
+              <th>Count</th>
+              <th>Target</th>
+              <th class="qt-column">Final Target Achieved</th>
+          </tr>
+      </thead>
+      <tbody>
+          <tr>
+              <td>Number of youth directly benefited</td>
+              <td>
+                <span id="q1_aa_a">{{ q1_aa_a }}</span>
+                <input type="hidden" id="q1_aa_a" name="q1_aa_a" value="{{ q1_aa_a }}">
+              </td>
+              <td style="text-align: center;">
+                <span id="q2_aa_a" style="color: #000000;">{{ q2_aa_a }}</span>
+                <input type="hidden" id="q2_aa_a" name="q2_aa_a" value="{{ q2_aa_a }}">
+              </td>
+              <td style="text-align: center;">
+                <span id="q3_aa_a" style="color: #000000;">{{ q3_aa_a }}</span>
+                <input type="hidden" id="q3_aa_a" name="q3_aa_a" value="{{ q3_aa_a }}">
+              </td>
+              <td>
+                <input id="q4_aa_a" name="q4_aa_a" type="number" size="8" tabindex="1" style="text-align: center;" oninput="updateCount('a')">
+              </td>
+              <td style="text-align: center;">
+                <span id="count_a" style="color: #000000;">{{ count_a }}</span>
+                <input type="hidden" id="count_a" name="count_a" value="{{ count_a }}">
+              </td>
+              <td style="text-align: center;">
+                <span id="final_target_output_a_display" style="color: #000000; text-align: center; display: block;">{{ final_target_output_a }}</span>
+                <input type="hidden" id="final_target_output_a" name="final_target_output_a" value="{{ final_target_output_a }}">
+              </td>
+              <td class="qt-column" style="text-align: center;">
+                <select id="final_achieved_a" name="final_achieved_a" class="field select medium" tabindex="11" style="text-align: center;"> 
+                    <option value="Choose an item">Choose an item</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>                
+              </td>
+          </tr>
+          <tr>
+              <td>Number of individuals not under the authority of DCJD benefited</td>
+              <td style="text-align: center;">
+                <span id="q1_aa_b" style="color: #000000;">{{ q1_aa_b }}</span>
+                <input type="hidden" id="q1_aa_b" name="q1_aa_b" value="{{ q1_aa_b }}">
+              </td>
+              <td style="text-align: center;">
+                <span id="q2_aa_b" style="color: #000000;">{{ q2_aa_b }}</span>
+                <input type="hidden" id="q2_aa_b" name="q2_aa_b" value="{{ q2_aa_b }}">
+              </td>
+              <td style="text-align: center;">
+                <span id="q3_aa_b" style="color: #000000;">{{ q3_aa_b }}</span>
+                <input type="hidden" id="q3_aa_b" name="q3_aa_b" value="{{ q3_aa_b }}">
+              </td>
+              <td>
+                <input id="q4_aa_b" name="q4_aa_b" type="number" size="8" tabindex="1" style="text-align: center;">
+              </td>
+              <td style="text-align: center;">
+                <span id="count_b" style="color: #000000;">{{ count_b }}</span>
+                <input type="hidden" id="count_b" name="count_b" value="{{ count_b }}">
+              </td>
+              <td style="text-align: center;">
+                <span id="final_target_output_b_display" style="color: #000000; text-align: center; display: block;">{{ final_target_output_b }}</span>
+                <input type="hidden" id="final_target_output_b" name="final_target_output_b" value="{{ final_target_output_b }}">
+              </td>
+              <td class="qt-column" style="text-align: center;">
+                <select id="final_achieved_b" name="final_achieved_b" class="field select medium" tabindex="11" style="text-align: center;"> 
+                    <option value="Choose an item">Choose an item</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>                
+              </td>
+          </tr>
+          <tr>
+              <td>
+                <span id="output1" style="color: #000000;">{{ output1 }}</span>
+                <input type="hidden" id="output1" name="output1" value="{{ output1 }}">   
+              </td>
+              <td style="text-align: center;">
+                <span id="q1_aa_1" style="color: #000000;">{{ q1_aa_1 }}</span>
+                <input type="hidden" id="q1_aa_1" name="q1_aa_1" value="{{ q1_aa_1 }}">
+              </td>
+              <td style="text-align: center;">
+                <span id="q2_aa_1" style="color: #000000;">{{ q2_aa_1 }}</span>
+                <input type="hidden" id="q2_aa_1" name="q2_aa_1" value="{{ q2_aa_1 }}">
+              </td>
+              <td style="text-align: center;">
+                <span id="q3_aa_1" style="color: #000000;">{{ q3_aa_1 }}</span>
+                <input type="hidden" id="q3_aa_1" name="q3_aa_1" value="{{ q3_aa_1 }}">
+              </td>
+              <td>
+                <input id="q4_aa_1" name="q4_aa_1" type="number" size="8" tabindex="1" style="text-align: center;">
+              </td>
+              <td style="text-align: center;">
+                <span id="count_1" style="color: #000000;">{{ count_1 }}</span>
+                <input type="hidden" id="count_1" name="count_1" value="{{ count_1 }}">
+              </td>
+              <td style="text-align: center;">
+                <span id="final_target_output_1_display" style="color: #000000; text-align: center; display: block;">{{ final_target_output_1 }}</span>
+                <input type="hidden" id="final_target_output_1" name="final_target_output_1" value="{{ final_target_output_1 }}">
+              </td>
+              <td class="qt-column" style="text-align: center;">
+                <select id="final_achieved_1" name="final_achieved_1" class="field select medium" tabindex="11" style="text-align: center;"> 
+                    <option value="Choose an item">Choose an item</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>                
+              </td>
+          </tr>
+          <tr>
+            <td>
+              <span id="output2" style="color: #000000;">{{ output2 }}</span>
+              <input type="hidden" id="output2" name="output2" value="{{ output2 }}">   
+            </td>
+            <td style="text-align: center;">
+              <span id="q1_aa_2" style="color: #000000;">{{ q1_aa_2 }}</span>
+              <input type="hidden" id="q1_aa_2" name="q1_aa_2" value="{{ q1_aa_2 }}">
+            </td>
+            <td style="text-align: center;">
+              <span id="q2_aa_2" style="color: #000000;">{{ q2_aa_2 }}</span>
+              <input type="hidden" id="q2_aa_2" name="q2_aa_2" value="{{ q2_aa_2 }}">
+            </td>
+            <td style="text-align: center;">
+              <span id="q3_aa_2" style="color: #000000;">{{ q3_aa_2 }}</span>
+              <input type="hidden" id="q3_aa_2" name="q3_aa_2" value="{{ q3_aa_2 }}">
+            </td>
+            <td>
+              <input id="q4_aa_2" name="q4_aa_2" type="number" size="8" tabindex="1" style="text-align: center;">
+            </td>
+            <td style="text-align: center;">
+              <span id="count_2" style="color: #000000;">{{ count_2 }}</span>
+              <input type="hidden" id="count_2" name="count_2" value="{{ count_2 }}">
+            </td>
+            <td style="text-align: center;">
+              <span id="final_target_output_2_display" style="color: #000000; text-align: center; display: block;">{{ final_target_output_2 }}</span>
+              <input type="hidden" id="final_target_output_2" name="final_target_output_2" value="{{ final_target_output_2 }}">
+            </td>
+            <td class="qt-column" style="text-align: center;">
+              <select id="final_achieved_2" name="final_achieved_2" class="field select medium" tabindex="11" style="text-align: center;"> 
+                  <option value="Choose an item">Choose an item</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>                
+            </td>
+        </tr>      
+        <tr>
+          <td>
+            <span id="output3" style="color: #000000;">{{ output3 }}</span>
+            <input type="hidden" id="output3" name="output3" value="{{ output3 }}">   
+          </td>
+          <td style="text-align: center;">
+            <span id="q1_aa_3" style="color: #000000;">{{ q1_aa_3 }}</span>
+            <input type="hidden" id="q1_aa_3" name="q1_aa_3" value="{{ q1_aa_3 }}">
+          </td>
+          <td style="text-align: center;">
+            <span id="q2_aa_3" style="color: #000000;">{{ q2_aa_3 }}</span>
+            <input type="hidden" id="q2_aa_3" name="q2_aa_3" value="{{ q2_aa_3 }}">
+          </td>
+          <td style="text-align: center;">
+            <span id="q3_aa_3" style="color: #000000;">{{ q3_aa_3 }}</span>
+            <input type="hidden" id="q3_aa_3" name="q3_aa_3" value="{{ q3_aa_3 }}">
+          </td>
+          <td>
+            <input id="q4_aa_3" name="q4_aa_3" type="number" size="8" tabindex="1" style="text-align: center;">
+          </td>
+          <td style="text-align: center;">
+            <span id="count_3" style="color: #000000; text-align: center; display: inline-block;">{{ count_3 }}</span>
+            <input type="hidden" id="count_3" name="count_3" value="{{ count_3 }}">
+          </td>
+          <td style="text-align: center;">
+            <span id="final_target_output_3_display" style="color: #000000; text-align: center; display: block;">{{ final_target_output_3 }}</span>
+            <input type="hidden" id="final_target_output_3" name="final_target_output_3" value="{{ final_target_output_3 }}">
+          </td>
+          <td class="qt-column" style="text-align: center;">
+            <select id="final_achieved_3" name="final_achieved_3" class="field select medium" tabindex="11" style="text-align: center;"> 
+                <option value="Choose an item">Choose an item</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>                
+          </td>
+      </tr> 
+      <tr>
+        <td>
+          <span id="output4" style="color: #000000;">{{ output4 }}</span>
+          <input type="hidden" id="output4" name="output4" value="{{ output4 }}">   
+        </td>
+        <td style="text-align: center;">
+          <span id="q1_aa_4" style="color: #000000;">{{ q1_aa_4 }}</span>
+          <input type="hidden" id="q1_aa_4" name="q1_aa_4" value="{{ q1_aa_4 }}">
+        </td>
+        <td style="text-align: center;">
+          <span id="q2_aa_4" style="color: #000000;">{{ q2_aa_4 }}</span>
+          <input type="hidden" id="q2_aa_4" name="q2_aa_4" value="{{ q2_aa_4 }}">
+        </td>
+        <td style="text-align: center;">
+          <span id="q3_aa_4" style="color: #000000;">{{ q3_aa_4 }}</span>
+          <input type="hidden" id="q3_aa_4" name="q3_aa_4" value="{{ q3_aa_4 }}">
+        </td>
+        <td>
+          <input id="q4_aa_4" name="q4_aa_4" type="number" size="8" tabindex="1" style="text-align: center;">
+        </td>
+        <td style="text-align: center;">
+          <span id="count_4" style="color: #000000;">{{ count_4 }}</span>
+          <input type="hidden" id="count_4" name="count_4" value="{{ count_4 }}">
+        </td>
+        <td style="text-align: center;">
+          <span id="final_target_output_4_display" style="color: #000000; text-align: center; display: block;">{{ final_target_output_4 }}</span>
+          <input type="hidden" id="final_target_output_4" name="final_target_output_4" value="{{ final_target_output_4 }}">
+        </td>
+        <td class="qt-column" style="text-align: center;">
+          <select id="final_achieved_4" name="final_achieved_4" class="field select medium" tabindex="11" style="text-align: center;"> 
+              <option value="Choose an item">Choose an item</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>                
+        </td>
+    </tr>    
+    <tr>
+      <td>
+        <span id="output5" style="color: #000000;">{{ output5 }}</span>
+        <input type="hidden" id="output5" name="output5" value="{{ output5 }}">   
+      </td>
+      <td style="text-align: center;">
+        <span id="q1_aa_5" style="color: #000000;">{{ q1_aa_5 }}</span>
+        <input type="hidden" id="q1_aa_5" name="q1_aa_5" value="{{ q1_aa_5 }}">
+      </td>
+      <td style="text-align: center;">
+        <span id="q2_aa_5" style="color: #000000;">{{ q2_aa_5 }}</span>
+        <input type="hidden" id="q2_aa_5" name="q2_aa_5" value="{{ q2_aa_5 }}">
+      </td>
+      <td style="text-align: center;">
+        <span id="q3_aa_5" style="color: #000000;">{{ q3_aa_5 }}</span>
+        <input type="hidden" id="q3_aa_5" name="q3_aa_5" value="{{ q3_aa_5 }}">
+      </td>
+      <td>
+        <input id="q4_aa_5" name="q4_aa_5" type="number" size="8" tabindex="1" style="text-align: center;">
+      </td>
+      <td style="text-align: center;">
+        <span id="count_5" style="color: #000000;">{{ count_5 }}</span>
+        <input type="hidden" id="count_5" name="count_5" value="{{ count_5 }}">
+      </td>
+      <td style="text-align: center;">
+        <span id="final_target_output_5_display" style="color: #000000; text-align: center; display: block;">{{ final_target_output_5 }}</span>
+        <input type="hidden" id="final_target_output_5" name="final_target_output_5" value="{{ final_target_output_5 }}">
+      </td>
+      <td class="qt-column" style="text-align: center;">
+        <select id="final_achieved_5" name="final_achieved_5" class="field select medium" tabindex="11" style="text-align: center;"> 
+            <option value="Choose an item">Choose an item</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>                
+      </td>
+    </tr>        
+      </tbody>
+    </table>
+
+    <script>
+    function updateCount(row) {
+      // Get values from hidden inputs for q1-q3 and from input for q4
+      const q1 = parseFloat(document.querySelector(`input[name="q1_aa_${row}"]`).value) || 0;
+      const q2 = parseFloat(document.querySelector(`input[name="q2_aa_${row}"]`).value) || 0;
+      const q3 = parseFloat(document.querySelector(`input[name="q3_aa_${row}"]`).value) || 0;
+      const q4 = parseFloat(document.getElementById(`q4_aa_${row}`).value) || 0;
+      
+      const count = q1 + q2 + q3 + q4;
+      
+      // Update both the display span and hidden input
+      const countSpan = document.getElementById(`count_${row}`);
+      const countInput = document.querySelector(`input[name="count_${row}"]`);
+      
+      if (countSpan) countSpan.textContent = count;
+      if (countInput) countInput.value = count;
+    }
+
+    // Initialize counts on page load and add event listeners
+    document.addEventListener('DOMContentLoaded', function() {
+      ['a', 'b', '1', '2', '3', '4', '5'].forEach(row => {
+        updateCount(row);
+        // Only need event listener for Q4 since Q1-Q3 are read-only
+        const q4Input = document.getElementById(`q4_aa_${row}`);
+        if (q4Input) {
+          q4Input.addEventListener('input', () => updateCount(row));
+        }
+      });
+    });
+    </script>
+
+    <br>
+    <h4>Outcome Measures</h4>
+    <p>(These should be identical to the outcome measures in the original application)</p>
+
+    <table align="center" border=1 cellspacing="1" cellpadding="5">
+      <thead>
+          <tr>
+              <th style="width:50%">Outcome Measures</th>
+              <th>Q1 Actual Achieved</th>
+              <th>Q2 Actual Achieved</th>
+              <th>Q3 Actual Achieved</th>
+              <th>Q4 Actual Achieved</th>
+              <th style="text-align: center;">Target</th>
+              <th class="qt-column" style="text-align: center;">Final Target Achieved</th>
+          </tr>
+      </thead>
+      <tbody>
+          <tr>
+              <td>                    
+                <span id="outcome1" style="color: #000000;">{{ outcome1 }}</span>
+                <input type="hidden" id="outcome1" name="outcome1" value="{{ outcome1 }}">   
+              </td>
+              <td style="text-align: center;">
+                <span id="q1_outcome_aa_1">{{ q1_outcome_aa_1 }}</span>
+                <input type="hidden" id="q1_outcome_aa_1" name="q1_outcome_aa_1" value="{{ q1_outcome_aa_1 }}">
+              </td>
+              <td style="text-align: center;">
+                <span id="q2_outcome_aa_1">{{ q2_outcome_aa_1 }}</span>
+                <input type="hidden" id="q2_outcome_aa_1" name="q2_outcome_aa_1" value="{{ q2_outcome_aa_1 }}">
+              </td>
+              <td style="text-align: center;">
+                <span id="q3_outcome_aa_1">{{ q3_outcome_aa_1 }}</span>
+                <input type="hidden" id="q3_outcome_aa_1" name="q3_outcome_aa_1" value="{{ q3_outcome_aa_1 }}">
+              </td>
+              <td style="text-align: center;">
+                <input id="q4_outcome_aa_1" name="q4_outcome_aa_1" type="text" size="8" tabindex="1">
+              </td>
+              <td style="text-align: center;">
+                <span id="final_target_outcome_1">{{ final_target_outcome_1 }}</span>
+                <input type="hidden" id="final_target_outcome_1" name="final_target_outcome_1" value="{{ final_target_outcome_1 }}">
+              </td>
+              <td class="qt-column" style="text-align: center;">
+                <select id="final_outcome_achieved_1" name="final_outcome_achieved_1" class="field select medium" tabindex="11" style="text-align: center;"> 
+                    <option value="Choose an item">Choose an item</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>                
+              </td>
+          </tr>
+          <tr>
+              <td>
+                <span id="outcome2" style="color: #000000;">{{ outcome2 }}</span>
+                <input type="hidden" id="outcome2" name="outcome2" value="{{ outcome2 }}">   
+              </td>
+              <td style="text-align: center;">
+                <span id="q1_outcome_aa_2">{{ q1_outcome_aa_2 }}</span>
+                <input type="hidden" id="q1_outcome_aa_2" name="q1_outcome_aa_2" value="{{ q1_outcome_aa_2 }}">
+              </td>
+              <td style="text-align: center;">
+                <span id="q2_outcome_aa_2">{{ q2_outcome_aa_2 }}</span>
+                <input type="hidden" id="q2_outcome_aa_2" name="q2_outcome_aa_2" value="{{ q2_outcome_aa_2 }}">
+              </td>
+              <td style="text-align: center;">
+                <span id="q3_outcome_aa_2">{{ q3_outcome_aa_2 }}</span>
+                <input type="hidden" id="q3_outcome_aa_2" name="q3_outcome_aa_2" value="{{ q3_outcome_aa_2 }}">
+              </td>
+              <td style="text-align: center;">
+                <input id="q4_outcome_aa_2" name="q4_outcome_aa_2" type="text" size="8" tabindex="1">
+              </td>
+              <td style="text-align: center;">
+                <span id="final_target_outcome_2">{{ final_target_outcome_2 }}</span>
+                <input type="hidden" id="final_target_outcome_2" name="final_target_outcome_2" value="{{ final_target_outcome_2 }}">
+              </td>
+              <td class="qt-column" style="text-align: center;">
+                <select id="final_outcome_achieved_2" name="final_outcome_achieved_2" class="field select medium" tabindex="11" style="text-align: center;"> 
+                    <option value="Choose an item">Choose an item</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>                
+              </td>
+          </tr>
+          <tr>
+            <td>
+              <span id="outcome3" style="color: #000000;">{{ outcome3 }}</span>
+              <input type="hidden" id="outcome3" name="outcome3" value="{{ outcome3 }}">   
+            </td>
+            <td style="text-align: center;">
+              <span id="q1_outcome_aa_3">{{ q1_outcome_aa_3 }}</span>
+              <input type="hidden" id="q1_outcome_aa_3" name="q1_outcome_aa_3" value="{{ q1_outcome_aa_3 }}">
+            </td>
+            <td style="text-align: center;">
+              <span id="q2_outcome_aa_3">{{ q2_outcome_aa_3 }}</span>
+              <input type="hidden" id="q2_outcome_aa_3" name="q2_outcome_aa_3" value="{{ q2_outcome_aa_3 }}">
+            </td>
+            <td style="text-align: center;">
+              <span id="q3_outcome_aa_3">{{ q3_outcome_aa_3 }}</span>
+              <input type="hidden" id="q3_outcome_aa_3" name="q3_outcome_aa_3" value="{{ q3_outcome_aa_3 }}">
+            </td>
+            <td style="text-align: center;">
+              <input id="q4_outcome_aa_3" name="q4_outcome_aa_3" type="text" size="8" tabindex="1">
+            </td>
+            <td style="text-align: center;">
+              <span id="final_target_outcome_3">{{ final_target_outcome_3 }}</span>
+              <input type="hidden" id="final_target_outcome_3" name="final_target_outcome_3" value="{{ final_target_outcome_3 }}">
+            </td>
+            <td class="qt-column" style="text-align: center;">
+              <select id="final_outcome_achieved_3" name="final_outcome_achieved_3" class="field select medium" tabindex="11" style="text-align: center;"> 
+                  <option value="Choose an item">Choose an item</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>                
+            </td>
+        </tr>      
+        <tr>
+          <td>
+            <span id="outcome4" style="color: #000000;">{{ outcome4 }}</span>
+            <input type="hidden" id="outcome4" name="outcome4" value="{{ outcome4 }}">   
+          </td>
+          <td style="text-align: center;">
+            <span id="q1_outcome_aa_4">{{ q1_outcome_aa_4 }}</span>
+            <input type="hidden" id="q1_outcome_aa_4" name="q1_outcome_aa_4" value="{{ q1_outcome_aa_4 }}">
+          </td>
+          <td style="text-align: center;">
+            <span id="q2_outcome_aa_4">{{ q2_outcome_aa_4 }}</span>
+            <input type="hidden" id="q2_outcome_aa_4" name="q2_outcome_aa_4" value="{{ q2_outcome_aa_4 }}">
+          </td>
+          <td style="text-align: center;">
+            <span id="q3_outcome_aa_4">{{ q3_outcome_aa_4 }}</span>
+            <input type="hidden" id="q3_outcome_aa_4" name="q3_outcome_aa_4" value="{{ q3_outcome_aa_4 }}">
+          </td>
+          <td style="text-align: center;">
+            <input id="q4_outcome_aa_4" name="q4_outcome_aa_4" type="text" size="8" tabindex="1">
+          </td>
+          <td style="text-align: center;">
+            <span id="final_target_outcome_4">{{ final_target_outcome_4 }}</span>
+            <input type="hidden" id="final_target_outcome_4" name="final_target_outcome_4" value="{{ final_target_outcome_4 }}">
+          </td>
+          <td class="qt-column" style="text-align: center;">
+            <select id="final_outcome_achieved_4" name="final_outcome_achieved_4" class="field select medium" tabindex="11" style="text-align: center;"> 
+                <option value="Choose an item">Choose an item</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>                
+          </td>
+      </tr> 
+      <tr>
+        <td>
+          <span id="outcome5" style="color: #000000;">{{ outcome5 }}</span>
+          <input type="hidden" id="outcome5" name="outcome5" value="{{ outcome5 }}">   
+        </td>
+        <td style="text-align: center;">
+          <span id="q1_outcome_aa_5">{{ q1_outcome_aa_5 }}</span>
+          <input type="hidden" id="q1_outcome_aa_5" name="q1_outcome_aa_5" value="{{ q1_outcome_aa_5 }}">
+        </td>
+        <td style="text-align: center;">
+          <span id="q2_outcome_aa_5">{{ q2_outcome_aa_5 }}</span>
+          <input type="hidden" id="q2_outcome_aa_5" name="q2_outcome_aa_5" value="{{ q2_outcome_aa_5 }}">
+        </td>
+        <td style="text-align: center;">
+          <span id="q3_outcome_aa_5">{{ q3_outcome_aa_5 }}</span>
+          <input type="hidden" id="q3_outcome_aa_5" name="q3_outcome_aa_5" value="{{ q3_outcome_aa_5 }}">
+        </td>
+        <td style="text-align: center;">
+          <input id="q4_outcome_aa_5" name="q4_outcome_aa_5" type="text" size="8" tabindex="1">
+        </td>
+        <td style="text-align: center;">
+          <span id="final_target_outcome_5">{{ final_target_outcome_5 }}</span>
+          <input type="hidden" id="final_target_outcome_5" name="final_target_outcome_5" value="{{ final_target_outcome_5 }}">
+        </td>
+        <td class="qt-column" style="text-align: center;">
+          <select id="final_outcome_achieved_5" name="final_outcome_achieved_5" class="field select medium" tabindex="11" style="text-align: center;"> 
+              <option value="Choose an item">Choose an item</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>                
+        </td>
+      </tr>    
+      </tbody>
+    </table>
+
+    <br><br>
+    <h3>Programmatic Considerations</h3>
+
+      <div>
+        <label for="funds_explain"><b>Award Amendment</b> <p>If the YSAB award needs to be increased for this project before the end of the period, make the request and provide a justification for the increase and the amount of the increase.</p></label>
+        <div>
+          <textarea id="funds_explain" name="funds_explain" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder="Maximum 250 words"></textarea>
+        </div>
+    </div>
+
+    <div id="qt_full_amount">
+      <p style="color:red;">Quarterly-term Report Only</p>
+      <label for="qt_full_amount">Are you on track to spend the full amount awarded in your application?</label>
+      <div>
+        <select name="qt_full_amount" tabindex="11"> 
+          <option value="Choose an item">Choose an item</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="qt_full_amount_no">
+      <label for="qt_full_amount_no">
+        If no, describe any problems or obstacles that have affected your ability to spend your grant funds.
+      </label>
+      <div>
+       <textarea name="qt_full_amount_no" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder=""></textarea>
+     </div>
+   </div>
+
+   <div id="qt_full_amount_no2">
+      <label for="qt_full_amount_no2">
+        If you are <b>not</b> on track to meet output and/or outcome target levels, describe any problems or obstacles that have affected your ability to achieve them.
+      </label>
+      <div>
+        <textarea name="qt_full_amount_no2" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder=""></textarea>
+      </div>
+    </div>
+
+      <br>
+
+      <div>
+        <label for="challenges_discrepances">Provide any overlooked challenges or discrepancies encountered while managing the grant funds, such as discrepancies between the intended and actual use of funds or unanticipated issues not addressed elsewhere.</label>
+        <div>
+          <textarea id="challenges_discrepances" name="challenges_discrepances" spellcheck="true" rows="10" cols="50" tabindex="4" placeholder=""></textarea>
+        </div>
+      </div>
+
+      <br><br>
+
+      <div style="text-align: justify;">
+        <div style="display: inline-flex; align-items: center; border: 1px solid red; padding: 15px;">
+          <input type="checkbox" id="disclaimer_check" name="disclaimer_check" value="agree" required style="width: 15px; height: 15px;" required>
+          <label for="disclaimer_check" style="margin-left: 10px;">All of the information contained within this progress report is true and accurate as of the date this report is being submitted. As the informant, you affirm that all due diligence has been completed. This report is made in good faith and with respect for the purpose of the Youth Services Advisory Board grant program for the express direct benefit of the youth under the authority of the Dallas County Juvenile Department.</label>
+        </div>
+      </div>
+
+      <br>
+
+      <div class="container">
+        <div class="center">
+          <input id="saveForm" name="saveForm" type="submit" value="Submit" class="submit-button" disabled>
+        </div>
+      </div>
+
+      <script src="{{ url_for('static', filename='submit_script.js') }}"></script>
+
+    </form>
+  </div>
+
+{% include 'main/footer.html' %}
+</body>
+</html>

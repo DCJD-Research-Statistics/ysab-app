@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YSAB Application Home Page</title>
+    <link rel="icon" href="{{url_for('static', filename='images/juvenile-logo.svg')}}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{url_for('static', filename='/style.css')}}">
+    <style>
+        .dashboard-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: calc(100vh - 60px);
+            margin-top: 60px;
+            padding: 20px 0;
+            background-color: #f0f2f5;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+            color: #333;
+        }
+        .main-content {
+            max-width: 1200px;
+            margin: 80px auto 0;
+            padding: 0 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #1a73e8;
+            margin-bottom: 30px;
+        }
+        .lead {
+            text-align: center;
+            font-size: 1.2em;
+            margin-bottom: 50px;
+        }
+        .card-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        .card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 300px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        .card h2 {
+            color: #1a73e8;
+            margin-bottom: 15px;
+        }
+        .card p {
+            margin-bottom: 20px;
+            color: #666;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #1a73e8;
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #155db1;
+        }
+        .btn-disabled {
+            background-color: #d1d5db;
+            color: #6b7280;
+            cursor: not-allowed;
+            position: relative;
+        }
+        .btn-disabled:hover::after {
+            content: "No longer taking applications for the FY25 season";
+            position: absolute;
+            top: 110%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.9em;
+            white-space: nowrap;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .recent-activity {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px;
+        }
+        .recent-activity h2 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .activity-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .activity-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .activity-item strong {
+            margin-left: 10px;
+            color: #1a73e8;
+        }
+        .activity-item small {
+            margin-left: auto;
+            color: #666;
+        }
+        .alert {
+            background-color: #e7f3fe;
+            color: #31708f;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            width: 100%;
+            max-width: 800px;
+        }
+    </style>
+</head>
+<body>
+    {% include 'flash_messages.html' %}
+
+    {% include 'header.html' %}
+    <div class="dashboard-container">
+        <h2>Your Notifications</h2>
+        
+        {% if user_activities %}
+        
+        <div class="recent-activity">
+            <ul class="activity-list">
+                {% for activity in user_activities %}
+                <li class="activity-item">
+                    {% if activity.type == 'User Signup' %}
+                    📩
+                    {% elif activity.type == 'Application Submission' %}
+                    🔵
+                    {% elif activity.type == 'Progress Report Submission' %}
+                    🟢
+                    {% elif activity.type == 'Application Update' %}
+                    🆙
+                    {% elif activity.type == 'Status Update' %}
+                    🔄
+                    {% elif activity.type == 'Website Update' %}
+                    💻
+                    {% endif %}
+                    <strong>{{ activity.type }}</strong> - {{ activity.description }}
+                    <small>{{ activity.timestamp }}</small>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% else %}
+        <div class="alert alert-info mt-3">
+            You don't have any notifications yet.
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

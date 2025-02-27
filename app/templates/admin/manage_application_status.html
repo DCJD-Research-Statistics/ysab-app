@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Application Status</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{url_for('static', filename='/style.css')}}">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+        }
+        .main-content {
+            padding: 20px;
+            max-width: 1600px;
+            margin: 80px auto;
+        }
+        .form-container {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border: none;
+            padding: 20px;
+            margin-left: 300px;
+            margin-right: 300px;
+            margin-bottom: 20px;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+        .status-display {
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+    {% include 'admin/backto_admin.html' %}
+    <div class="main-content">
+        <h1 style="padding: 10px 300px;">Manage Application Status</h1>
+        <div class="form-container">
+            <div class="status-display">
+                Current Status: <strong>{{ 'Enabled' if application_enabled else 'Disabled' }}</strong>
+            </div>
+            <form id="applicationStatusForm">
+                <div class="form-group">
+                    <label for="applicationStatus">Change Status:</label>
+                    <select class="form-control" id="applicationStatus" name="application_enabled">
+                        <option value="true" {% if application_enabled %}selected{% endif %}>Enable</option>
+                        <option value="false" {% if not application_enabled %}selected{% endif %}>Disable</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Update Status</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#applicationStatusForm').submit(function(event) {
+                event.preventDefault();
+                var applicationEnabled = $('#applicationStatus').val();
+                $.ajax({
+                    url: '{{ url_for("admin_dashboard.update_application_status_config") }}',
+                    type: 'POST',
+                    data: { application_enabled: applicationEnabled },
+                    success: function(response) {
+                        if (response.success) {
+                            alert('Application status updated successfully!');
+                        } else {
+                            alert('Failed to update application status: ' + response.error);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert('An error occurred: ' + xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
