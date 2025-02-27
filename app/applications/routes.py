@@ -53,7 +53,7 @@ def submit_application_form():
             return render_template('applications/confirmation_a.html', name=name, email=email)
         except Exception as e:
             # return jsonify({'success': False, 'error': str(e)})
-             return render_template('applications/error.html', error=str(e))
+             return render_template('main/error.html', error=str(e))
         
 @applications.route('/edit-application/<application_id>/<application_type>')
 def edit_application(application_id, application_type):
@@ -65,12 +65,12 @@ def edit_application(application_id, application_type):
     elif application_type == 'External Application':
         collection = db['ysab-external']
     else:
-        return render_template('applications/error.html', error='Invalid application type')
+        return render_template('main/error.html', error='Invalid application type')
 
     application = collection.find_one({'_id': application_id})
 
     if application is None:
-        return render_template('applications/error.html', error='Application not found')
+        return render_template('main/error.html', error='Application not found')
     else:
         # Render template based on application type
         if application_type == 'External Application':
@@ -78,7 +78,7 @@ def edit_application(application_id, application_type):
         elif application_type == 'Internal Application':    
             return render_template('applications/edit-application.html', application=application, application_type=application_type)
         else:
-            return render_template('applications/error.html', error='Invalid application type')
+            return render_template('main/error.html', error='Invalid application type')
 
 @applications.route('/update-application', methods=['POST'])
 def update_application():
@@ -101,7 +101,7 @@ def update_application():
         elif application_type == 'External Application':
             collection = db['ysab-external']
         else:
-            return render_template('applications/error.html', error='Invalid application type')
+            return render_template('main/error.html', error='Invalid application type')
 
         # Remove '_id' from updated_data to prevent attempting to modify the immutable field
         updated_data.pop('_id', None)
@@ -126,7 +126,7 @@ def update_application():
         )
 
         if result.modified_count == 0 and result.upserted_id is None:
-            return render_template('applications/error.html', error='No changes made to the application')
+            return render_template('main/error.html', error='No changes made to the application')
 
         # Log the status change in activities collection
         db['activities'].insert_one({
@@ -146,7 +146,7 @@ def update_application():
             return render_template('applications/confirmation_e.html', name=name, email=email)
 
     except Exception as e:
-        return render_template('applications/error.html', error=str(e))
+        return render_template('main/error.html', error=str(e))
 
 @applications.route('/download_application')
 def download_file_a():
