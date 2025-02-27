@@ -7,7 +7,6 @@ import requests
 
 db_name = os.getenv("DB_NAME_DEV")
 mongo_uri = os.getenv("MONGO_URI")
-discord_webhook_url = os.getenv("DISCORD_WEBHOOK_URL_DEV")
 
 
 progress_reports = Blueprint('progress_reports', __name__)
@@ -395,10 +394,6 @@ def submit_progress_report():
             'description': f'New progress report submitted by {name} ({email})',
             'user': email
         })
-
-        # Send Discord notification
-        message = f"🟢 Progress Report Submitted:\n- ID: {form_data['_id']}\n- Name: {name}\n- Email: {email} \n- Reporting Period: {form_data['reporting_period']}\n- Title: {title}"
-        requests.post(discord_webhook_url, json={"content": message})
 
         return render_template('comfirmations/confirmation_p.html', name=name, email=email)
     except Exception as e:

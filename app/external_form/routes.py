@@ -6,7 +6,6 @@ import os
 
 db_name = os.getenv("DB_NAME")
 mongo_uri = os.getenv("MONGO_URI")
-discord_webhook_url = os.getenv("DISCORD_WEBHOOK_URL_DEV")
 
 external = Blueprint('external', __name__)
 
@@ -41,10 +40,6 @@ def submit_external_form():
                 'description': f'New external application submitted by {name} ({email})',
                 'user': email
             })
-
-            # Send Discord notification
-            message = f"🟠 External Application Submitted:\n- ID: {form_data['_id']}\n- Name: {name}\n- Email: {email} \n- Title: {form_data['title']}"
-            requests.post(discord_webhook_url, json={"content": message})
 
             # return jsonify({'success': True, 'message': 'Form data submitted successfully'})
             return render_template('confirmations/confirmation_e.html', name=name, email=email)

@@ -7,7 +7,6 @@ from bson import ObjectId
 
 db_name = os.getenv("DB_NAME")
 mongo_uri = os.getenv("MONGO_URI")
-discord_webhook_url = os.getenv("DISCORD_WEBHOOK_URL_DEV")
 
 
 admin_dashboard = Blueprint('admin_dashboard', __name__)
@@ -177,7 +176,7 @@ def manage_applications():
     for app in all_internal_applications + all_external_applications:
         applications.append({
             'id': str(app['_id']),
-            'submission_date': app['timestamp'],
+            'submission_date': datetime.strptime(app['timestamp'], "%m-%d-%Y %H:%M"),
             'name': app.get('name', 'N/A'),
             'title': app.get('title', 'N/A'),
             'type': 'Internal Application' if app in all_internal_applications else 'External Application',
@@ -284,6 +283,10 @@ def update_user_status():
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
 
+def sort_by_timestamp(activity):
+    from datetime import datetime
+    return datetime.strptime(activity['timestamp'], "%m-%d-%Y %H:%M")
+
 @admin_dashboard.route('/admin/activity-dashboard')
 @login_required
 @admin_required
@@ -293,7 +296,9 @@ def activity_dashboard():
         db = client[db_name]
         
         # Get all activities
-        activities = list(db['activities'].find().sort('timestamp', -1))
+        activities = list(db['activities'].find())
+        # Convert timestamps to datetime and sort manually
+        activities.sort(key=sort_by_timestamp, reverse=True)
         
         # Calculate activity metrics
         total_activities = len(activities)

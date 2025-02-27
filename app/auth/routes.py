@@ -7,7 +7,6 @@ import os
 
 db_name = os.getenv("DB_NAME")
 mongo_uri = os.getenv("MONGO_URI")
-discord_webhook_url = os.getenv("DISCORD_WEBHOOK_URL_DEV")
 
 auth = Blueprint('auth', __name__)
 
@@ -81,11 +80,6 @@ def signup():
             'description': f'New user account created for {name} ({email}) - Approved: {is_approved}',
             'user': email
         })
-
-        # Send Discord notification
-        approval_status = "Approved" if is_approved else "Pending Review"
-        message = f"📩 New User Signup:\n- Name: {name}\n- Email: {email}\n- Status: {approval_status}"
-        requests.post(discord_webhook_url, json={"content": message})
 
         # Redirect based on approval status
         if is_approved:

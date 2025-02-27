@@ -26,7 +26,7 @@
   {% include 'progress_reports/header_progress_report.html' %}
 
   <div class="main-content">
-    <form action="/submit_progress_report" method="POST">
+    <form action="{{ url_for('progress_reports.submit_progress_report') }}" method="POST">
       <input type="hidden" name="application_id" value="{{ application_id }}">
       <input type="hidden" name="application_type" value="Progress Report">
       <input type="hidden" name="reporting_period" value="Annual">

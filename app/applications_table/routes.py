@@ -11,7 +11,6 @@ from app.config import admin_mode_switch
 
 db_name = os.getenv("DB_NAME")
 mongo_uri = os.getenv("MONGO_URI")
-discord_webhook_url = os.getenv("DISCORD_WEBHOOK_URL_DEV")
 
 
 applications_table = Blueprint('applications_table', __name__)

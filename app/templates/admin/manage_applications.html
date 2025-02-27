@@ -161,16 +161,16 @@
                 {% for application in applications %}
                 <tr data-application-id="{{ application.id }}">
                     <td style="width: 175px;">{{ application.id }}</td>
-                    <td>{{ application.submission_date }}</td>
+                    <td>{{ application.submission_date.strftime('%m-%d-%Y %H:%M') }}</td>
                     <td style="width: 175px;">{{ application.name }}</td>
                     <td style="width: 250px;">{{ application.title }}</td>
                     <td>{{ application.type }}</td>
                     <td>
                         <div class="status-container">
-                            <span class="status-badge status-{{ application.application_status|default('pending')|lower }}">
-                                {{ application.application_status|default('Pending')|title }}
+                            <span class="status-badge status-{{ application.application_status|default('submitted')|lower }}">
+                                {{ application.application_status|default('Sumbmitted')|title }}
                             </span>
-                            <select class="status-select" data-original-status="{{ application.application_status|default('pending') }}">
+                            <select class="status-select" data-original-status="{{ application.application_status|default('submitted') }}">
                                 <option value="submitted" {% if application.application_status == 'submitted' %}selected{% endif %}>Submitted</option>
                                 <option value="initial-review" {% if application.application_status == 'initial-review' %}selected{% endif %}>Under Initial Review</option>
                                 <option value="revise-resubmit" {% if application.application_status == 'revise-resubmit' %}selected{% endif %}>Revise &amp; Resubmit</option>

@@ -7,10 +7,10 @@ from make_pdf_app import make_pdf
 
 db_name = os.getenv("DB_NAME")
 mongo_uri = os.getenv("MONGO_URI")
-discord_webhook_url = os.getenv("DISCORD_WEBHOOK_URL_DEV")
 
 
 applications = Blueprint('applications', __name__)
+
 
 @applications.route('/application')
 @login_required
@@ -44,10 +44,6 @@ def submit_application_form():
                     'description': f'New application submitted by {name} ({email})',
                     'user': email
                 })
-
-            # Send Discord notification
-            message = f"🔵 New Application Submitted:\n- ID: {form_data['_id']}\n- Type: {'Internal Application'}\n- Name: {name}\n- Email: {email} \n- Title: {form_data['title']}"
-            requests.post(discord_webhook_url, json={"content": message})
 
             # return jsonify({'success': True, 'message': 'Form data submitted successfully'})
             return render_template('confirmations/confirmation_a.html', name=name, email=email)
@@ -135,10 +131,6 @@ def update_application():
             'description': f'Application {application_id} updated by {name} ({email})',
             'user': email
         })
-
-        # Send Discord notification
-        message = f"🆙 Application updated:\n- ID: {application_id}\n- Type: {application_type}\n- Name: {name}\n- Email: {email} \n- Title: {updated_data['title']}\n- Number of edits: {updated_data.get('num_edits', 1)}"
-        requests.post(discord_webhook_url, json={"content": message})
 
         if application_type == 'Internal Application':
             return render_template('applications/confirmation_a.html', name=name, email=email)
