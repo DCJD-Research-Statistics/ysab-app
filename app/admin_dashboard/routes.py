@@ -252,13 +252,31 @@ def manage_users():
 @login_required
 @admin_required
 def delete_user():
-    user_id = request.form.get('user_id')
+    user_email = request.form.get('user_email')
     
     try:
         with MongoClient(mongo_uri) as client:
             db = client[db_name]
-            result = db['users'].delete_one({'_id': ObjectId(user_id)})
+            result = db['users'].delete_one({'email': user_email})
             return jsonify({'success': result.deleted_count > 0})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+
+@admin_dashboard.route('/update_user_status', methods=['POST'])
+@login_required
+@admin_required
+def update_user_status():
+    user_id = request.form.get('user_id')
+    approved = request.form.get('approved') == 'true'
+
+    try:
+        with MongoClient(mongo_uri) as client:
+            db = client[db_name]
+            result = db['users'].update_one(
+                {'_id': ObjectId(user_id)},
+                {'$set': {'approved': approved}}
+            )
+            return jsonify({'success': result.modified_count > 0})
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
 

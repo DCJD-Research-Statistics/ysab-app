@@ -74,10 +74,10 @@
     </style>
 </head>
 <body>
-    {% include 'flash_messages.html' %}
+    {% include 'main/flash_messages.html' %}
     <div class="signup-container">
         <h1>Sign up for YSAB</h1>
-        <form action="/signup" method="POST">
+        <form action="{{ url_for('auth.signup') }}" method="POST">
             <div class="input-group">
                 <input type="text" name="name" placeholder="Enter your full name" required>
             </div>

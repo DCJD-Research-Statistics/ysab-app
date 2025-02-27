@@ -43,7 +43,7 @@
   </div>
 
   <div class="main-content">
-    <form action="/submit_application_form" method="POST">
+    <form action="{{ url_for('applications.submit_application_form') }}" method="POST">
         <input type="hidden" name="application_type" value="Internal Application">
         <input type="hidden" name="edited" value="no">
         <input type="hidden" name="num_edits" value="0">
