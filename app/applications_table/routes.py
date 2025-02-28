@@ -18,74 +18,73 @@ applications_table = Blueprint('applications_table', __name__)
 @applications_table.route('/my-applications')
 @login_required
 def my_applications(admin_mode=admin_mode_switch):
-    if 'user' not in session:
-        return redirect(url_for('login'))
+    with MongoClient(mongo_uri) as client:
+        if 'user' not in session:
+            return redirect(url_for('login'))
         
-    if admin_mode==True:
-        user_email = os.getenv("EMAIL")
-    elif admin_mode==False: 
+        # if admin_mode==True:
+        #     user_email = os.getenv("EMAIL")
+        # elif admin_mode==False: 
+        #     user_email = session['user']['email']
+
         user_email = session['user']['email']
 
-    # Connect to MongoDB
-    client = MongoClient(mongo_uri)
+        # Choose database based on admin status - removed to avoid confusion
+        # admin_emails = os.getenv("ADMIN_EMAILS").split(',')
+        # if user_email.lower() in [email.lower() for email in admin_emails]:
+        #     db = client[os.getenv("DB_NAME_DEV")]
+        # else:
+        #     db = client[os.getenv("DB_NAME")]
 
-    # Choose database based on admin status
-    admin_emails = os.getenv("ADMIN_EMAILS").split(',')
-    if user_email.lower() in [email.lower() for email in admin_emails]:
-        db = client[os.getenv("DB_NAME_DEV")]
-    else:
-        db = client[os.getenv("DB_NAME")]
+        db = client[db_name]
+        collection = db['ysab-applications']
 
-    collection = db['ysab-applications']
+        # Fetch applications for the current user from 'ysab' collection
+        user_applications = list(collection.find(
+            {'$or': [
+                {'email': {'$regex': f'^{user_email}$', '$options': 'i'}},
+                {'added_collaborator': {'$regex': f'^{user_email}$', '$options': 'i'}}
+            ]},
+            {'_id': 1, 'timestamp': 1, 'title': 1, 'application_status': 1}
+        ))
 
-    # Fetch applications for the current user from 'ysab' collection
-    user_applications = list(collection.find(
-        {'$or': [
-            {'email': {'$regex': f'^{user_email}$', '$options': 'i'}},
-            {'added_collaborator': {'$regex': f'^{user_email}$', '$options': 'i'}}
-        ]},
-        {'_id': 1, 'timestamp': 1, 'title': 1, 'application_status': 1}
-    ))
+        # Fetch applications for the current user from 'ysab-external' collection
+        external_collection = db['ysab-external']
+        user_external_applications = list(external_collection.find(
+            {'$or': [
+                {'email': {'$regex': f'^{user_email}$', '$options': 'i'}},
+                {'added_collaborator': {'$regex': f'^{user_email}$', '$options': 'i'}}
+            ]},
+            {'_id': 1, 'timestamp': 1, 'title': 1, 'application_status': 1}
+        ))
 
-    # Fetch applications for the current user from 'ysab-external' collection
-    external_collection = db['ysab-external']
-    user_external_applications = list(external_collection.find(
-        {'$or': [
-            {'email': {'$regex': f'^{user_email}$', '$options': 'i'}},
-            {'added_collaborator': {'$regex': f'^{user_email}$', '$options': 'i'}}
-        ]},
-        {'_id': 1, 'timestamp': 1, 'title': 1, 'application_status': 1}
-    ))
+        # Combine both application lists
+        all_applications = user_applications + user_external_applications
 
-    # Combine both application lists
-    all_applications = user_applications + user_external_applications
+        if not all_applications:
+            message = "No records found."
+            return render_template('applications/my_applications.html', message=message)
+        
+        # Format the data for the template
+        applications = []
+        for app in all_applications:
+            # Check if the application is from user_applications or user_external_applications
+            if app in user_applications:
+                app_type = 'Internal Application'
+            elif app in user_external_applications:
+                app_type = 'External Application'
+            else:
+                app_type = 'Unknown'
 
-    if not all_applications:
-        message = "No records found."
-        return render_template('applications/my_applications.html', message=message)
-    
-    # Format the data for the template
-    applications = []
-    for app in all_applications:
-        # Check if the application is from user_applications or user_external_applications
-        if app in user_applications:
-            app_type = 'Internal Application'
-        elif app in user_external_applications:
-            app_type = 'External Application'
-        else:
-            app_type = 'Unknown'
+            applications.append({
+                'id': str(app['_id']),
+                'submission_date': app['timestamp'],
+                'title': app['title'],
+                'type': app_type,
+                'application_status': app.get('application_status', 'pending')
+            })
 
-        applications.append({
-            'id': str(app['_id']),
-            'submission_date': app['timestamp'],
-            'title': app['title'],
-            'type': app_type,
-            'application_status': app.get('application_status', 'pending')
-        })
-
-    client.close()
-
-    return render_template('applications/my_applications.html', applications=applications)
+        return render_template('applications/my_applications.html', applications=applications)
 
 @applications_table.route('/download_application_fromtable/<application_id>/<format>')
 def download_file_a_fromtable(application_id, format):

@@ -203,7 +203,7 @@
                         <tr>
                             <td>{{ service_area }}</td>
                             <td>${{ "{:,.2f}".format(service_area_totals[service_area]) }}</td>
-                            <td>${{ "{:,.2f}".format(details.allocated_budget) }}</td>
+                            <td>${{ "{:,.2f}".format(details.allocated_budget|float) }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>

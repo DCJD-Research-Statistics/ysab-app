@@ -18,7 +18,6 @@ admin_dashboard = Blueprint('admin_dashboard', __name__)
 def dashboard():
     with MongoClient(mongo_uri) as client:
         # use ysab main db
-        db_name = os.getenv("DB_NAME")
         db = client[db_name]
                 
         # Fetch date range from the database
@@ -331,6 +330,9 @@ def activity_dashboard():
         activity_counts = [daily_activities[date] for date in dates]
         formatted_dates = [date.strftime('%Y-%m-%d') for date in dates]
         
+        # Get count of application submissions instead of the list
+        application_submissions_count = db['activities'].count_documents({'type': 'Application Submission'})
+        
         return render_template(
             'admin/activity_dashboard.html',
             activities=activities[:100],  # Show last 100 activities
@@ -340,9 +342,10 @@ def activity_dashboard():
             daily_activity_data={
                 'dates': formatted_dates,
                 'counts': activity_counts
-            }
+            },
+            application_submissions=application_submissions_count  # Now just the count value
         )
-
+    
 @admin_dashboard.route('/admin/manage_application_status')
 @login_required
 @admin_required
@@ -424,5 +427,58 @@ def update_date_range():
 
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
+
+@admin_dashboard.route('/admin/adjust_division_allocations')
+@login_required
+@admin_required
+def adjust_division_allocations():
+    with MongoClient(mongo_uri) as client:
+        db_name = os.getenv("DB_NAME")
+        db = client[db_name]
+        allocations = db['division-allocations'].find_one()
+        if allocations:
+            allocations.pop('_id', None)
+        else:
+            allocations = {
+                'Residential Services': 26000,
+                'Detention Services': 27000,
+                'Probation Services': 27000,
+                'Crane Fund': 25000,
+                'Black History Committee': 10000,
+                'Hispanic Committee': 10000,
+                'Holiday': 30000,
+                'Food Pantry': 20000,
+                'GED': 4000,
+                'Education': 0,
+                'Clinical Services': 0
+            }
+
+    total = sum(int(value) for value in allocations.values())
+    return render_template('admin/adjust_division_allocations.html', allocations=allocations, total=total)
+
+@admin_dashboard.route('/update_division_allocations', methods=['POST'])
+@login_required
+def update_division_allocations():
+    try:
+        client = MongoClient(mongo_uri)
+        db_name = os.getenv("DB_NAME")
+        db = client[db_name]
+        allocations = request.form.to_dict()
+
+        # Update the division allocations in the database
+        result = db['division-allocations'].update_one(
+            {},
+            {'$set': allocations},
+            upsert=True
+        )
+
+        if result.modified_count > 0 or result.upserted_id:
+            return jsonify({'success': True})
+        else:
+            return jsonify({'success': False, 'error': 'Division allocations update failed'})
+
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
     finally:
+        client.close()
         client.close()
