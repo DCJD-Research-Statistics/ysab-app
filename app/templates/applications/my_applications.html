@@ -21,9 +21,11 @@
         .table {
             background-color: white;
             border-radius: 8px;
-            overflow: hidden;
+            /* Remove overflow: hidden that was causing the dropdown to be cut off */
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
             border: none;
+            position: relative; /* Add positioning context */
+            z-index: 1; /* Lower z-index than dropdown */
         }
         .table th {
             background-color: #000000;
@@ -96,6 +98,9 @@
             padding: 0.5rem 0;
             margin: 0.125rem 0 0;
             box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            z-index: 1050; /* Higher z-index to ensure it appears above the table */
+            position: absolute; /* Ensure absolute positioning */
+            transform: none !important; /* Prevent Bootstrap from applying transforms that might affect positioning */
         }
         
         .dropdown-item {
@@ -106,6 +111,27 @@
         .dropdown-item i {
             margin-right: 0.5rem;
             font-size: 0.775rem;
+        }
+        
+        /* Fix for table overflow hiding dropdowns */
+        .table {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border: none;
+            /* Remove overflow: hidden that was causing the dropdown to be cut off */
+        }
+        
+        /* Additional fixes for dropdown positioning */
+        .dropdown {
+            position: relative; /* Ensure proper positioning context for absolute children */
+        }
+        
+        /* Ensure dropdowns are visible regardless of table size */
+        .action-buttons .dropdown-menu {
+            top: 100% !important; /* Position below the button */
+            left: 0 !important; /* Align with the left edge of the button */
+            margin-top: 0.125rem !important; /* Small margin from the button */
         }
         .action-buttons {
             display: flex;

@@ -89,7 +89,6 @@ def my_applications(admin_mode=admin_mode_switch):
 @applications_table.route('/download_application_fromtable/<application_id>/<format>')
 def download_file_a_fromtable(application_id, format):
     with MongoClient(mongo_uri) as client:
-        db_name = os.getenv("DB_NAME")
         db = client[db_name]
         collection = db['ysab-applications']
         application = collection.find_one({'_id': application_id})
@@ -97,11 +96,13 @@ def download_file_a_fromtable(application_id, format):
     if application:
         if format == 'html':
             make_app_form(application, download_source='table')
-            p = r'templates/ysab-application-record.html'
+            p = r'templates/html_forms/ysab-application-record.html'
             return send_file(p, as_attachment=True, download_name=f"ysab_application_{application_id}.html")
         elif format == 'pdf':
             make_pdf(application, application_id)
-            return send_file(f"ysab_application_{application_id}.pdf", 
+            # Use absolute path to find the PDF file in the root directory
+            pdf_path = os.path.join(os.getcwd(), f"ysab_application_{application_id}.pdf")
+            return send_file(pdf_path,
                            as_attachment=True,
                            download_name=f"ysab_application_{application_id}.pdf",
                            mimetype='application/pdf')
@@ -119,7 +120,7 @@ def download_file_e_fromtable(application_id):
 
     if application:
         make_ext_form(application, download_source='table')
-        p = r'templates/ysab-external-record.html'
+        p = r'templates/html_forms/ysab-external-record.html'
         return send_file(p, as_attachment=True, download_name=f"ysab_external_application_{application_id}.html")
     else:
         return "Application not found", 404

@@ -11,6 +11,7 @@ import re
 import pandas as pd
 from bs4 import BeautifulSoup
 from bson import ObjectId
+import math
 
 db_name = os.getenv("DB_NAME")
 mongo_uri = os.getenv("MONGO_URI")
@@ -152,7 +153,7 @@ def make_app_form(form_data, download_source='submission'):
         form_data['_id'] = str(form_data['_id'])
 
     # Read the HTML file
-    with open(r'templates/ysab-application.html', 'r', encoding="utf8") as file:
+    with open(r'app/templates/html_forms/ysab-application.html', 'r', encoding="utf8") as file:
         html_content = file.read()
     # Parse the HTML content with BeautifulSoup
     soup = BeautifulSoup(html_content, 'html.parser')
@@ -201,7 +202,7 @@ def make_app_form(form_data, download_source='submission'):
             table_input_field['value'] = value
 
         # Save the updated HTML content to a file
-        with open(r'templates/ysab-application-record.html', 'w') as file:
+        with open(r'app/templates/html_forms/ysab-application-record.html', 'w') as file:
             file.write(str(soup))
 
 def make_prog_form(form_data, download_source='submission'):
@@ -212,19 +213,19 @@ def make_prog_form(form_data, download_source='submission'):
     # Determine which template to use based on reporting period
     reporting_period = form_data.get('reporting_period', '')
     if reporting_period == 'q1':
-        template_path = 'templates/ysab-progress-report-qt.html'
+        template_path = 'app/templates/html_forms/ysab-progress-report-qt.html'
     elif reporting_period == 'q2':
-        template_path = 'templates/ysab-progress-report-qt2.html'
+        template_path = 'app/templates/html_forms/ysab-progress-report-qt2.html'
     elif reporting_period == 'q3':
-        template_path = 'templates/ysab-progress-report-qt3.html'
+        template_path = 'app/templates/html_forms/ysab-progress-report-qt3.html'
     elif reporting_period == 'q4':
-        template_path = 'templates/ysab-progress-report-qt4.html'
+        template_path = 'app/templates/html_forms/ysab-progress-report-qt4.html'
     elif reporting_period == 'mid_year':
-        template_path = 'templates/ysab-progress-report-bi.html'
+        template_path = 'app/templates/html_forms/ysab-progress-report-bi.html'
     elif reporting_period == 'end_year':
-        template_path = 'templates/ysab-progress-report-end_year.html'
+        template_path = 'app/templates/html_forms/ysab-progress-report-end_year.html'
     else:
-        template_path = 'templates/ysab-progress-report-annual.html'
+        template_path = 'app/templates/html_forms/ysab-progress-report-annual.html'
 
     # Read the HTML file
     with open(template_path, 'r', encoding="utf8") as file:
@@ -277,12 +278,12 @@ def make_prog_form(form_data, download_source='submission'):
             table_input_field['value'] = value
 
     # Save the updated HTML content to a file
-    with open('templates/ysab-progress-report-record.html', 'w', encoding="utf8") as file:
+    with open('app/templates/htmlt_forms/ysab-progress-report-record.html', 'w', encoding="utf8") as file:
         file.write(str(soup))
 
 def make_ext_form(form_data, download_source='submission'):
     # Read the HTML file
-    with open(r'templates/ysab-external.html', 'r', encoding="utf8") as file:
+    with open(r'app/templates/html_forms/ysab-external.html', 'r', encoding="utf8") as file:
         html_content = file.read()
     # Parse the HTML content with BeautifulSoup
     soup = BeautifulSoup(html_content, 'html.parser')
@@ -323,12 +324,12 @@ def make_ext_form(form_data, download_source='submission'):
             table_input_field['value'] = value
 
         # Save the updated HTML content to a file
-        with open(r'templates/ysab-external-record.html', 'w') as file:
+        with open(r'app/templates/html_forms/ysab-external-record.html', 'w') as file:
             file.write(str(soup))
 
 def make_cont_form(form_data):
     # Read the HTML file
-    with open(r'templates/ysab-continuation.html', 'r', encoding="utf8") as file:
+    with open(r'app/templates/html_forms/ysab-continuation.html', 'r', encoding="utf8") as file:
         html_content = file.read()
     # Parse the HTML content with BeautifulSoup
     soup = BeautifulSoup(html_content, 'html.parser')
@@ -364,5 +365,5 @@ def make_cont_form(form_data):
             table_input_field['value'] = value
 
         # Save the updated HTML content to a file
-        with open(r'templates/ysab-continuation-record.html', 'w') as file:
+        with open(r'app/templates/html/forms/ysab-continuation-record.html', 'w') as file:
             file.write(str(soup))
