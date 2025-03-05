@@ -60,16 +60,7 @@ def dashboard():
                 return None
                 
             # Try different date formats
-            formats_to_try = [
-                '%Y-%m-%d',
-                '%m/%d/%Y',
-                '%d/%m/%Y',
-                '%Y-%m-%dT%H:%M:%S',
-                '%Y-%m-%d %H:%M:%S',
-                '%m/%d/%Y %H:%M:%S',
-                '%d-%b-%Y',  # e.g., 15-Jan-2023
-                '%b %d, %Y'  # e.g., Jan 15, 2023
-            ]
+            formats_to_try = ['%m-%d-%Y %H:%M']
             
             for fmt in formats_to_try:
                 try:
