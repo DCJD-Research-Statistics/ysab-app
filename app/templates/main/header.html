@@ -135,7 +135,7 @@
        <div class="notifications-container">
            <div class="notification-icon">
                <i class="fas fa-bell" id="notificationBell"></i>
-               <span class="notification-count" id="notificationCount">0</span>
+               <span class="notification-count" id="notificationCount" style="display: none;">0</span>
            </div>
            <div class="notification-dropdown" id="notificationDropdown">
                <h3>Your Notifications</h3>
@@ -179,6 +179,13 @@
              .then(data => {
                  // Update notification count
                  count.textContent = data.length;
+                 
+                 // Show/hide notification count based on whether there are unread notifications
+                 if (data.length > 0) {
+                     count.style.display = 'block';
+                 } else {
+                     count.style.display = 'none';
+                 }
                  
                  // Clear current notifications
                  notificationList.innerHTML = '';
@@ -288,5 +295,10 @@
      
      // Refresh notifications every minute
      setInterval(loadUnreadNotifications, 60000);
+     
+     // Listen for custom event when all notifications are marked as read
+     document.addEventListener('allNotificationsRead', function() {
+         loadUnreadNotifications();
+     });
  });
  </script>

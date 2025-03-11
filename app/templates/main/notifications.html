@@ -368,6 +368,9 @@
                             
                             // Show success message
                             alert('All notifications marked as read.');
+                            
+                            // Dispatch custom event to update notification count in header
+                            document.dispatchEvent(new CustomEvent('allNotificationsRead'));
                         } else {
                             console.error('Error marking all notifications as read:', data.message);
                             alert('Error marking all notifications as read. Please try again.');
@@ -412,6 +415,9 @@
                             
                             // Update the notification item's appearance
                             notificationItem.classList.add('read');
+                            
+                            // Dispatch custom event to update notification count in header
+                            document.dispatchEvent(new CustomEvent('allNotificationsRead'));
                         } else {
                             console.error('Error marking notification as read:', data.message);
                         }
