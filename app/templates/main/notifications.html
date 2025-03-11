@@ -104,7 +104,7 @@
             padding: 20px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             width: 100%;
-            max-width: 800px;
+            max-width: 1000px; /* Increased from 800px */
         }
         .recent-activity h2 {
             color: #333;
@@ -118,17 +118,33 @@
         }
         .activity-item {
             display: flex;
+            flex-wrap: wrap;
             align-items: center;
-            padding: 10px 0;
+            padding: 15px 10px;
             border-bottom: 1px solid #e0e0e0;
+            position: relative;
+        }
+        .activity-item.read {
+            opacity: 0.7;
+            background-color: #f8f9fa;
+        }
+        .activity-icon {
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+        .activity-content {
+            flex: 1;
+            min-width: 0;
+            padding-right: 120px; /* Space for the button */
         }
         .activity-item strong {
-            margin-left: 10px;
             color: #1a73e8;
+            margin-right: 5px;
         }
         .activity-item small {
-            margin-left: auto;
+            display: block;
             color: #666;
+            margin-top: 5px;
         }
         .alert {
             background-color: #e7f3fe;
@@ -138,6 +154,84 @@
             text-align: center;
             width: 100%;
             max-width: 800px;
+        }
+        .notification-status {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-left: 5px;
+            vertical-align: middle;
+        }
+        .status-unread {
+            background-color: #cfe2ff;
+            color: #084298;
+        }
+        .status-read {
+            background-color: #d1e7dd;
+            color: #0f5132;
+        }
+        .mark-read-btn {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #e9ecef;
+            border: none;
+            color: #495057;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            white-space: nowrap;
+        }
+        .mark-read-btn:hover {
+            background: #dee2e6;
+        }
+        .timestamp {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            color: #666;
+            font-size: 12px;
+        }
+        .notification-filters {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .filter-btn {
+            background: #fff;
+            border: 1px solid #dee2e6;
+            padding: 5px 15px;
+            margin: 0 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .filter-btn.active {
+            background: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+        .filter-btn:hover:not(.active) {
+            background: #f8f9fa;
+        }
+        
+        .mark-all-read-btn {
+            background: #e9ecef;
+            border: 1px solid #dee2e6;
+            color: #495057;
+            padding: 5px 15px;
+            margin-left: 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .mark-all-read-btn:hover {
+            background: #dee2e6;
         }
     </style>
 </head>
@@ -150,25 +244,44 @@
         
         {% if user_activities %}
         
+        <div class="notification-filters">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="unread">Unread</button>
+            <button class="filter-btn" data-filter="read">Read</button>
+            <button id="markAllReadBtn" class="mark-all-read-btn">Mark All as Read</button>
+        </div>
+        
         <div class="recent-activity">
-            <ul class="activity-list">
+            <ul class="activity-list" id="notificationsList">
                 {% for activity in user_activities %}
-                <li class="activity-item">
-                    {% if activity.type == 'User Signup' %}
-                    📩
-                    {% elif activity.type == 'Application Submission' %}
-                    🔵
-                    {% elif activity.type == 'Progress Report Submission' %}
-                    🟢
-                    {% elif activity.type == 'Application Update' %}
-                    🆙
-                    {% elif activity.type == 'Status Update' %}
-                    🔄
-                    {% elif activity.type == 'Website Update' %}
-                    💻
+                <li class="activity-item {% if activity.read %}read{% endif %}" data-status="{% if activity.read %}read{% else %}unread{% endif %}" data-id="{{ activity._id }}">
+                    <div class="activity-icon">
+                        {% if activity.type == 'User Signup' %}
+                        📩
+                        {% elif activity.type == 'Application Submission' %}
+                        🔵
+                        {% elif activity.type == 'Progress Report Submission' %}
+                        🟢
+                        {% elif activity.type == 'Application Update' %}
+                        🆙
+                        {% elif activity.type == 'Status Update' %}
+                        🔄
+                        {% elif activity.type == 'Website Update' %}
+                        💻
+                        {% endif %}
+                    </div>
+                    <div class="activity-content">
+                        <div>
+                            <strong>{{ activity.type }}</strong> - {{ activity.description }}
+                            <span class="notification-status {% if activity.read %}status-read{% else %}status-unread{% endif %}">
+                                {% if activity.read %}Read{% else %}New{% endif %}
+                            </span>
+                        </div>
+                        <small>{{ activity.timestamp }}</small>
+                    </div>
+                    {% if not activity.read %}
+                    <button class="mark-read-btn" data-id="{{ activity._id }}">Mark as Read</button>
                     {% endif %}
-                    <strong>{{ activity.type }}</strong> - {{ activity.description }}
-                    <small>{{ activity.timestamp }}</small>
                 </li>
                 {% endfor %}
             </ul>
@@ -179,5 +292,136 @@
         </div>
         {% endif %}
     </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Filter buttons functionality
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const notificationItems = document.querySelectorAll('.activity-item');
+            
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    const filter = this.dataset.filter;
+                    
+                    // Show/hide notifications based on filter
+                    notificationItems.forEach(item => {
+                        if (filter === 'all' || item.dataset.status === filter) {
+                            item.style.display = 'flex';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            });
+            
+            // Mark all as read functionality
+            const markAllReadBtn = document.getElementById('markAllReadBtn');
+            if (markAllReadBtn) {
+                markAllReadBtn.addEventListener('click', function() {
+                    // Check if there are any unread notifications
+                    const unreadItems = document.querySelectorAll('.activity-item[data-status="unread"]');
+                    if (unreadItems.length === 0) {
+                        alert('No unread notifications to mark as read.');
+                        return;
+                    }
+                    
+                    // Confirm before marking all as read
+                    if (!confirm('Are you sure you want to mark all notifications as read?')) {
+                        return;
+                    }
+                    
+                    fetch('{{ url_for("notifications.mark_all_read") }}', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Update all unread notification items
+                            unreadItems.forEach(item => {
+                                // Update status to read
+                                item.classList.add('read');
+                                item.dataset.status = 'read';
+                                
+                                // Update status badge
+                                const statusBadge = item.querySelector('.notification-status');
+                                if (statusBadge) {
+                                    statusBadge.textContent = 'Read';
+                                    statusBadge.classList.remove('status-unread');
+                                    statusBadge.classList.add('status-read');
+                                }
+                                
+                                // Remove the mark as read button
+                                const readBtn = item.querySelector('.mark-read-btn');
+                                if (readBtn) {
+                                    readBtn.remove();
+                                }
+                            });
+                            
+                            // Show success message
+                            alert('All notifications marked as read.');
+                        } else {
+                            console.error('Error marking all notifications as read:', data.message);
+                            alert('Error marking all notifications as read. Please try again.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error marking all notifications as read:', error);
+                        alert('Error marking all notifications as read. Please try again.');
+                    });
+                });
+            }
+            
+            // Individual mark as read functionality
+            const markReadButtons = document.querySelectorAll('.mark-read-btn');
+            
+            markReadButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const notificationId = this.dataset.id;
+                    const notificationItem = document.querySelector(`.activity-item[data-id="${notificationId}"]`);
+                    
+                    fetch(`{{ url_for("notifications.mark_notification_read", notification_id="PLACEHOLDER") }}`.replace('PLACEHOLDER', notificationId), {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Update the notification item
+                            notificationItem.classList.add('read');
+                            notificationItem.dataset.status = 'read';
+                            
+                            // Update status badge
+                            const statusBadge = notificationItem.querySelector('.notification-status');
+                            statusBadge.textContent = 'Read';
+                            statusBadge.classList.remove('status-unread');
+                            statusBadge.classList.add('status-read');
+                            
+                            // Remove the mark as read button
+                            this.remove();
+                            
+                            // Update the notification item's appearance
+                            notificationItem.classList.add('read');
+                        } else {
+                            console.error('Error marking notification as read:', data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error marking notification as read:', error);
+                    });
+                });
+            });
+        });
+    </script>
 </body>
 </html>

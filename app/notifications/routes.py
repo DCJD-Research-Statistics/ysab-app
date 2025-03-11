@@ -1,6 +1,7 @@
-from flask import Blueprint, render_template, session
+from flask import Blueprint, render_template, session, request, jsonify, redirect, url_for
 from app.utils import login_required
 from pymongo import MongoClient
+from bson import ObjectId
 import os
 
 db_name = os.getenv("DB_NAME")
@@ -17,8 +18,70 @@ def view_notifications():
         # Filter activities for current user
         user_activities = list(db['activities'].find(
             {'user': session['user']['email']},
-            {'_id': 0}
+            {'_id': 1, 'type': 1, 'description': 1, 'timestamp': 1, 'read': 1}
         ).sort('timestamp', -1))
         
-    return render_template('main/notifications.html', 
+        # Convert ObjectId to string for JSON serialization
+        for activity in user_activities:
+            activity['_id'] = str(activity['_id'])
+        
+    return render_template('main/notifications.html',
                          user_activities=user_activities)
+
+
+@notifications.route('/notifications/unread')
+@login_required
+def get_unread_notifications():
+    with MongoClient(mongo_uri) as client:
+        db = client[db_name]
+        # Filter unread activities for current user
+        unread_activities = list(db['activities'].find(
+            {'user': session['user']['email'], 'read': False},
+            {'_id': 1, 'type': 1, 'description': 1, 'timestamp': 1, 'read': 1}
+        ).sort('timestamp', -1))
+        
+        # Convert ObjectId to string for JSON serialization
+        for activity in unread_activities:
+            activity['_id'] = str(activity['_id'])
+        
+    return jsonify(unread_activities)
+
+
+@notifications.route('/notifications/mark-read/<notification_id>', methods=['POST'])
+@login_required
+def mark_notification_read(notification_id):
+    try:
+        with MongoClient(mongo_uri) as client:
+            db = client[db_name]
+            # Mark notification as read
+            result = db['activities'].update_one(
+                {'_id': ObjectId(notification_id), 'user': session['user']['email']},
+                {'$set': {'read': True}}
+            )
+            
+            if result.modified_count > 0:
+                return jsonify({'success': True, 'message': 'Notification marked as read'})
+            else:
+                return jsonify({'success': False, 'message': 'Notification not found or already read'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)})
+
+
+@notifications.route('/notifications/mark-all-read', methods=['POST'])
+@login_required
+def mark_all_read():
+    try:
+        with MongoClient(mongo_uri) as client:
+            db = client[db_name]
+            # Mark all notifications as read for the current user
+            result = db['activities'].update_many(
+                {'user': session['user']['email'], 'read': False},
+                {'$set': {'read': True}}
+            )
+            
+            if result.modified_count > 0:
+                return jsonify({'success': True, 'message': f'{result.modified_count} notifications marked as read'})
+            else:
+                return jsonify({'success': False, 'message': 'No unread notifications found'})
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)})
