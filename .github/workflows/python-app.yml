@@ -48,7 +48,7 @@ jobs:
               "type": "Website Update",
               "description": f"New website update deployed by Juan Lomeli: '${{ steps.commit.outputs.msg }}'",
               "user": "juan.lomeli@dallascounty.org",
-              "read": false
+              "read": False
           }
           collection.insert_one(record)
           client.close()
