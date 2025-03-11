@@ -2,12 +2,21 @@ from flask import Blueprint, render_template, session, request, jsonify, redirec
 from app.utils import login_required
 from pymongo import MongoClient
 from bson import ObjectId
+from datetime import datetime
 import os
 
 db_name = os.getenv("DB_NAME")
 mongo_uri = os.getenv("MONGO_URI")
 
 notifications = Blueprint('notifications', __name__)
+
+def parse_timestamp(timestamp_str):
+    """Parse timestamp string in format 'MM-DD-YYYY HH:MM' to datetime object"""
+    try:
+        return datetime.strptime(timestamp_str, "%m-%d-%Y %H:%M")
+    except ValueError:
+        # Return a default old date if parsing fails
+        return datetime(1900, 1, 1)
 
 
 @notifications.route('/notifications')
@@ -19,11 +28,14 @@ def view_notifications():
         user_activities = list(db['activities'].find(
             {'user': session['user']['email']},
             {'_id': 1, 'type': 1, 'description': 1, 'timestamp': 1, 'read': 1}
-        ).sort('timestamp', -1))
+        ))
         
         # Convert ObjectId to string for JSON serialization
         for activity in user_activities:
             activity['_id'] = str(activity['_id'])
+        
+        # Sort activities by timestamp in descending order (newest first)
+        user_activities.sort(key=lambda x: parse_timestamp(x.get('timestamp', '')), reverse=True)
         
     return render_template('main/notifications.html',
                          user_activities=user_activities)
@@ -38,11 +50,14 @@ def get_unread_notifications():
         unread_activities = list(db['activities'].find(
             {'user': session['user']['email'], 'read': False},
             {'_id': 1, 'type': 1, 'description': 1, 'timestamp': 1, 'read': 1}
-        ).sort('timestamp', -1))
+        ))
         
         # Convert ObjectId to string for JSON serialization
         for activity in unread_activities:
             activity['_id'] = str(activity['_id'])
+        
+        # Sort activities by timestamp in descending order (newest first)
+        unread_activities.sort(key=lambda x: parse_timestamp(x.get('timestamp', '')), reverse=True)
         
     return jsonify(unread_activities)
 
