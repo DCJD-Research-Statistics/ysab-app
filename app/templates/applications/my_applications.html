@@ -213,9 +213,15 @@
                                     </ul>
                                 </div>
                             {% endif %}
+                            {% if edit_enabled %}
                             <a href="{{ url_for('applications.edit_application', application_id=application.id, application_type=application.type) }}" class="btn btn-secondary btn-sm">
                                 <i class="fas fa-edit"></i> Edit
                             </a>
+                            {% else %}
+                            <button class="btn btn-secondary btn-sm disabled" disabled>
+                                <i class="fas fa-edit"></i> Edit
+                            </button>
+                            {% endif %}
                             <a href="{{ url_for('progress_reports.my_progress_report', application_id=application.id) }}" class="btn btn-success btn-sm">
                                 <i class="fas fa-chart-line"></i> Progress Report
                             </a>

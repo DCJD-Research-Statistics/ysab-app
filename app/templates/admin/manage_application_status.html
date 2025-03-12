@@ -45,8 +45,11 @@
 <body>
     {% include 'admin/backto_admin.html' %}
     <div class="main-content">
-        <h1 style="padding: 10px 300px;">Manage Application Status</h1>
+        <h1 style="padding: 10px 300px;">Manage Application Features</h1>
+        
+        <!-- Application Submission Status -->
         <div class="form-container">
+            <h3>Application Submission</h3>
             <div class="status-display">
                 Current Status: <strong>{{ 'Enabled' if application_enabled else 'Disabled' }}</strong>
             </div>
@@ -56,6 +59,24 @@
                     <select class="form-control" id="applicationStatus" name="application_enabled">
                         <option value="true" {% if application_enabled %}selected{% endif %}>Enable</option>
                         <option value="false" {% if not application_enabled %}selected{% endif %}>Disable</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Update Status</button>
+            </form>
+        </div>
+        
+        <!-- Application Edit Status -->
+        <div class="form-container">
+            <h3>Application Edit Feature</h3>
+            <div class="status-display">
+                Current Status: <strong>{{ 'Enabled' if edit_enabled else 'Disabled' }}</strong>
+            </div>
+            <form id="editStatusForm">
+                <div class="form-group">
+                    <label for="editStatus">Change Status:</label>
+                    <select class="form-control" id="editStatus" name="edit_enabled">
+                        <option value="true" {% if edit_enabled %}selected{% endif %}>Enable</option>
+                        <option value="false" {% if not edit_enabled %}selected{% endif %}>Disable</option>
                     </select>
                 </div>
                 <button type="submit" class="btn btn-primary">Update Status</button>
@@ -78,6 +99,26 @@
                             alert('Application status updated successfully!');
                         } else {
                             alert('Failed to update application status: ' + response.error);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert('An error occurred: ' + xhr.responseText);
+                    }
+                });
+            });
+            
+            $('#editStatusForm').submit(function(event) {
+                event.preventDefault();
+                var editEnabled = $('#editStatus').val();
+                $.ajax({
+                    url: '{{ url_for("admin_dashboard.update_edit_status_config") }}',
+                    type: 'POST',
+                    data: { edit_enabled: editEnabled },
+                    success: function(response) {
+                        if (response.success) {
+                            alert('Edit feature status updated successfully!');
+                        } else {
+                            alert('Failed to update edit feature status: ' + response.error);
                         }
                     },
                     error: function(xhr, status, error) {

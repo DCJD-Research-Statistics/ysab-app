@@ -356,10 +356,13 @@ def manage_application_status():
         db = client[db_name]
         # Fetch the current application status from the database
         # Assuming you have a collection named 'config' with a document like {'application_status': True/False}
-        config = db['config'].find_one({'name': 'application_status'})
-        application_enabled = config['value'] if config else False
+        app_config = db['config'].find_one({'name': 'application_status'})
+        application_enabled = app_config['value'] if app_config else False
 
-    return render_template('admin/manage_application_status.html', application_enabled=application_enabled)
+        edit_config = db['config'].find_one({'name': 'edit_status'})
+        edit_enabled = edit_config['value'] if edit_config else False
+
+    return render_template('admin/manage_application_status.html', application_enabled=application_enabled, edit_enabled=edit_enabled)
 
 @admin_dashboard.route('/update_application_status_config', methods=['POST'])
 @login_required
@@ -385,6 +388,36 @@ def update_application_status_config():
             return jsonify({'success': True})
         else:
             return jsonify({'success': False, 'error': 'Application status update failed'})
+
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+    finally:
+        client.close()
+
+@admin_dashboard.route('/update_edit_status_config', methods=['POST'])
+@login_required
+@admin_required
+def update_edit_status_config():
+    try:
+        print("Received request to update edit feature status")
+        edit_enabled = request.form.get('edit_enabled')
+        print(f"edit_enabled: {edit_enabled}")
+        edit_enabled = edit_enabled == 'true'
+        client = MongoClient(mongo_uri)
+        db_name = os.getenv("DB_NAME")
+        db = client[db_name]
+
+        # Update the edit status in the config collection
+        result = db['config'].update_one(
+            {'name': 'edit_status'},
+            {'$set': {'value': edit_enabled}},
+            upsert=True  # Creates the document if it doesn't exist
+        )
+
+        if result.modified_count > 0 or result.upserted_id:
+            return jsonify({'success': True})
+        else:
+            return jsonify({'success': False, 'error': 'Edit feature status update failed'})
 
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})

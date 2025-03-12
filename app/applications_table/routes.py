@@ -24,7 +24,7 @@ def my_applications(admin_mode=admin_mode_switch):
         
         # if admin_mode==True:
         #     user_email = os.getenv("EMAIL")
-        # elif admin_mode==False: 
+        # elif admin_mode==False:
         #     user_email = session['user']['email']
 
         user_email = session['user']['email']
@@ -38,6 +38,10 @@ def my_applications(admin_mode=admin_mode_switch):
 
         db = client[db_name]
         collection = db['ysab-applications']
+
+        # Get edit feature status from config
+        edit_config = db['config'].find_one({'name': 'edit_status'})
+        edit_enabled = edit_config['value'] if edit_config else False
 
         # Fetch applications for the current user from 'ysab' collection
         user_applications = list(collection.find(
@@ -63,7 +67,7 @@ def my_applications(admin_mode=admin_mode_switch):
 
         if not all_applications:
             message = "No records found."
-            return render_template('applications/my_applications.html', message=message)
+            return render_template('applications/my_applications.html', message=message, edit_enabled=edit_enabled)
         
         # Format the data for the template
         applications = []
@@ -84,7 +88,7 @@ def my_applications(admin_mode=admin_mode_switch):
                 'application_status': app.get('application_status', 'pending')
             })
 
-        return render_template('applications/my_applications.html', applications=applications)
+        return render_template('applications/my_applications.html', applications=applications, edit_enabled=edit_enabled)
 
 @applications_table.route('/download_application_fromtable/<application_id>/<format>')
 def download_file_a_fromtable(application_id, format):
