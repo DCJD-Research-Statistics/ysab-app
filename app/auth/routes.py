@@ -78,7 +78,8 @@ def signup():
             'timestamp': get_timestamp(),
             'type': 'User Signup',
             'description': f'New user account created for {name} ({email}) - Approved: {is_approved}',
-            'user': email
+            'user': email,
+            'read': False
         })
 
         # Redirect based on approval status

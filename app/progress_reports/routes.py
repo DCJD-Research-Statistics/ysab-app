@@ -392,7 +392,8 @@ def submit_progress_report():
             'timestamp': get_timestamp(),
             'type': 'Progress Report Submission',
             'description': f'New progress report submitted by {name} ({email})',
-            'user': email
+            'user': email,
+            'read': False
         })
 
         return render_template('comfirmations/confirmation_p.html', name=name, email=email)

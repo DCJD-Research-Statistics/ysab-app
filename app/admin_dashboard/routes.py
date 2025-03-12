@@ -222,7 +222,8 @@ def update_application_status():
                 'timestamp': get_timestamp(),
                 'type': 'Status Update',
                 'description': f'Application {application_id} status changed to {new_status}',
-                'user': session['user']['email']
+                'user': session['user']['email'],
+                'read': False
             })
             
             return jsonify({'success': True})

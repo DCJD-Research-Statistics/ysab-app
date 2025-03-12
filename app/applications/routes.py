@@ -42,7 +42,8 @@ def submit_application_form():
                     'timestamp': get_timestamp(),
                     'type': 'Application Submission',
                     'description': f'New application submitted by {name} ({email})',
-                    'user': email
+                    'user': email,
+                    'read': False
                 })
 
             # return jsonify({'success': True, 'message': 'Form data submitted successfully'})
@@ -155,7 +156,8 @@ def update_application():
                 'timestamp': get_timestamp(),
                 'type': 'Application Update',
                 'description': f'Application {application_id} updated by {name} ({email})',
-                'user': email
+                'user': email,
+                'read': False
             }
             print(f"Logging activity: {activity_log}")
             db['activities'].insert_one(activity_log)
