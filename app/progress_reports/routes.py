@@ -5,7 +5,7 @@ from pymongo import MongoClient
 import os
 import requests
 
-db_name = os.getenv("DB_NAME_DEV")
+db_name = os.getenv("DB_NAME")
 mongo_uri = os.getenv("MONGO_URI")
 
 
