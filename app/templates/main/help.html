@@ -24,7 +24,7 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         h1 {
-            color: #1a73e8;
+            color: #000000;
             margin-bottom: 30px;
         }
         .faq-section {
@@ -34,9 +34,35 @@
             font-weight: bold;
             color: #1a73e8;
             margin-bottom: 10px;
+            cursor: pointer;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .faq-question:hover {
+            background-color: #e8f0fe;
+        }
+        .faq-question::after {
+            content: '+';
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .faq-question.active::after {
+            content: '-';
         }
         .faq-answer {
             margin-bottom: 20px;
+            padding: 0 10px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease;
+        }
+        .faq-answer.show {
+            max-height: 500px;
+            padding: 10px;
         }
         .video-container {
             position: relative;
@@ -51,6 +77,11 @@
             left: 0;
             width: 100%;
             height: 100%;
+        }
+        .section-title {
+            color: #121213;
+            margin-bottom: 20px;
+            font-size: 1.5em;
         }
     </style>
 </head>
@@ -79,9 +110,25 @@
             </div>
         </div>
 
-        <h2>Application Walkthrough Tutorial</h2>
-        <div class="video-container">
-            <iframe width="560" height="315" src="https://www.youtube.com/embed/v_TF5bCfaOw" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        <div class="faq-section">
+            <div class="section-title">Application Resources</div>
+            <div class="faq-question">YSAB Application Walkthrough Guide</div>
+            <div class="faq-answer">
+                Watch our comprehensive walkthrough tutorial below that guides you through the entire application process step by step:
+                <br>
+                <br>
+                <div class="video-container">
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/v_TF5bCfaOw" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+
+        <div class="faq-section">
+            <div class="section-title">Progress Report Resources</div>
+            <div class="faq-question">YSAB Progress Report Guide</div>
+            <div class="faq-answer">
+               Progress Report Guide
+            </div>
         </div>
 
         <div class="faq-section">
@@ -92,11 +139,33 @@
         </div>
 
         <div class="faq-section">
-            <h2>Feedback and Feature Requests</h2>
+            <div class="section-title">Feedback and Feature Requests</div>
+            <div class="faq-question">How can I provide feedback or request new features?</div>
             <div class="faq-answer">
                 We value your input! If you have any feedback on the application process or would like to suggest a new feature, please email us at ResearchTeam-Juvenile@dallascountytx.onmicrosoft.com. Your suggestions help us improve our service and make the application process better for everyone.
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get all FAQ questions
+            const faqQuestions = document.querySelectorAll('.faq-question');
+            
+            // Add click event listener to each question
+            faqQuestions.forEach(question => {
+                question.addEventListener('click', function() {
+                    // Toggle active class on the question
+                    this.classList.toggle('active');
+                    
+                    // Get the next sibling element (the answer)
+                    const answer = this.nextElementSibling;
+                    
+                    // Toggle show class on the answer
+                    answer.classList.toggle('show');
+                });
+            });
+        });
+    </script>
 </body>
 </html>
