@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-admin_mode_switch = False
+admin_mode_switch = True
 
 # Base configuration class
 class Config:
